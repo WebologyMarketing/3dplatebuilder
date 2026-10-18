@@ -40,24 +40,20 @@ Shown on the Features page and marked "Coming soon" in the pricing table:
 
 - **Charles Wright font data** (`plateboss-builder/assets/fonts/charles-wright-bold.json` and `charles-wright-singapore.json`). These were made from font files supplied to PlateBoss. Check that your K-Type licence (or whoever licensed them) covers web/app embedding **and** using them across other businesses' websites. The outlines are served to every visitor's browser. The dimensioned plate drawing on the home page is also drawn from these outlines.
 - **3D car models.** None are in the kit; the car view uses the built-in sports saloon, drawn in code. Clear the licence for any bought GLB models (`car-model.js`, `CARS`) before you add them, including the right to use them on other companies' sites.
-- **Nikkalite / Nippon Carbide.** `plate-model.js` draws "Nikkalite Easyprint Reflective Sheeting, Nippon Carbide Industries" on the back of every plate, and the plate can be turned right round to see it (the README's "65° limit" is out of date: `plate-viewport.js` allows a full turn). On this site, `assets/js/demo.js` swaps it for plain sheeting after the builder loads, but the words still ship inside `plate-model.js`. Before selling the builder, add a config option for the backing print (or a neutral default) and use each shop's own sheeting brand, with permission.
+- **Sheeting brand on the plate backs.** Since builder 1.10 the backs are plain unless a shop sets `backing` in its shop config. PlateBoss's own config (`docs/shop-configs/plateboss.json`) prints Nikkalite / Nippon Carbide; only print a sheeting maker's brand with their permission.
 - **Three.js** is MIT-licensed: fine to resell; keep its copyright notice (it's in the CDN files).
 - **Union Flag / UK and EV badge artwork** in `plate-badges.js`. Worth a quick check that the artwork is yours to use.
 - **Archivo** (this site's typeface) is under the SIL Open Font License. No action needed.
 
 - **"iPhone" in the copy.** The phone preview is drawn in CSS (no Apple artwork), and the captions name the iPhone 18 Pro Max only to say which screen size it shows. That's usually fine as a factual reference, but ask your solicitor, or change it to "a 6.9-inch phone screen" if you'd rather not name it.
 
-## 4. Things in the builder's core that need a fix before other shops use it
+## 4. White-labelling the builder (done in 1.10)
 
-These are worked around on the demo pages without editing core files:
+Everything that was PlateBoss's in the builder now comes from each shop's config (`pbb_shop`, set in WooCommerce → Plate Builder → Shop details, or by provisioning): supplier and postcode, logo, brand colours, fitting wording, car badge, plate-back print, product and page IDs, category presets and menus. A fresh install is neutral. PlateBoss's own settings are in `docs/shop-configs/plateboss.json`, with its logo and car badge; load them into PlateBoss.co.uk when it moves to 1.10.
 
-- `basket.js` hard-codes "Collect from our Hounslow workshop" on the fitting add-on, and the `fittingNote` config key is ignored. The demo replaces the text after it loads.
-- `car-model.js` always loads `<assetsUrl>img/pb-car-badge.svg` (the PB badge). The demo points `assetsUrl` at `demo-assets/`, which has a neutral "YP" badge.
-- The Nikkalite backing print (above). The demo replaces it with plain sheeting at runtime.
-- The plugin defaults are PlateBoss's (`pbb_supplier_details()`, product IDs in `catalog.php`, page IDs in `placement.php`). These are filterable, so each shop needs its own small config plugin.
-- The README says the documents PHP "hasn't run yet", while BRIEF.md says it's live. Check which is current before selling Complete.
+The demo on this site uses the same config keys, so the old run-time patches in `demo.js` are gone. After changing the builder, run `tools/sync-demo-builder.sh` to copy it into the demo.
 
-The PlateBoss logo (`plateboss-logo.webp`) and the PB car badge were left out of this site's copy of the builder assets.
+Still to check: the README says the documents PHP "hasn't run yet", while BRIEF.md says it's live. Check which is current before selling Complete.
 
 ## 5. Suggested prices, and why
 

@@ -1,8 +1,9 @@
 <?php
 /**
- * Admin screen: WooCommerce → Plate Builder. Edit every price the builder uses.
+ * Admin screen: WooCommerce → Plate Builder. Shop details (supplier, logo, colours, wording)
+ * and every price the builder uses.
  *
- * @package PlateBoss
+ * @package PlateBuilder
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -23,6 +24,81 @@ add_action(
 );
 
 add_action( 'admin_post_pbb_save_pricing', 'pbb_save_pricing' );
+add_action( 'admin_post_pbb_save_shop', 'pbb_save_shop' );
+
+/**
+ * Whether the shop details can be changed here. Hosted shops are locked (filter returns false)
+ * until their documents are verified; the 3D Plate Builder portal sets that.
+ */
+function pbb_shop_editable() {
+	return (bool) apply_filters( 'pbb_shop_editable', true );
+}
+
+/** The everyday shop fields: key => [label, type, help]. */
+function pbb_shop_fields() {
+	return array(
+		'supplier'              => array( __( 'Supplier name', 'plateboss-builder' ), 'text', __( 'Exactly as registered with the DVLA. Printed in the footer of every plate.', 'plateboss-builder' ) ),
+		'postcode'              => array( __( 'Supplier postcode', 'plateboss-builder' ), 'text', __( 'The postcode of the registered premises. Printed next to the name.', 'plateboss-builder' ) ),
+		'logo'                  => array( __( 'Footer logo (URL)', 'plateboss-builder' ), 'url', __( 'Optional. A wide logo from your media library; leave empty to print the name as text.', 'plateboss-builder' ) ),
+		'accent'                => array( __( 'Button colour', 'plateboss-builder' ), 'color', __( 'Buttons and highlights in the builder, the checkout and the promo blocks.', 'plateboss-builder' ) ),
+		'accent_ink'            => array( __( 'Text on buttons', 'plateboss-builder' ), 'color', __( 'Must be easy to read on the button colour.', 'plateboss-builder' ) ),
+		'dark'                  => array( __( 'Dark panels', 'plateboss-builder' ), 'color', __( 'Banners, the documents notice and the floating button.', 'plateboss-builder' ) ),
+		'fitting_note'          => array( __( 'Fitting note in the builder', 'plateboss-builder' ), 'text', __( 'Under "In-store fitting while you wait".', 'plateboss-builder' ) ),
+		'fitting_checkout_note' => array( __( 'Fitting note at checkout', 'plateboss-builder' ), 'text', __( 'Shown when fitting is in the basket.', 'plateboss-builder' ) ),
+		'car_badge'             => array( __( 'Car badge (URL)', 'plateboss-builder' ), 'url', __( 'Optional. An SVG or PNG for the boot and grille in the "on a car" view (5:3 shape). Leave empty for no badge.', 'plateboss-builder' ) ),
+	);
+}
+
+function pbb_save_shop() {
+	if ( ! current_user_can( 'manage_woocommerce' ) ) {
+		wp_die( esc_html__( 'You are not allowed to do that.', 'plateboss-builder' ) );
+	}
+	check_admin_referer( 'pbb_save_shop' );
+	if ( ! pbb_shop_editable() ) {
+		wp_die( esc_html__( 'Your shop details are locked until your account is verified.', 'plateboss-builder' ) );
+	}
+
+	$saved = get_option( 'pbb_shop', array() );
+	$saved = is_array( $saved ) ? $saved : array();
+	$input = isset( $_POST['pbb_shop'] ) && is_array( $_POST['pbb_shop'] ) ? wp_unslash( $_POST['pbb_shop'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per field below.
+	$error = '';
+
+	// Advanced: the whole config as JSON (site admins only). Applied first, so the fields win.
+	if ( current_user_can( 'manage_options' ) && isset( $_POST['pbb_shop_json'] ) ) {
+		$json = trim( (string) wp_unslash( $_POST['pbb_shop_json'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- decoded and checked below; each value is escaped on output.
+		if ( '' !== $json && wp_json_encode( $saved, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) !== $json ) {
+			$decoded = json_decode( $json, true );
+			if ( is_array( $decoded ) ) {
+				$saved = array_intersect_key( $decoded, pbb_shop_defaults() );
+			} else {
+				$error = 'json';
+			}
+		}
+	}
+
+	foreach ( pbb_shop_fields() as $key => $field ) {
+		if ( ! isset( $input[ $key ] ) ) {
+			continue;
+		}
+		$value = (string) $input[ $key ];
+		if ( 'url' === $field[1] ) {
+			$value = esc_url_raw( trim( $value ) );
+		} elseif ( 'color' === $field[1] ) {
+			$value = (string) sanitize_hex_color( $value );
+			if ( '' === $value ) {
+				continue;
+			}
+		} else {
+			$value = sanitize_text_field( $value );
+		}
+		$saved[ $key ] = 'postcode' === $key ? strtoupper( $value ) : $value;
+	}
+	update_option( 'pbb_shop', $saved, true );
+
+	$args = array( 'page' => 'pbb-settings', 'updated' => $error ? 'shop-json' : 'shop' );
+	wp_safe_redirect( add_query_arg( $args, admin_url( 'admin.php' ) ) . '#pbb-shop' );
+	exit;
+}
 
 function pbb_save_pricing() {
 	if ( ! current_user_can( 'manage_woocommerce' ) ) {
@@ -72,9 +148,20 @@ function pbb_render_settings() {
 	<div class="wrap">
 		<h1><?php esc_html_e( 'Plate Builder', 'plateboss-builder' ); ?></h1>
 
-		<?php if ( isset( $_GET['updated'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
+		<?php
+		$updated = isset( $_GET['updated'] ) ? sanitize_key( $_GET['updated'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( 'shop-json' === $updated ) :
+			?>
+			<div class="notice notice-error is-dismissible"><p><?php esc_html_e( 'Shop details saved, but the advanced JSON could not be read, so it was left as it was.', 'plateboss-builder' ); ?></p></div>
+		<?php elseif ( 'shop' === $updated ) : ?>
+			<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Shop details saved.', 'plateboss-builder' ); ?></p></div>
+		<?php elseif ( $updated ) : ?>
 			<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Prices saved.', 'plateboss-builder' ); ?></p></div>
 		<?php endif; ?>
+
+		<?php pbb_render_shop_form(); ?>
+
+		<h2 class="title" id="pbb-prices"><?php esc_html_e( 'Prices', 'plateboss-builder' ); ?></h2>
 
 		<p>
 			<?php esc_html_e( 'A plate is priced from its character style (front & rear, or a single plate), plus a surcharge per plate for non-standard sizes. Badge, border and extras are charged once per basket line. Motorbike and trailer plates have one fixed price.', 'plateboss-builder' ); ?>
@@ -173,5 +260,53 @@ function pbb_render_settings() {
 
 		<?php do_action( 'pbb_settings_after' ); ?>
 	</div>
+	<?php
+}
+
+/** The "Shop details" form at the top of the settings screen. */
+function pbb_render_shop_form() {
+	$shop     = pbb_shop();
+	$editable = pbb_shop_editable();
+	$saved    = get_option( 'pbb_shop', array() );
+	?>
+	<h2 class="title" id="pbb-shop"><?php esc_html_e( 'Shop details', 'plateboss-builder' ); ?></h2>
+	<?php if ( ! $editable ) : ?>
+		<div class="notice notice-info inline"><p><?php esc_html_e( 'You can change these once we have checked your documents and verified your account.', 'plateboss-builder' ); ?></p></div>
+	<?php endif; ?>
+	<p><?php esc_html_e( 'The builder helps you lay plates out to BS AU 145e. You stay responsible, as the registered supplier, for the plates you make.', 'plateboss-builder' ); ?></p>
+	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+		<input type="hidden" name="action" value="pbb_save_shop">
+		<?php wp_nonce_field( 'pbb_save_shop' ); ?>
+		<fieldset <?php disabled( ! $editable ); ?>>
+		<table class="form-table" role="presentation">
+			<?php
+			foreach ( pbb_shop_fields() as $key => $field ) {
+				$id    = 'pbb-shop-' . $key;
+				$value = 'color' === $field[1] ? pbb_shop_colour( $key ) : (string) $shop[ $key ];
+				$class = 'color' === $field[1] ? '' : ' class="regular-text"';
+				printf(
+					'<tr><th scope="row"><label for="%1$s">%2$s</label></th><td><input type="%3$s" id="%1$s" name="pbb_shop[%4$s]" value="%5$s"%6$s><p class="description">%7$s</p></td></tr>',
+					esc_attr( $id ),
+					esc_html( $field[0] ),
+					esc_attr( $field[1] ),
+					esc_attr( $key ),
+					esc_attr( $value ),
+					$class, // phpcs:ignore WordPress.Security.EscapeOutput -- fixed string.
+					esc_html( $field[2] )
+				);
+			}
+			?>
+		</table>
+		<?php if ( current_user_can( 'manage_options' ) ) : ?>
+			<details>
+				<summary><?php esc_html_e( 'Advanced: the whole shop config as JSON', 'plateboss-builder' ); ?></summary>
+				<p class="description"><?php esc_html_e( 'Product and page mappings, category presets, menus and the sheeting print. Only print a sheeting brand on the plate backs if you have the maker\'s permission.', 'plateboss-builder' ); ?></p>
+				<textarea name="pbb_shop_json" rows="16" class="large-text code" spellcheck="false"><?php echo esc_textarea( wp_json_encode( is_array( $saved ) ? $saved : array(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ); ?></textarea>
+			</details>
+		<?php endif; ?>
+		<?php submit_button( __( 'Save shop details', 'plateboss-builder' ) ); ?>
+		</fieldset>
+	</form>
+	<hr>
 	<?php
 }

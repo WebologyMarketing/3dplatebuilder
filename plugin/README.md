@@ -1,4 +1,4 @@
-# PlateBoss Plate Builder
+# 3D Plate Builder (WordPress plugin)
 
 Real-time 3D/4D number plate customiser for WordPress + WooCommerce.
 
@@ -6,20 +6,12 @@ Real-time 3D/4D number plate customiser for WordPress + WooCommerce.
 
 ## Install
 
-1. Zip the `plateboss-builder` folder and upload it in **Plugins → Add New → Upload Plugin**, or copy it into `wp-content/plugins/`.
-2. Activate **PlateBoss Plate Builder** (WooCommerce must be active).
+1. Zip the plugin folder (keep the folder name `plateboss-builder`, so updates replace it) and upload it in **Plugins → Add New → Upload Plugin**, or copy it into `wp-content/plugins/`.
+2. Activate **3D Plate Builder** (WooCommerce must be active).
 3. Go to **WooCommerce → Plate Builder** and set your prices. **The defaults are placeholders.** Opening this screen also creates the hidden "Custom Number Plate" product that builder orders are added as.
-4. Footer details default to PlateBoss.co.uk / TW4 6BX. To change them, BS AU 145e requires the registered supplier's name and postcode. Add this to your theme's `functions.php` or a small mu-plugin:
+4. In **WooCommerce → Plate Builder → Shop details**, set the supplier name and postcode exactly as registered with the DVLA (BS AU 145e prints them in every plate's footer), plus the footer logo, brand colours, fitting wording and car badge. Until the name and postcode are set, the admin shows a warning and plates print the site name and WooCommerce store postcode. See **Shop config** below.
 
-   ```php
-   add_filter( 'pbb_supplier_details', function ( $d ) {
-       $d['supplier'] = 'PlateBoss.co.uk';
-       $d['postcode'] = 'TW4 6BX'; // the defaults; change only if they move
-       return $d;
-   } );
-   ```
-
-5. Add the shortcode to any page: `[plateboss_builder]`. Options: `side="rear"`, `registration="AB12CDE"`, `style="acrylic-4d-3"`, `accent="blue"`, `size="motorbike"`, `badge="uk-gel"`, `border="black"`.
+5. Add the shortcode to any page: `[plate_builder]` (the older `[plateboss_builder]` still works). Options: `side="rear"`, `registration="AB12CDE"`, `style="acrylic-4d-3"`, `accent="blue"`, `size="motorbike"`, `badge="uk-gel"`, `border="black"`.
    A `?reg=AB12CDE` URL parameter pre-fills the builder, so a "search your reg" box or an ad can link straight in.
 
 Requires WordPress 6.5+ for native ES module and import map support.
@@ -31,6 +23,32 @@ If the builder shows only a spinner, the page builder is hiding the shortcode fr
 ```php
 add_filter( 'pbb_should_enqueue', fn ( $on ) => $on || is_page( 'build-your-plate' ) );
 ```
+
+## Shop config
+
+Everything that makes the builder one shop's lives in one option, `pbb_shop` (`includes/shop.php`). A fresh install has neutral defaults: no supplier branding, no product or page mapping, plain plate backs and no car badge.
+
+| Key | What it does |
+|---|---|
+| `supplier`, `postcode`, `logo`, `standard` | The plate footer. |
+| `accent`, `accent_ink`, `dark` | Brand colours (hex) for buttons, the text on them, and dark panels. Used by the builder, the checkout, the promo blocks and the documents notice. |
+| `fitting_note`, `fitting_checkout_note` | The in-store fitting wording in the builder and at checkout. |
+| `car_badge` | Image URL for the badge on the car in the "on a car" view. Empty = no badge. |
+| `backing` | The sheeting print on the back of the plate: `{ "title", "mark", "tag", "subtitle", "maker" }`. Empty = plain sheeting. Only use a sheeting brand with the maker's permission. |
+| `products` | Product ID → the preset the builder starts on (`style`, `size`, `badge`, `match`). |
+| `landing_pages`, `feature_front_page` | Page ID → preset, for pages that feature the builder. The front page is included unless `feature_front_page` is false. |
+| `category_presets` | Product category slug → preset, for the category promo band. |
+| `menu_slugs` | Nav menus that get a "3D Plate Builder" item. |
+
+Shop owners edit the everyday keys on the settings screen; site admins also get the whole config as JSON there. Provisioning sets it in one go:
+
+```sh
+wp option update pbb_shop "$(cat shop.json)" --format=json
+```
+
+`docs/shop-configs/plateboss.json` (in the 3D Plate Builder repo) is PlateBoss.co.uk's config, which gives the same behaviour as before 1.10. Upload `plateboss-logo.webp` and `pb-car-badge.svg` from that folder to the media library and put their URLs in `logo` and `car_badge`.
+
+The older filters (`pbb_supplier_details`, `pbb_product_presets`, `pbb_landing_pages`, `pbb_featured_pages`, `pbb_category_presets`, `pbb_menu_slugs`) still run on top of the config. `pbb_shop_editable` (default true) locks the Shop details form, for hosted shops awaiting verification.
 
 ## File map
 
@@ -142,7 +160,7 @@ Sizes are data in `plate-sizes.js`, so changing a dimension is a one-line edit.
 
 ## Pricing and basket
 
-Prices match plateboss.co.uk's product pages (October 2026) and are edited in **WooCommerce → Plate Builder**:
+Default prices are typical UK prices and are edited in **WooCommerce → Plate Builder**:
 
 | | Front & rear | One plate |
 |---|---|---|
@@ -182,7 +200,7 @@ add_filter( 'pbb_product_presets', function ( $p ) { unset( $p[17642] ); return 
 ## Around the site
 
 - **Design Your Plates page:** `/design-your-plates/`, created with the shortcode the first time an admin opens the dashboard. Its ID is kept in `pbb_builder_page_id`.
-- **Home and Hounslow:** the full builder, in a "Design your plates in 3D" section after the page's first Elementor section (the top banner). Change the pages with the `pbb_featured_pages` filter (page IDs; default: the front page and 29573). Phones get the launch button.
+- **Home and landing pages:** the full builder, in a "Design your plates in 3D" section after the page's first Elementor section (the top banner). Change the pages with the `pbb_featured_pages` filter (page IDs; default: the front page and the config's `landing_pages`). Phones get the launch button.
 - **Main menu:** a "3D Plate Builder" item after Home, on the `main-menu-left` menu (`pbb_menu_slugs` filter).
 - **Floating "Design in 3D" button:** bottom left on every other page. Not shown on the basket, checkout, account, builder or featured pages, or on builder product pages.
 - **Product pages:** a "Design in 3D / Classic plate builder" switch above the builder. The registration carries across, and the choice is remembered on that device.
@@ -199,7 +217,7 @@ The layout follows the visible screen, so the phone keyboard never covers the bu
 
 ## Preview controls
 
-- **Turn:** one finger or the mouse. Limited to 65° left or right, 35° down and 25° up, so the plate never shows its back or goes edge-on. Car view turns freely.
+- **Turn:** one finger or the mouse. Turns right round, so the back of the plate (plain sheeting, or the `backing` print) can be seen. Car view turns freely.
 - **Zoom:** pinch, or scroll the mouse wheel. Zoom stays centred, from 0.25× to 1.25× of the framed view.
 - **Pan:** two fingers or a right-drag. The view always stays on the plate.
 - **Double-tap or double-click:** zooms in on that spot; doing it again returns to the whole plate.
@@ -214,11 +232,11 @@ A pop-up confirms "Added to basket" with the registration and price, and goes to
 
 ## DVLA document checks
 
-As a Registered Number Plate Supplier, PlateBoss must see one proof of ID and one proof of entitlement to the registration before dispatching or handing over road-legal plates. Show plates are exempt.
+As a Registered Number Plate Supplier, the shop must see one proof of ID and one proof of entitlement to the registration before dispatching or handing over road-legal plates. Show plates are exempt.
 
 **At checkout**
 - **When it appears:** a "Your documents" panel shows only when the basket holds a road-legal builder plate. On the classic checkout it sits under the customer details; on the block checkout it sits in the order summary (WooCommerce's order-meta slot).
-- **Upload now:** the customer picks the document type (the same lists as plateboss.co.uk/valid-documents) and uploads a photo or PDF for each: JPG, PNG, WebP, HEIC or PDF, up to 10 MB. The server checks the real file contents, not just the extension.
+- **Upload now:** the customer picks the document type (the same lists as the shop's /valid-documents/ page) and uploads a photo or PDF for each: JPG, PNG, WebP, HEIC or PDF, up to 10 MB. The server checks the real file contents, not just the extension.
 - **Send after ordering:** the customer is told to email, WhatsApp or post them, or bring them when collecting. Set these contact details in WooCommerce → Plate Builder → Documents (email defaults to the shop's "From" address).
 - **Checks before ordering:** the server checks the choice before the order is placed. Upload-now orders need both documents.
 - **Failed payments:** uploads survive a failed card payment, so the customer doesn't have to upload again.

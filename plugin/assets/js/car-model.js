@@ -197,14 +197,16 @@ function buildSportsSaloon({ badgeUrl, onChange }) {
 	});
 	car.add(tail, diffuser, grille, ...heads);
 
-	// PB badges, front and rear.
-	const tex = loadBadgeTexture(badgeUrl);
-	const rearBadge = pbBadge(130, tex, onChange);
-	rearBadge.position.set(0, 625, 2393);
-	const frontBadge = pbBadge(130, tex, onChange);
-	frontBadge.position.set(0, 640, -2367);
-	frontBadge.rotation.y = Math.PI;
-	car.add(rearBadge, frontBadge);
+	// The shop's badge, front and rear (none if the shop hasn't set one).
+	if (badgeUrl) {
+		const tex = loadBadgeTexture(badgeUrl);
+		const rearBadge = pbBadge(130, tex, onChange);
+		rearBadge.position.set(0, 625, 2393);
+		const frontBadge = pbBadge(130, tex, onChange);
+		frontBadge.position.set(0, 640, -2367);
+		frontBadge.rotation.y = Math.PI;
+		car.add(rearBadge, frontBadge);
+	}
 
 	car.traverse((o) => {
 		if (o.isMesh) o.castShadow = o.receiveShadow = false;
@@ -267,19 +269,18 @@ async function loadGlbCar(url, { badgeUrl, onChange }) {
 	mounts.rear ??= new THREE.Vector3(0, 520, box.max.z + 2);
 	mounts.front ??= new THREE.Vector3(0, 450, box.min.z - 2);
 
-	const tex = loadBadgeTexture(badgeUrl);
-	badges.forEach((empty) => {
-		const b = pbBadge(130, tex, onChange);
-		empty.add(b);
-	});
+	if (badgeUrl) {
+		const tex = loadBadgeTexture(badgeUrl);
+		badges.forEach((empty) => empty.add(pbBadge(130, tex, onChange)));
+	}
 
 	return { group: car, paint, mounts };
 }
 
 /** Build or load a car. Resolves to { group, paint, mounts }. */
-export async function createCar(id, { assetsUrl = '', onChange = () => {} } = {}) {
+export async function createCar(id, { assetsUrl = '', badgeUrl = '', onChange = () => {} } = {}) {
 	const def = getCar(id);
-	const opts = { badgeUrl: `${assetsUrl}img/pb-car-badge.svg`, onChange };
+	const opts = { badgeUrl, onChange };
 	const car = def.url ? await loadGlbCar(`${assetsUrl}${def.url}`, opts) : def.build(opts);
 	car.id = def.id;
 	car.group.add(carShadow());

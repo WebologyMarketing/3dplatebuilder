@@ -180,7 +180,7 @@
 
 	/**
 	 * The PHP placeholder comes from woocommerce_checkout_after_customer_details, which
-	 * checkouts built from page-builder widgets (e.g. ShopBuilder on plateboss.co.uk) never
+	 * checkouts built from page-builder widgets (e.g. ShopBuilder) never
 	 * run. Without a panel the server would reject every road-legal order, so create the
 	 * placeholder ourselves after the billing details. It stays hidden unless documents are needed.
 	 */

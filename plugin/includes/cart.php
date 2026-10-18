@@ -7,7 +7,7 @@
  *
  * Works with both the classic and the block-based basket/checkout.
  *
- * @package PlateBoss
+ * @package PlateBuilder
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -213,7 +213,7 @@ add_action(
 				var note = $('.pbb-fitting-note');
 				if (!collect) {
 					if (!note.length) {
-						$('<p class="pbb-fitting-note"/>').text('In-store fitting is only available when you collect from our Hounslow workshop.')
+						$('<p class="pbb-fitting-note"/>').text(<?php echo wp_json_encode( (string) pbb_shop( 'fitting_checkout_note' ) ); ?>)
 							.css({ margin: '8px 0 0', color: '#a15c00', fontSize: '13px' })
 							.appendTo($('.pb-ship').first().length ? $('.pb-ship').first() : $('#order_review'));
 					}

@@ -2,7 +2,7 @@
 /**
  * Builder markup. Variables in scope: $config (array).
  *
- * @package PlateBoss
+ * @package PlateBuilder
  */
 
 defined( 'ABSPATH' ) || exit;

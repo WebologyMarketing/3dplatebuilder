@@ -20,14 +20,14 @@ function init(root) {
 	try {
 		config = JSON.parse(root.dataset.pbbConfig || '{}');
 	} catch (e) {
-		console.warn('[PlateBoss] Invalid builder config', e);
+		console.warn('[Plate Builder] Invalid builder config', e);
 	}
 
 	let viewport;
 	try {
 		viewport = new PlateViewport(root.querySelector('[data-pbb-viewport]'), config);
 	} catch (e) {
-		console.error('[PlateBoss] WebGL unavailable', e);
+		console.error('[Plate Builder] WebGL unavailable', e);
 		root.classList.add('pbb-builder--no-webgl');
 		return;
 	}
@@ -169,4 +169,4 @@ function trackStickyHeader() {
 }
 trackStickyHeader();
 
-window.PlateBoss = Object.assign(window.PlateBoss || {}, { instances, init });
+window.PlateBuilder = window.PlateBoss = Object.assign(window.PlateBuilder || window.PlateBoss || {}, { instances, init });

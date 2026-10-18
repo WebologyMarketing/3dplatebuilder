@@ -7,7 +7,7 @@
  * them until the visitor interacts) leaves visitors on the loading screen. Logged-in admins never
  * see this, because WP Rocket doesn't optimise their pages.
  *
- * @package PlateBoss
+ * @package PlateBuilder
  */
 
 defined( 'ABSPATH' ) || exit;

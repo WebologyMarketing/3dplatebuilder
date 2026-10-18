@@ -2,7 +2,7 @@
 /**
  * DVLA entitlement checks.
  *
- * As a Registered Number Plate Supplier, PlateBoss must see proof of ID and proof of
+ * As a Registered Number Plate Supplier, the shop must see proof of ID and proof of
  * entitlement to the registration before road-legal plates are dispatched or handed over.
  * Show plates don't need them.
  *
@@ -15,7 +15,7 @@
  *  3. Paid orders that need documents go to "Awaiting documents" instead of Processing,
  *     and stay there until staff mark the documents verified (see documents-admin.php).
  *
- * @package PlateBoss
+ * @package PlateBuilder
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -24,7 +24,7 @@ const PBB_DOC_MAX_BYTES = 10485760; // 10 MB
 const PBB_DOC_STATUS    = 'awaiting-docs';
 
 /* -------------------------------------------------------------------------- */
-/* Document types (from plateboss.co.uk/valid-documents)                      */
+/* Document types (the shop lists them on its /valid-documents/ page)        */
 /* -------------------------------------------------------------------------- */
 
 function pbb_document_types() {
@@ -79,7 +79,7 @@ function pbb_document_contact() {
 	$saved = get_option( 'pbb_documents_contact', array() );
 	return array(
 		'email'    => ! empty( $saved['email'] ) ? $saved['email'] : get_option( 'woocommerce_email_from_address', get_option( 'admin_email' ) ),
-		'whatsapp' => ! empty( $saved['whatsapp'] ) ? $saved['whatsapp'] : '0203 733 2494',
+		'whatsapp' => ! empty( $saved['whatsapp'] ) ? $saved['whatsapp'] : '',
 		'address'  => isset( $saved['address'] ) ? $saved['address'] : '',
 	);
 }
@@ -497,6 +497,19 @@ function pbb_contact_page_url() {
 	return $page ? get_permalink( $page ) : home_url( '/contact-us/' );
 }
 
+/** The shop's postal address from WooCommerce → Settings → General, on one line ('' if not set). */
+function pbb_store_address() {
+	$parts = array(
+		get_bloginfo( 'name' ),
+		get_option( 'woocommerce_store_address', '' ),
+		get_option( 'woocommerce_store_address_2', '' ),
+		get_option( 'woocommerce_store_city', '' ),
+		get_option( 'woocommerce_store_postcode', '' ),
+	);
+	$parts = array_filter( array_map( 'trim', array_map( 'strval', $parts ) ) );
+	return count( $parts ) > 1 ? wp_specialchars_decode( implode( ', ', $parts ), ENT_QUOTES ) : '';
+}
+
 /** The list of documents we accept. */
 function pbb_valid_documents_url() {
 	$page = get_page_by_path( 'valid-documents' );
@@ -504,14 +517,16 @@ function pbb_valid_documents_url() {
 }
 
 /**
- * "Documents required before dispatch": the same black and yellow box as the order emails
- * (WPCode snippet "PlateBoss - Documents Required Notice"), so the thank-you page matches.
+ * "Documents required before dispatch": a box in the shop's brand colours, used on the
+ * thank-you page and in the order emails so they match.
  */
 function pbb_documents_instructions_html( WC_Order $order, $plain = false ) {
 	$contact = pbb_document_contact();
 	$ref     = $order->get_order_number();
-	$address = $contact['address'] ? $contact['address'] : 'Plate Boss, Suite 1, Unit 5, The Freehold Centre, Amberley Way, Hounslow TW4 6BX';
-	$yellow  = '#F7D333';
+	$address = $contact['address'] ? $contact['address'] : pbb_store_address();
+	$yellow  = pbb_shop_colour( 'accent' );
+	$ink     = pbb_shop_colour( 'accent_ink' );
+	$dark    = pbb_shop_colour( 'dark' );
 	$link    = 'color:' . $yellow . ';text-decoration:underline';
 
 	// Each way: label, plain-text value, HTML value.
@@ -521,11 +536,13 @@ function pbb_documents_instructions_html( WC_Order $order, $plain = false ) {
 		$wa     = preg_replace( '/^0/', '44', preg_replace( '/\D/', '', $contact['whatsapp'] ) );
 		$ways[] = array( __( 'WhatsApp', 'plateboss-builder' ), $contact['whatsapp'], '<a style="' . $link . '" href="https://wa.me/' . esc_attr( $wa ) . '">' . esc_html( $contact['whatsapp'] ) . '</a>' );
 	}
-	$ways[] = array(
-		__( 'Post (Royal Mail Tracked or Signed For)', 'plateboss-builder' ),
-		$address,
-		esc_html( $address ) . ' (<a style="' . $link . '" href="' . esc_url( pbb_contact_page_url() ) . '">' . esc_html__( 'contact page', 'plateboss-builder' ) . '</a>)',
-	);
+	if ( '' !== $address ) {
+		$ways[] = array(
+			__( 'Post (Royal Mail Tracked or Signed For)', 'plateboss-builder' ),
+			$address,
+			esc_html( $address ) . ' (<a style="' . $link . '" href="' . esc_url( pbb_contact_page_url() ) . '">' . esc_html__( 'contact page', 'plateboss-builder' ) . '</a>)',
+		);
+	}
 	if ( $order->has_shipping_method( 'local_pickup' ) || $order->has_shipping_method( 'pickup_location' ) ) {
 		$ways[] = array( __( 'In person', 'plateboss-builder' ), __( 'bring them with you when you collect', 'plateboss-builder' ), esc_html__( 'bring them with you when you collect', 'plateboss-builder' ) );
 	}
@@ -545,12 +562,12 @@ function pbb_documents_instructions_html( WC_Order $order, $plain = false ) {
 	foreach ( $ways as $w ) {
 		$items .= '<p style="margin:0 0 10px;color:#fff">&bull; ' . esc_html( $w[0] ) . ': ' . $w[2] . '</p>';
 	}
-	return '<section class="pbb-docs-notice" style="margin:1.5em 0;padding:28px 32px;background:#000;border:3px solid ' . $yellow . ';color:#fff;line-height:1.6">'
+	return '<section class="pbb-docs-notice" style="margin:1.5em 0;padding:28px 32px;background:' . $dark . ';border:3px solid ' . $yellow . ';color:#fff;line-height:1.6">'
 		. '<h2 style="margin:0 0 14px;color:' . $yellow . ';font-size:22px;font-weight:800;letter-spacing:.04em;text-transform:uppercase">' . esc_html( $heading ) . '</h2>'
 		. '<p style="margin:0 0 14px;color:#fff">' . esc_html( $intro ) . '</p>'
 		. '<p style="margin:0 0 12px;color:#fff">' . esc_html( $ask ) . '</p>'
 		. $items
-		. '<p style="margin:20px 0"><a href="' . esc_url( pbb_valid_documents_url() ) . '" style="display:inline-block;padding:14px 26px;background:' . $yellow . ';color:#000;font-weight:800;text-transform:uppercase;text-decoration:none;letter-spacing:.02em">' . esc_html( $button ) . '</a></p>'
+		. '<p style="margin:20px 0"><a href="' . esc_url( pbb_valid_documents_url() ) . '" style="display:inline-block;padding:14px 26px;background:' . $yellow . ';color:' . $ink . ';font-weight:800;text-transform:uppercase;text-decoration:none;letter-spacing:.02em">' . esc_html( $button ) . '</a></p>'
 		. '<p style="margin:0;color:#cfcfcf;font-size:14px">' . esc_html( $foot ) . '</p>'
 		. '</section>';
 }

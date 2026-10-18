@@ -2,11 +2,11 @@
 /**
  * Where the builder shows up around the site, beyond shop product pages:
  *   - a "Design Your Plates" page, created on first admin visit;
- *   - the full builder on featured pages (home and Hounslow), after their opening section;
+ *   - the full builder on featured pages (home and other landing pages), after their opening section;
  *   - a "3D Plate Builder" item in the main menu;
  *   - a floating "Design in 3D" button on other pages.
  *
- * @package PlateBoss
+ * @package PlateBuilder
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -48,25 +48,15 @@ function pbb_builder_url( $registration = '' ) {
 
 /**
  * Landing pages that show the full builder after their opening section, each starting on its own
- * style or size, with the words for its heading. Filter `pbb_landing_pages`.
+ * style or size, with the words for its heading. Set in the shop config's `landing_pages`;
+ * the front page is included unless `feature_front_page` is false. Filter `pbb_landing_pages`.
  */
 function pbb_landing_pages() {
-	$pages = array(
-		(int) get_option( 'page_on_front' ) => array(),
-		// Location pages.
-		29573 => array(), // Hounslow
-		34376 => array(), // London
-		34392 => array(), // Manchester
-		34414 => array(), // Birmingham
-		// Style pages.
-		32138 => array( 'style' => 'gel-3d', 'name' => '3D gel' ),
-		32194 => array( 'style' => 'acrylic-4d-3', 'name' => '4D' ),
-		32207 => array( 'style' => 'retro', 'name' => 'retro' ),
-		32244 => array( 'style' => 'printed', 'name' => 'replacement' ),
-		32258 => array( 'size' => 'short', 'style' => 'acrylic-4d-3', 'name' => 'short' ),
-		32382 => array( 'badge' => 'ev', 'style' => 'acrylic-4d-3', 'name' => 'EV' ),
-		32491 => array( 'size' => 'hex', 'style' => 'acrylic-4d-3', 'name' => 'hex' ),
-	);
+	$pages = pbb_int_keys( pbb_shop( 'landing_pages' ) );
+	$front = (int) get_option( 'page_on_front' );
+	if ( $front && pbb_shop( 'feature_front_page' ) && ! isset( $pages[ $front ] ) ) {
+		$pages = array( $front => array() ) + $pages;
+	}
 	return array_filter( (array) apply_filters( 'pbb_landing_pages', $pages ), 'is_array' );
 }
 
@@ -149,12 +139,12 @@ add_filter(
 	999
 );
 
-/** Main menu: "3D Plate Builder" after the first item (Home). Filter `pbb_menu_slugs` for other menus. */
+/** Main menu: "3D Plate Builder" after the first item (Home), on the menus in the shop config's `menu_slugs`. */
 add_filter(
 	'wp_nav_menu_objects',
 	function ( $items, $args ) {
 		$menu = isset( $args->menu ) ? wp_get_nav_menu_object( $args->menu ) : false;
-		if ( ! $menu || ! in_array( $menu->slug, (array) apply_filters( 'pbb_menu_slugs', array( 'main-menu-left' ) ), true ) ) {
+		if ( ! $menu || ! in_array( $menu->slug, (array) apply_filters( 'pbb_menu_slugs', (array) pbb_shop( 'menu_slugs' ) ), true ) ) {
 			return $items;
 		}
 		$item                   = new stdClass();
@@ -214,8 +204,9 @@ add_action(
 			<span><?php esc_html_e( 'Design in 3D', 'plateboss-builder' ); ?></span>
 		</a>
 		<style>
-			.pbb-fab{position:fixed;left:16px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:9990;display:inline-flex;align-items:center;gap:8px;padding:12px 18px 12px 14px;border-radius:999px;background:#111418;color:#fff!important;font-size:15px;font-weight:700;line-height:1;text-decoration:none!important;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .2s ease}
-			.pbb-fab svg{color:#f5c400}
+			<?php echo pbb_shop_css_vars(); // phpcs:ignore WordPress.Security.EscapeOutput -- built from sanitised hex colours. ?>
+			.pbb-fab{position:fixed;left:16px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:9990;display:inline-flex;align-items:center;gap:8px;padding:12px 18px 12px 14px;border-radius:999px;background:var(--pbb-dark);color:#fff!important;font-size:15px;font-weight:700;line-height:1;text-decoration:none!important;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .2s ease}
+			.pbb-fab svg{color:var(--pbb-accent)}
 			.pbb-fab:hover{transform:translateY(-2px)}
 			@media (max-width:1024px){body.sticky-toolbar-on .pbb-fab{bottom:calc(72px + env(safe-area-inset-bottom))}}
 			@media (max-width:420px){.pbb-fab{padding:11px 15px 11px 12px;font-size:14px}}
@@ -236,22 +227,9 @@ function pbb_promo_hidden() {
 	return is_page( pbb_builder_page_id() ) || ! empty( $_GET['pbb_embed'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 }
 
-/** Category → where the builder should start. Filter `pbb_category_presets`. */
+/** Category slug → where the builder should start. Set in the shop config's `category_presets`. */
 function pbb_category_presets() {
-	return (array) apply_filters(
-		'pbb_category_presets',
-		array(
-			'3d-gel-number-plates'   => array( 'style' => 'gel-3d', 'name' => '3D gel' ),
-			'4d-gel-plates'          => array( 'style' => 'gel-4d-3', 'name' => '4D gel' ),
-			'4d-plates'              => array( 'style' => 'acrylic-4d-3', 'name' => '4D' ),
-			'ev-plates'              => array( 'badge' => 'ev', 'style' => 'acrylic-4d-3', 'name' => 'EV' ),
-			'hex-plates'             => array( 'size' => 'hex', 'style' => 'acrylic-4d-3', 'name' => 'hex' ),
-			'retro-number-plates'    => array( 'style' => 'retro', 'name' => 'retro' ),
-			'short-number-plates'    => array( 'size' => 'short', 'style' => 'acrylic-4d-3', 'name' => 'short' ),
-			'standard-number-plates' => array( 'style' => 'printed', 'name' => 'standard' ),
-			'oversized-plates'       => array( 'style' => 'acrylic-4d-3', 'name' => 'oversized' ),
-		)
-	);
+	return (array) apply_filters( 'pbb_category_presets', (array) pbb_shop( 'category_presets' ) );
 }
 
 // Strip across the top of every other page.
@@ -325,27 +303,28 @@ add_action(
 		}
 		?>
 		<style id="pbb-promo-css">
-			.pbb-strip{position:relative;z-index:100;display:flex;align-items:center;background:#0D0E10;color:#fff;font-size:14px;line-height:1.3}
+			<?php echo pbb_shop_css_vars(); // phpcs:ignore WordPress.Security.EscapeOutput -- built from sanitised hex colours. ?>
+			.pbb-strip{position:relative;z-index:100;display:flex;align-items:center;background:var(--pbb-dark);color:#fff;font-size:14px;line-height:1.3}
 			.pbb-strip[hidden]{display:none}
 			.pbb-strip-link{flex:1;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 12px;padding:9px 44px 9px 16px;color:#fff!important;text-decoration:none!important}
-			.pbb-strip-new{display:inline-block;padding:3px 8px;border-radius:999px;background:#F7D333;color:#0D0E10;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+			.pbb-strip-new{display:inline-block;padding:3px 8px;border-radius:999px;background:var(--pbb-accent);color:var(--pbb-accent-ink);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 			.pbb-strip-text{font-weight:500}
-			.pbb-strip-cta{font-weight:800;color:#F7D333;text-decoration:underline;text-underline-offset:3px}
+			.pbb-strip-cta{font-weight:800;color:var(--pbb-accent);text-decoration:underline;text-underline-offset:3px}
 			.pbb-strip-close{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;background:none;color:#cfcfcf;font-size:22px;line-height:1;cursor:pointer}
-			.pbb-hero-cta{width:100%;max-width:520px;margin:22px 0 4px;padding:18px 20px;border-radius:16px;background:rgba(13,14,16,.78);border:1px solid rgba(247,211,51,.45);color:#fff;text-align:left;box-shadow:0 18px 40px -20px rgba(0,0,0,.8);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+			.pbb-hero-cta{width:100%;max-width:520px;margin:22px 0 4px;padding:18px 20px;border-radius:16px;background:rgba(13,14,16,.78);border:1px solid color-mix(in srgb,var(--pbb-accent) 45%,transparent);color:#fff;text-align:left;box-shadow:0 18px 40px -20px rgba(0,0,0,.8);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 			.pbb-hero-cta.is-centred{margin-left:auto;margin-right:auto;text-align:center}
 			.pbb-hero-cta-title{margin:10px 0 0!important;color:#fff!important;font-size:24px!important;font-weight:800!important;line-height:1.15!important}
 			.pbb-hero-cta-text{margin:6px 0 0!important;color:#d9d7cf!important;font-size:15px!important;line-height:1.45!important}
-			.pbb-hero-cta-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;min-height:54px;padding:0 26px;border-radius:12px;background:#F7D333;color:#0D0E10!important;font-weight:800;font-size:17px;letter-spacing:.05em;text-transform:uppercase;text-decoration:none!important;box-shadow:0 8px 20px -8px rgba(247,211,51,.7);transition:transform .15s ease}
+			.pbb-hero-cta-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;min-height:54px;padding:0 26px;border-radius:12px;background:var(--pbb-accent);color:var(--pbb-accent-ink)!important;font-weight:800;font-size:17px;letter-spacing:.05em;text-transform:uppercase;text-decoration:none!important;box-shadow:0 8px 20px -8px color-mix(in srgb,var(--pbb-accent) 70%,transparent);transition:transform .15s ease}
 			.pbb-hero-cta-btn:hover{transform:translateY(-1px);background:#ffe066}
 			@media (max-width:640px){.pbb-hero-cta{padding:16px}.pbb-hero-cta-title{font-size:20px!important}.pbb-hero-cta-btn{width:100%}}
-			.pbb-band{display:flex;align-items:center;gap:18px;margin:0 0 24px;padding:16px 20px;border-radius:16px;background:#0D0E10;color:#fff!important;text-decoration:none!important;box-shadow:0 10px 30px -18px rgba(0,0,0,.6)}
+			.pbb-band{display:flex;align-items:center;gap:18px;margin:0 0 24px;padding:16px 20px;border-radius:16px;background:var(--pbb-dark);color:#fff!important;text-decoration:none!important;box-shadow:0 10px 30px -18px rgba(0,0,0,.6)}
 			.pbb-band:hover .pbb-band-cta{background:#ffe066}
 			.pbb-band-plate{flex:none;padding:8px 14px;border-radius:6px;background:#F9D71C;color:#111;font-weight:900;font-size:22px;letter-spacing:2px;transform:perspective(400px) rotateY(-18deg) rotateX(8deg);box-shadow:-6px 10px 18px rgba(0,0,0,.5)}
 			.pbb-band-copy{flex:1;display:flex;flex-direction:column;gap:4px;font-size:14px;color:#d9d7cf}
 			.pbb-band-copy strong{font-size:20px;line-height:1.15;color:#fff}
 			.pbb-band-copy .pbb-strip-new{align-self:flex-start}
-			.pbb-band-cta{flex:none;padding:12px 18px;border-radius:12px;background:#F7D333;color:#0D0E10;font-weight:800;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+			.pbb-band-cta{flex:none;padding:12px 18px;border-radius:12px;background:var(--pbb-accent);color:var(--pbb-accent-ink);font-weight:800;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
 			@media (max-width:640px){
 				.pbb-strip{font-size:13px}
 				.pbb-strip-text{display:none}

@@ -143,14 +143,14 @@ function plateUVs(geo, plate) {
 }
 
 /**
- * The back of a finished plate is the back of the reflective sheet: off-white with the maker's
- * print repeated across it in grey, tilted slightly, alternate rows staggered. One tile is
+ * The back of a finished plate is the back of the reflective sheet: off-white, plain by default,
+ * or with the sheeting maker's print (the shop's `backing` config) repeated across it in grey, tilted slightly, alternate rows staggered. One tile is
  * BACKING.w × BACKING.h mm and holds two prints; the body's cap UVs are in mm, so the texture
  * repeats every tile.
  */
 const BACKING = { w: 160, h: 52, px: 6, ground: '#ECEBE6', ink: '#9C978F' };
 
-function backingTexture() {
+function backingTexture(backing = null) {
 	const { w, h, px } = BACKING;
 	const canvas = document.createElement('canvas');
 	canvas.width = w * px;
@@ -161,6 +161,7 @@ function backingTexture() {
 	g.scale(px, px); // draw in mm
 
 	const print = (x, y) => {
+		if (!backing?.title) return;
 		g.save();
 		g.translate(x, y);
 		g.rotate(THREE.MathUtils.degToRad(-5));
@@ -168,20 +169,22 @@ function backingTexture() {
 		g.strokeStyle = BACKING.ink;
 		g.textBaseline = 'alphabetic';
 		g.font = '800 10px Arial, Helvetica, sans-serif';
-		g.fillText('Nikkalite', 0, 0);
-		const nw = g.measureText('Nikkalite').width;
+		g.fillText(backing.title, 0, 0);
+		const nw = g.measureText(backing.title).width;
 		g.font = '600 2.6px Arial, Helvetica, sans-serif';
-		g.fillText('®', nw + 0.4, -6.2);
-		g.fillText('Easyprint', nw + 3, -1.6);
+		if (backing.mark) g.fillText(backing.mark, nw + 0.4, -6.2);
+		if (backing.tag) g.fillText(backing.tag, nw + 3, -1.6);
 		g.font = '400 7.6px Arial, Helvetica, sans-serif';
-		g.fillText('Reflective Sheeting', 0.4, 8.6);
-		g.font = '700 3.5px Arial, Helvetica, sans-serif';
-		g.fillText('Nippon Carbide Industries Co., Inc.', 0.6, 13.4);
-		g.lineWidth = 0.6;
-		g.beginPath();
-		g.moveTo(0.6, 15);
-		g.lineTo(0.6 + g.measureText('Nippon Carbide Industries Co., Inc.').width, 15);
-		g.stroke();
+		if (backing.subtitle) g.fillText(backing.subtitle, 0.4, 8.6);
+		if (backing.maker) {
+			g.font = '700 3.5px Arial, Helvetica, sans-serif';
+			g.fillText(backing.maker, 0.6, 13.4);
+			g.lineWidth = 0.6;
+			g.beginPath();
+			g.moveTo(0.6, 15);
+			g.lineTo(0.6 + g.measureText(backing.maker).width, 15);
+			g.stroke();
+		}
 		g.restore();
 	};
 	// Two rows per tile, the second shifted half a tile, each print repeated across the seam.
@@ -213,9 +216,10 @@ export class PlateModel {
 	/**
 	 * @param {object}   opts
 	 * @param {object}   opts.plate     resolved size (numeric width)
+	 * @param {object}   [opts.backing] the sheeting print on the back ({ title, mark, tag, subtitle, maker }); null = plain
 	 * @param {Function} opts.onChange  called when async artwork finishes, so the viewport re-renders
 	 */
-	constructor({ plate, side = 'front', footer = {}, flagArtwork = {}, onChange = () => {} }) {
+	constructor({ plate, side = 'front', footer = {}, flagArtwork = {}, backing = null, onChange = () => {} }) {
 		this.group = new THREE.Group();
 		this.group.name = 'Plate';
 		this.footer = footer;
@@ -239,8 +243,8 @@ export class PlateModel {
 		this.faceMaterial = printed({ polygonOffsetFactor: -1, polygonOffsetUnits: -1 });
 		this.edgeMaterial = new THREE.MeshPhysicalMaterial({ roughness: 0.05, clearcoat: 1, clearcoatRoughness: 0.02 });
 		// The key light faces the front, so the back glows a little to read as the off-white sheet.
-		const backing = backingTexture();
-		this.backMaterial = new THREE.MeshStandardMaterial({ map: backing, roughness: 0.55, emissive: '#ffffff', emissiveMap: backing, emissiveIntensity: 0.65 });
+		const backTex = backingTexture(backing);
+		this.backMaterial = new THREE.MeshStandardMaterial({ map: backTex, roughness: 0.55, emissive: '#ffffff', emissiveMap: backTex, emissiveIntensity: 0.65 });
 		this.evMaterial = printed({ color: BADGE.evColour });
 		// Clear resin for gel badges: real transmission, so the print shows through with a lens-like dome.
 		this.resinMaterial = new THREE.MeshPhysicalMaterial({
@@ -475,7 +479,7 @@ export class PlateModel {
 		try {
 			img = await loadFlagImage(this.flagArtwork.uk);
 		} catch (e) {
-			console.warn('[PlateBoss] Flag artwork failed to load', e);
+			console.warn('[Plate Builder] Flag artwork failed to load', e);
 			return;
 		}
 		if (token !== this.badgeToken) return; // a newer badge was requested meanwhile

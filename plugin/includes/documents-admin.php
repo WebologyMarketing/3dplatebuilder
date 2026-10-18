@@ -3,7 +3,7 @@
  * Staff side of the DVLA entitlement checks: the "Plate documents" panel on the order
  * screen (classic and HPOS), private downloads, verification, and contact settings.
  *
- * @package PlateBoss
+ * @package PlateBuilder
  */
 
 defined( 'ABSPATH' ) || exit;

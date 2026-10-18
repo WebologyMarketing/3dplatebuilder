@@ -1,6 +1,9 @@
 import { calculatePrice } from './pricing.js';
 import { mountCheckout } from './checkout.js';
 
+/** Escape text for innerHTML. */
+const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+
 /**
  * Plates (front / rear / pair, on the Plate size step), add-ons (fixings, holders,
  * in-store fitting), live price and Continue to checkout.
@@ -60,7 +63,7 @@ export function mountBasket(root, viewport, config) {
 		</label>`).join('') + `
 		<label class="pbb-check pbb-fitting">
 			<input type="checkbox" data-pbb-fitting>
-			<span>In-store fitting while you wait<small>Collect from our Hounslow workshop; we fit them on the spot.</small></span>
+			<span>In-store fitting while you wait<small>${escapeHtml(config.fittingNote ?? 'Collect from the shop and we fit them on the spot.')}</small></span>
 			<span class="pbb-check-price">${money.format(Number(config.pricing?.services?.fitting ?? 30))}</span>
 		</label>`;
 	// One pick per group (pads, holders): ticking one unticks the other, like the server does.
@@ -127,7 +130,7 @@ export function mountBasket(root, viewport, config) {
 		try {
 			if (!config.cart?.endpoint) {
 				// Dev page without WooCommerce: show what would be sent.
-				console.info('[PlateBoss] Would add to basket:', payload);
+				console.info('[Plate Builder] Would add to basket:', payload);
 				await new Promise((r) => setTimeout(r, 400));
 				message.textContent = '';
 				showAdded(payload, calculatePrice(payload, config.pricing, config.labels).total, '#checkout', '#basket');
