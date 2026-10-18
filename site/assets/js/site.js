@@ -94,7 +94,7 @@ function fitDevice(fit) {
 function deviceSrc(frame, query) {
 	const base = frame.dataset.src;
 	const q = query ?? (frame.hasAttribute('data-phone-inherit') ? location.search.slice(1) : '');
-	return q ? `${base}?${q}` : base;
+	return q ? `${base}${base.includes('?') ? '&' : '?'}${q}` : base;
 }
 
 function loadDevice(fit, query) {
