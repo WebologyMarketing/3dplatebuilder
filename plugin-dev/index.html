@@ -1,0 +1,171 @@
+<!doctype html>
+<!-- Local test page: mirrors what WordPress outputs for [plateboss_builder]. Not part of the plugin. -->
+<html lang="en-GB">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>PlateBoss Builder – Dev</title>
+	<link rel="stylesheet" href="../plugin/assets/css/builder.css">
+	<script type="importmap">
+	{
+		"imports": {
+			"three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+			"three/addons/controls/OrbitControls.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/controls/OrbitControls.js",
+			"three/addons/environments/RoomEnvironment.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/environments/RoomEnvironment.js",
+			"three/addons/loaders/GLTFLoader.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js",
+			"three/addons/utils/BufferGeometryUtils.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/utils/BufferGeometryUtils.js"
+		}
+	}
+	</script>
+	<style>
+		body { margin: 0; padding: 32px 16px; background: #f7f7f8; font-family: system-ui, sans-serif; }
+		main { max-width: 1100px; margin: 0 auto; }
+	</style>
+</head>
+<body>
+<main>
+	<div class="pbb-builder" data-pbb-config='{"supplier": "PlateBoss.co.uk", "postcode": "TW4 6BX", "logo": "../plugin/assets/img/plateboss-logo.webp", "standard": "BS AU 145e", "side": "front", "registration": "", "fontUrl": "../plugin/assets/fonts/charles-wright-bold.json", "assetsUrl": "../plugin/assets/", "fonts": {"motorcycle": "../plugin/assets/fonts/charles-wright-singapore.json"}, "pricing": {"style_pair": {"printed": 29.99, "gel-3d": 49.99, "acrylic-4d-3": 49.99, "acrylic-4d-6": 64.99, "gel-4d-3": 64.99, "gel-4d-6": 79.99, "retro": 69.99}, "style_single": {"printed": 19.99, "gel-3d": 29.99, "acrylic-4d-3": 29.99, "acrylic-4d-6": 39.99, "gel-4d-3": 39.99, "gel-4d-6": 44.99, "retro": 39.99}, "size": {"standard": 0, "short": 10, "hex": 10, "square": 10, "oversized": 10, "japanese-import": 10, "us-import": 10}, "flat": {"motorbike": 19.99, "trailer": 19.99, "trailer-commercial": 19.99}, "badge": {"uk": 5, "uk-gel": 10, "uk-gel-blue": 10, "uk-4d": 15, "ev": 5, "ev-gel": 10, "ev-uk-gel": 10}, "border": {"black-1mm": 10, "black-2mm": 10, "black-3mm": 10}, "services": {"fitting": 30}, "accessories": {"sticky_pads": 2.5, "xl_pads": 6.99, "screw_kit": 2.5, "frame_holders": 18, "frameless_holders": 20}}, "accessories": {"sticky_pads": "8 adhesive pads (1 mm)", "xl_pads": "XL pad set (8 × 1 mm + 3 × 5 mm)", "screw_kit": "Screws + caps (4 screws, 2 yellow & 2 white caps)", "frameless_holders": "Frameless holders (set)"}, "fittingNote":"Collect from our Hounslow workshop","accessoryGroups": [["sticky_pads", "xl_pads"], ["frameless_holders"]], "currency": "GBP", "homeUrl": "/dev/", "labels": {"accessories": {"sticky_pads": "8 adhesive pads (1 mm)", "xl_pads": "XL pad set (8 × 1 mm + 3 × 5 mm)", "screw_kit": "Screws + caps (4 screws, 2 yellow & 2 white caps)", "frameless_holders": "Frameless holders (set)"}, "styles": {"printed": "Printed", "gel-3d": "3D Gel", "acrylic-4d-3": "4D 3mm", "acrylic-4d-6": "4D 6mm", "gel-4d-3": "4D Gel 3mm", "gel-4d-6": "4D Gel 6mm", "retro": "Retro"}, "sizes": {"standard": "Standard", "short": "Short", "hex": "Hex", "square": "4x4", "oversized": "Oversized", "motorbike": "Motorbike", "trailer": "Trailer", "trailer-commercial": "Commercial trailer (white)", "japanese-import": "Japanese import", "us-import": "US import"}, "badges": {"none": "None", "uk": "UK badge (printed)", "uk-gel": "UK gel badge, white", "uk-gel-blue": "UK gel badge, blue", "uk-4d": "UK 4D badge (raised)", "ev": "EV strip (printed)", "ev-gel": "EV gel badge", "ev-uk-gel": "EV gel badge with UK"}, "borders": {"none": "None", "black-1mm": "Black, 1 mm", "black-2mm": "Black, 2 mm", "black-3mm": "Black, 3 mm"}}, "mobile": "app"}'>
+	<div class="pbb-launcher">
+		<button type="button" class="pbb-launch" data-pbb-launch>
+			<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M12 2.5l8.5 4.75v9.5L12 21.5l-8.5-4.75v-9.5zM12 12l8.5-4.75M12 12v9.5M12 12L3.5 7.25"/></svg>
+			<span><strong>Design your plates in 3D</strong><small>Enter your reg, pick your options and see them before you buy.</small></span>
+		</button>
+	</div>
+
+	<header class="pbb-appbar">
+		<a class="pbb-app-btn" href="/dev/" data-pbb-exit>
+			<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></svg>
+			<span class="pbb-sr-only">Leave the builder</span>
+		</a>
+		<img class="pbb-app-logo" src="../plugin/assets/img/plateboss-logo.webp" alt="PlateBoss.co.uk">
+		<a class="pbb-app-btn pbb-app-cart" href="#">
+			<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 8h12l-1 12H7L6 8zM9 8V6a3 3 0 0 1 6 0v2"/></svg>
+			<span class="pbb-sr-only">Basket</span>
+			<span class="pbb-app-count" data-pbb-cart-count>2</span>
+		</a>
+	</header>
+
+	<div class="pbb-stage">
+		<div class="pbb-viewport" data-pbb-viewport aria-label="3D number plate preview" role="img"></div>
+
+		<div class="pbb-loader" aria-hidden="true"><span></span></div>
+
+		<p class="pbb-hint" data-pbb-touch-hint="Drag to turn · Pinch or double-tap to zoom" data-pbb-wheel-hint="Click the plate or hold %s to zoom">Drag to turn · Double-click to zoom</p>
+
+		<div class="pbb-toolbar" role="toolbar" aria-label="Preview controls">
+			<div class="pbb-segmented" role="group" aria-label="Plate side">
+				<button type="button" data-pbb-side="front" aria-pressed="true">Front</button>
+				<button type="button" data-pbb-side="rear" aria-pressed="false">Rear</button>
+			</div>
+			<button type="button" class="pbb-view-btn" data-pbb-view aria-pressed="false" title="See it on a car">
+				<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M3 15.5V13l2-4.5A2 2 0 0 1 6.8 7.3h10.4A2 2 0 0 1 19 8.5L21 13v2.5a1 1 0 0 1-1 1h-1M5 16.5H4a1 1 0 0 1-1-1M9 16.5h6M3.5 12.5h17"/><circle cx="7" cy="16.5" r="1.8" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17" cy="16.5" r="1.8" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+				<span>Car</span>
+			</button>
+			<button type="button" class="pbb-icon-btn" data-pbb-action="reset" title="Reset view">
+				<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>
+				<span class="pbb-sr-only">Reset view</span>
+			</button>
+		</div>
+
+		<div class="pbb-carbar" data-pbb-carbar hidden>
+			<label class="pbb-sr-only" for="pbb-car-1">Car</label>
+			<select id="pbb-car-1" class="pbb-car-select" data-pbb-car></select>
+			<div class="pbb-paints" role="radiogroup" aria-label="Paint colour" data-pbb-paints></div>
+		</div>
+
+		<p class="pbb-fallback">Your browser could not start the 3D preview. Please update your browser or enable hardware acceleration.</p>
+	</div>
+
+	<!-- On phones the steps become swipeable cards under the pinned preview (steps.js); on desktop they stack. -->
+	<div class="pbb-steps" data-pbb-steps>
+		<div class="pbb-stepnav" data-pbb-stepnav></div>
+		<div class="pbb-track" data-pbb-track>
+			<div class="pbb-step pbb-step-start" data-pbb-step="Your reg &amp; style">
+				<div class="pbb-panel">
+					<label class="pbb-field" for="pbb-reg-1">
+						<span class="pbb-label">Your registration</span>
+					</label>
+					<input
+						id="pbb-reg-1"
+						class="pbb-reg-input"
+						type="text"
+						inputmode="text"
+						autocomplete="off"
+						autocapitalize="characters"
+						autocorrect="off"
+						spellcheck="false"
+						maxlength="8"
+						placeholder="YOUR REG"
+						aria-describedby="pbb-reg-status-1"
+						data-pbb-input="registration"
+					>
+					<p class="pbb-status" id="pbb-reg-status-1" data-pbb-output="status" aria-live="polite"></p>
+				</div>
+				<!-- Character style sits under the reg box, so phones see both on the first card. -->
+				<div class="pbb-section">
+					<div class="pbb-section-head">
+						<span class="pbb-label" id="pbb-style-label-1">Character style</span>
+						<span class="pbb-legal" data-pbb-output="legal"></span>
+					</div>
+					<div class="pbb-styles" role="radiogroup" aria-labelledby="pbb-style-label-1" data-pbb-styles></div>
+					<p class="pbb-style-desc" data-pbb-output="style-desc" aria-live="polite"></p>
+				</div>
+				<div class="pbb-section" data-pbb-accent-section hidden>
+					<span class="pbb-label" id="pbb-accent-label-1">Effect colour</span>
+					<div class="pbb-swatches" role="radiogroup" aria-labelledby="pbb-accent-label-1" data-pbb-accents></div>
+				</div>
+			</div>
+			<div class="pbb-step" data-pbb-step="Plate size">
+				<div class="pbb-section">
+					<span class="pbb-label" id="pbb-size-label-1">Plate size</span>
+					<div class="pbb-chips pbb-plates" role="radiogroup" aria-label="Plates" data-pbb-plates></div>
+					<div class="pbb-options" role="radiogroup" aria-labelledby="pbb-size-label-1" data-pbb-sizes></div>
+				</div>
+			</div>
+			<div class="pbb-step" data-pbb-step="Badge">
+				<div class="pbb-section">
+					<span class="pbb-label" id="pbb-badge-label-1">Badge</span>
+					<div class="pbb-options pbb-badges" role="radiogroup" aria-labelledby="pbb-badge-label-1" data-pbb-badges></div>
+					<p class="pbb-style-desc" data-pbb-output="badge-note" aria-live="polite"></p>
+				</div>
+			</div>
+			<div class="pbb-step" data-pbb-step="Border">
+				<div class="pbb-section">
+					<span class="pbb-label" id="pbb-border-label-1">Border</span>
+					<div class="pbb-chips" role="radiogroup" aria-labelledby="pbb-border-label-1" data-pbb-borders></div>
+				</div>
+			</div>
+			<div class="pbb-step" data-pbb-step="Add-ons">
+				<div class="pbb-section pbb-basket">
+					<span class="pbb-label">Add-ons</span>
+					<div class="pbb-extras" data-pbb-extras></div>
+					<div class="pbb-summary" data-pbb-summary aria-live="polite"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="pbb-buybar">
+		<div class="pbb-total"><span>Total</span><strong data-pbb-total></strong></div>
+		<button type="button" class="pbb-next" data-pbb-next>Next</button>
+		<button type="button" class="pbb-add" data-pbb-add disabled>Continue to checkout</button>
+	</div>
+	<p class="pbb-cart-msg" data-pbb-cart-msg aria-live="polite"></p>
+</div>
+</main>
+<script>
+	// Dev only: ?mobile=launch|inline|app and ?style=, ?size=, ?badge= mimic the shortcode / product-page presets.
+	(() => {
+		const q = new URLSearchParams(location.search);
+		const el = document.querySelector('.pbb-builder');
+		const c = JSON.parse(el.dataset.pbbConfig);
+		for (const k of ['mobile', 'style', 'size', 'badge']) if (q.get(k)) c[k] = q.get(k);
+		c.teaser = q.get('teaser') === '1';
+		el.dataset.pbbConfig = JSON.stringify(c);
+		el.classList.toggle('is-launch', c.mobile === 'launch');
+		el.classList.toggle('is-teaser', c.teaser);
+	})();
+</script>
+<script type="module" src="../plugin/assets/js/main.js"></script>
+</body>
+</html>

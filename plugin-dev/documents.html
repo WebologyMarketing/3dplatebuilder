@@ -1,0 +1,48 @@
+<!doctype html>
+<!-- Local test page for the checkout documents panel. A fake server stands in for WooCommerce. Not part of the plugin. -->
+<html lang="en-GB">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Documents panel – Dev</title>
+	<link rel="stylesheet" href="../plugin/assets/css/documents.css">
+	<style>body { margin: 0; padding: 24px 16px; background: #f7f7f8; font-family: system-ui, sans-serif; } main { max-width: 640px; margin: 0 auto; }</style>
+</head>
+<body>
+<main>
+	<h1>Checkout</h1>
+	<p>(Billing details would be here.)</p>
+	<div id="pbb-documents" data-pbb-documents hidden></div>
+</main>
+<script>
+	// Fake WooCommerce: mirrors the PHP endpoints' responses.
+	window.pbbDocuments = { endpoint: '/fake/?wc-ajax=%%endpoint%%', nonce: 'dev' };
+	const types = {
+		id: { label: 'Proof of ID', options: { driving_licence: 'Driving licence (photocard or paper counterpart)', passport: 'Passport (name only)' } },
+		entitlement: { label: 'Proof of entitlement to the registration', options: { v5c: 'Vehicle registration certificate (V5C or V5CNI)', v750: 'Certificate of entitlement (V750 or V750NI)' } },
+	};
+	const server = { method: '', files: {} };
+	window.__requests = [];
+	const realFetch = window.fetch;
+	window.fetch = async (url, opts) => {
+		if (!String(url).startsWith('/fake/')) return realFetch(url, opts);
+		const ep = new URL(url, location.href).searchParams.get('wc-ajax');
+		const body = opts.body;
+		const get = (k) => body.get(k);
+		window.__requests.push({ ep, nonce: get('nonce') });
+		await new Promise((r) => setTimeout(r, 150));
+		if (ep === 'pbb_documents_method') server.method = get('method');
+		if (ep === 'pbb_documents_upload') {
+			const f = get('file');
+			if (!/\.(jpe?g|png|webp|heic|pdf)$/i.test(f.name)) return new Response(JSON.stringify({ success: false, data: { message: 'Please upload a photo (JPG, PNG, HEIC) or a PDF.' } }), { status: 400 });
+			server.method = 'upload';
+			server.files[get('kind')] = { name: f.name, type: get('type') };
+		}
+		if (ep === 'pbb_documents_remove') delete server.files[get('kind')];
+		const data = { needed: true, method: server.method, files: server.files, types, contact: { email: 'sales@plateboss.co.uk', whatsapp: '07000 000000', address: '' }, maxBytes: 10485760, accept: '.jpg,.jpeg,.png,.webp,.heic,.pdf,image/*,application/pdf' };
+		return new Response(JSON.stringify({ success: true, data }), { status: 200 });
+	};
+</script>
+<script src="../plugin/assets/js/documents.js"></script>
+</body>
+</html>

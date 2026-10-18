@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Desktop builder | 3D Plate Builder</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="plateboss-builder/assets/css/builder.css" data-pbb-css>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<!-- Three.js r170, pinned exactly as the builder kit uses it (see plateboss-builder/README.md). -->
+<script type="importmap">
+{
+	"imports": {
+		"three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+		"three/addons/controls/OrbitControls.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/controls/OrbitControls.js",
+		"three/addons/environments/RoomEnvironment.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/environments/RoomEnvironment.js",
+		"three/addons/loaders/GLTFLoader.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js",
+		"three/addons/utils/BufferGeometryUtils.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/utils/BufferGeometryUtils.js"
+	}
+}
+</script>
+<style>
+	html, body { margin: 0; height: 100%; background: #f4f5f6; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+	/* Same order panel styles as the main site, sized for the phone. */
+	.demo-order { width: calc(100vw - 20px); max-height: calc(100dvh - 20px); padding: 0; border: 0; border-radius: 16px; background: #fff; color: #111418; overflow: auto; box-shadow: 0 20px 50px rgba(0,0,0,.4); }
+	.demo-order::backdrop { background: rgba(0,0,0,.6); }
+	.demo-order h2 { margin: 0; font-size: 22px; line-height: 1.1; text-transform: uppercase; font-weight: 800; }
+	.demo-order p { margin: 0; }
+	.demo-order-head { display: grid; gap: 6px; padding: 18px; background: #F7D333; font-size: 14px; }
+	.demo-order-kicker { font-weight: 800; font-size: 13px; }
+	.demo-order-lines { margin: 0; padding: 8px 18px; }
+	.demo-order-lines div { display: grid; grid-template-columns: 7.5em 1fr; gap: 10px; padding: 7px 0; border-bottom: 1px solid #e5e7ea; font-size: 14px; }
+	.demo-order-lines dt { color: #5b6168; }
+	.demo-order-lines dd { margin: 0; font-weight: 650; }
+	.demo-order-price { margin: 0 18px; padding: 10px 14px; border-radius: 10px; background: #f3f4f6; display: grid; gap: 4px; font-size: 14px; }
+	.demo-order-price div { display: flex; justify-content: space-between; gap: 12px; }
+	.demo-order-total { padding-top: 6px; border-top: 1px solid #d9dce0; font-weight: 800; }
+	.demo-order-note { margin: 12px 18px 0 !important; font-size: 13px; color: #3d434a; }
+	.demo-order-json { margin: 10px 18px 0; font-size: 13px; }
+	.demo-order-json pre { max-height: 180px; overflow: auto; padding: 10px; border-radius: 8px; background: #111418; color: #e8e8e3; font-size: 11px; }
+	.demo-order-actions { display: flex; flex-wrap: wrap; gap: 8px; padding: 16px 18px 18px; }
+	.demo-order .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 16px; border-radius: 8px; border: 2px solid transparent; font: inherit; font-weight: 750; font-size: 15px; text-decoration: none; cursor: pointer; }
+	.demo-order .btn-primary { background: #F7D333; color: #111418; }
+	.demo-order .btn-ghost { background: #fff; color: #111418; border-color: #c5c9ce; }
+
+	html, body { height: auto; }
+	body { background: #fff; }
+	.shop-head { background: #111418; color: #fff; }
+	.shop-head .in, .shop-main, .shop-foot .in { max-width: 1160px; margin: 0 auto; padding: 0 32px; }
+	.shop-head .in { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+	.shop-head img { height: 34px; width: auto; display: block; }
+	.shop-head nav { display: flex; gap: 28px; font-size: 15px; font-weight: 600; }
+	.shop-head nav a { color: #fff; text-decoration: none; opacity: .8; }
+	.shop-head nav a[aria-current] { opacity: 1; box-shadow: inset 0 -2px 0 #F7D333; padding-bottom: 4px; }
+	.shop-strip { background: #F7D333; color: #111418; text-align: center; font-size: 14px; font-weight: 700; padding: 8px; }
+	.shop-main { padding-top: 36px; padding-bottom: 56px; }
+	.shop-main h1 { margin: 0 0 6px; font-size: 34px; letter-spacing: -.01em; color: #111418; }
+	.shop-main > p { margin: 0 0 24px; color: #5b6168; font-size: 16px; }
+	.shop-foot { border-top: 1px solid #e5e7ea; color: #6b7178; font-size: 13px; }
+	.shop-foot .in { padding-top: 22px; padding-bottom: 22px; }
+</style>
+</head>
+<body>
+<header class="shop-head"><div class="in">
+	<img src="demo-assets/img/your-plates-logo.svg" alt="Your Plates Ltd" width="220" height="40">
+	<nav aria-label="Demo shop"><a href="#">Home</a><a href="#">Number plates</a><a href="#" aria-current="page">Design your plates</a><a href="#">Help</a><a href="#">Basket (0)</a></nav>
+</div></header>
+<p class="shop-strip">Road-legal plates made to BS AU 145e · Free UK delivery over £40 (demo shop)</p>
+<main class="shop-main">
+	<h1>Design your plates in 3D</h1>
+	<p>Type your reg, choose your style and see your plates before you buy.</p>
+	<div class="pbb-builder" data-demo data-demo-mobile="inline" data-demo-url data-demo-reg="AB12 CDE" data-pbb-config="{}">
+	<div class="pbb-launcher">
+		<button type="button" class="pbb-launch" data-pbb-launch>
+			<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M12 2.5l8.5 4.75v9.5L12 21.5l-8.5-4.75v-9.5zM12 12l8.5-4.75M12 12v9.5M12 12L3.5 7.25"/></svg>
+			<span><strong>Design your plates in 3D</strong><small>Enter your reg, pick your options and see them before you buy.</small></span>
+		</button>
+	</div>
+
+	<header class="pbb-appbar">
+		<a class="pbb-app-btn" href="demo.html" data-pbb-exit>
+			<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></svg>
+			<span class="pbb-sr-only">Leave the builder</span>
+		</a>
+		<img class="pbb-app-logo" src="demo-assets/img/your-plates-logo.svg" alt="Your Plates Ltd" width="220" height="40">
+		<a class="pbb-app-btn pbb-app-cart" href="#">
+			<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 8h12l-1 12H7L6 8zM9 8V6a3 3 0 0 1 6 0v2"/></svg>
+			<span class="pbb-sr-only">Basket</span>
+			<span class="pbb-app-count" data-pbb-cart-count>0</span>
+		</a>
+	</header>
+
+	<div class="pbb-stage">
+		<div class="pbb-viewport" data-pbb-viewport aria-label="3D number plate preview" role="img"></div>
+		<div class="pbb-loader" aria-hidden="true"><span></span></div>
+		<p class="pbb-hint" data-pbb-touch-hint="Drag to turn · Pinch or double-tap to zoom" data-pbb-wheel-hint="Click the plate or hold %s to zoom">Drag to turn · Double-click to zoom</p>
+		<div class="pbb-toolbar" role="toolbar" aria-label="Preview controls">
+			<div class="pbb-segmented" role="group" aria-label="Plate side">
+				<button type="button" data-pbb-side="front" aria-pressed="true">Front</button>
+				<button type="button" data-pbb-side="rear" aria-pressed="false">Rear</button>
+			</div>
+			<button type="button" class="pbb-view-btn" data-pbb-view aria-pressed="false" title="See it on a car">
+				<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M3 15.5V13l2-4.5A2 2 0 0 1 6.8 7.3h10.4A2 2 0 0 1 19 8.5L21 13v2.5a1 1 0 0 1-1 1h-1M5 16.5H4a1 1 0 0 1-1-1M9 16.5h6M3.5 12.5h17"/><circle cx="7" cy="16.5" r="1.8" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17" cy="16.5" r="1.8" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+				<span>Car</span>
+			</button>
+			<button type="button" class="pbb-icon-btn" data-pbb-action="reset" title="Reset view">
+				<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>
+				<span class="pbb-sr-only">Reset view</span>
+			</button>
+		</div>
+		<div class="pbb-carbar" data-pbb-carbar hidden>
+			<label class="pbb-sr-only" for="pbb-car-1">Car</label>
+			<select id="pbb-car-1" class="pbb-car-select" data-pbb-car></select>
+			<div class="pbb-paints" role="radiogroup" aria-label="Paint colour" data-pbb-paints></div>
+		</div>
+		<p class="pbb-fallback">Your browser could not start the 3D preview. Please update your browser or enable hardware acceleration.</p>
+	</div>
+
+	<div class="pbb-steps" data-pbb-steps>
+		<div class="pbb-stepnav" data-pbb-stepnav></div>
+		<div class="pbb-track" data-pbb-track>
+			<div class="pbb-step pbb-step-start" data-pbb-step="Your reg &amp; style">
+				<div class="pbb-panel">
+					<label class="pbb-field" for="pbb-reg-1"><span class="pbb-label">Your registration</span></label>
+					<input id="pbb-reg-1" class="pbb-reg-input" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="8" placeholder="YOUR REG" aria-describedby="pbb-reg-status-1" data-pbb-input="registration">
+					
+				</div>
+				<div class="pbb-section">
+					<div class="pbb-section-head">
+						<span class="pbb-label" id="pbb-style-label-1">Character style</span>
+						<span class="pbb-legal" data-pbb-output="legal"></span>
+					</div>
+					<div class="pbb-styles" role="radiogroup" aria-labelledby="pbb-style-label-1" data-pbb-styles></div>
+					
+				</div>
+				<div class="pbb-section" data-pbb-accent-section hidden>
+					<span class="pbb-label" id="pbb-accent-label-1">Effect colour</span>
+					<div class="pbb-swatches" role="radiogroup" aria-labelledby="pbb-accent-label-1" data-pbb-accents></div>
+				</div>
+			</div>
+			<div class="pbb-step" data-pbb-step="Plate size">
+				<div class="pbb-section">
+					<span class="pbb-label" id="pbb-size-label-1">Plate size</span>
+					<div class="pbb-chips pbb-plates" role="radiogroup" aria-label="Plates" data-pbb-plates></div>
+					<div class="pbb-options" role="radiogroup" aria-labelledby="pbb-size-label-1" data-pbb-sizes></div>
+				</div>
+			</div>
+			<div class="pbb-step" data-pbb-step="Badge">
+				<div class="pbb-section">
+					<span class="pbb-label" id="pbb-badge-label-1">Badge</span>
+					<div class="pbb-options pbb-badges" role="radiogroup" aria-labelledby="pbb-badge-label-1" data-pbb-badges></div>
+					
+				</div>
+			</div>
+			<div class="pbb-step" data-pbb-step="Border">
+				<div class="pbb-section">
+					<span class="pbb-label" id="pbb-border-label-1">Border</span>
+					<div class="pbb-chips" role="radiogroup" aria-labelledby="pbb-border-label-1" data-pbb-borders></div>
+				</div>
+			</div>
+			<div class="pbb-step" data-pbb-step="Add-ons">
+				<div class="pbb-section pbb-basket">
+					<span class="pbb-label">Add-ons</span>
+					<div class="pbb-extras" data-pbb-extras></div>
+					<div class="pbb-summary" data-pbb-summary aria-live="polite"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="pbb-buybar">
+		<div class="pbb-total"><span>Total</span><strong data-pbb-total></strong></div>
+		<button type="button" class="pbb-next" data-pbb-next>Next</button>
+		<button type="button" class="pbb-add" data-pbb-add disabled>Continue to checkout</button>
+	</div>
+	
+		</div>
+</main>
+<footer class="shop-foot"><div class="in">Your Plates Ltd · AB1 2CD · A demo shop for 3D Plate Builder</div></footer>
+<script>
+	// Tell the page around the phone frame when the builder is ready (or can't start), so it can
+	// swap the still image for the live phone. Only ever talks to this site.
+	(() => {
+		if (window.parent === window) return;
+		const started = Date.now();
+		const tell = (state) => window.parent.postMessage({ device: state }, location.origin);
+		const t = setInterval(() => {
+			const b = document.querySelector('.pbb-builder');
+			if (b?.classList.contains('is-ready')) { clearInterval(t); tell('ready'); }
+			else if (b?.classList.contains('pbb-builder--no-webgl') || Date.now() - started > 30000) { clearInterval(t); tell('failed'); }
+		}, 150);
+		// The app bar's back arrow would leave the parent page: start the demo again instead.
+		document.addEventListener('click', (e) => {
+			const exit = e.target.closest('[data-pbb-exit], .pbb-app-cart, .shop-head a');
+			if (!exit) return;
+			e.preventDefault();
+			e.stopPropagation();
+			if (exit.hasAttribute('data-pbb-exit')) location.replace(location.href);
+		}, true);
+	})();
+</script>
+<script type="module" src="assets/js/demo.js"></script>
+</body>
+</html>

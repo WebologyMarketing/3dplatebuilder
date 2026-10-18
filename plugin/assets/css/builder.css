@@ -1,0 +1,2092 @@
+/* PlateBoss Plate Builder — Step 1: viewport */
+
+.pbb-builder {
+	--pbb-ink: #111418;
+	--pbb-muted: #6b7178;
+	--pbb-surface: rgba(255, 255, 255, 0.82);
+	--pbb-border: rgba(17, 20, 24, 0.08);
+	--pbb-accent: #111418;
+	--pbb-radius: 18px;
+	/* Dark studio: white and yellow plates stand out with crisp edges. */
+	--pbb-stage-bg: radial-gradient(120% 90% at 50% 30%, #4a4f57 0%, #2a2d32 50%, #16181b 100%);
+	--pbb-page-bg: #fff; /* the page colour around the pinned preview on phones */
+
+	position: relative;
+	width: 100%;
+	color: var(--pbb-ink);
+	font-family: inherit;
+}
+
+.pbb-builder *,
+.pbb-builder *::before,
+.pbb-builder *::after {
+	box-sizing: border-box;
+}
+
+.pbb-stage {
+	position: relative;
+	aspect-ratio: 16 / 9;
+	min-height: 300px;
+	max-height: 70vh;
+	width: 100%;
+	overflow: hidden;
+	border-radius: var(--pbb-radius);
+	background: var(--pbb-stage-bg);
+	box-shadow: inset 0 0 0 1px var(--pbb-border);
+	isolation: isolate;
+}
+
+.pbb-viewport {
+	position: absolute;
+	inset: 0;
+	cursor: grab;
+	touch-action: none; /* let OrbitControls own touch gestures */
+}
+
+.pbb-viewport.is-dragging {
+	cursor: grabbing;
+}
+
+.pbb-canvas {
+	display: block;
+	width: 100% !important;
+	height: 100% !important;
+	opacity: 0;
+	transform: scale(0.985);
+	transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.pbb-builder.is-ready .pbb-canvas {
+	opacity: 1;
+	transform: none;
+}
+
+/* Loader */
+.pbb-loader {
+	position: absolute;
+	inset: 0;
+	display: grid;
+	place-items: center;
+	pointer-events: none;
+	transition: opacity 0.3s ease;
+}
+
+.pbb-loader span {
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	border: 2px solid rgba(255, 255, 255, 0.2);
+	border-top-color: #fff;
+	animation: pbb-spin 0.8s linear infinite;
+}
+
+.pbb-builder.is-ready .pbb-loader {
+	opacity: 0;
+}
+
+@keyframes pbb-spin {
+	to { transform: rotate(360deg); }
+}
+
+/* Hint */
+.pbb-hint {
+	position: absolute;
+	top: 14px;
+	left: 50%;
+	margin: 0;
+	padding: 6px 12px;
+	transform: translateX(-50%);
+	border-radius: 999px;
+	background: var(--pbb-surface);
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+	box-shadow: 0 0 0 1px var(--pbb-border);
+	color: var(--pbb-muted);
+	font-size: 12px;
+	line-height: 1.2;
+	letter-spacing: 0.01em;
+	white-space: nowrap;
+	pointer-events: none;
+	transition: opacity 0.4s ease;
+}
+
+.pbb-builder.has-interacted .pbb-hint {
+	opacity: 0;
+}
+
+/* Desktop: shown again briefly when a scroll over the preview went to the page instead. */
+.pbb-builder.is-nudging .pbb-hint {
+	opacity: 1;
+	color: var(--pbb-ink);
+}
+
+/* Toolbar */
+.pbb-toolbar {
+	position: absolute;
+	left: 50%;
+	bottom: 14px;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 5px;
+	transform: translateX(-50%);
+	border-radius: 999px;
+	background: var(--pbb-surface);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	box-shadow: 0 0 0 1px var(--pbb-border), 0 8px 24px rgba(17, 20, 24, 0.08);
+}
+
+.pbb-segmented {
+	display: flex;
+	gap: 2px;
+}
+
+.pbb-builder button {
+	appearance: none;
+	margin: 0;
+	border: 0;
+	font: inherit;
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.pbb-segmented button {
+	min-width: 68px;
+	height: 34px;
+	padding: 0 14px;
+	border-radius: 999px;
+	background: transparent;
+	color: var(--pbb-muted);
+	font-size: 13px;
+	font-weight: 600;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.pbb-segmented button:hover {
+	color: var(--pbb-ink);
+}
+
+.pbb-segmented button[aria-pressed="true"] {
+	background: var(--pbb-accent);
+	color: #fff;
+}
+
+.pbb-icon-btn {
+	display: grid;
+	place-items: center;
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	background: transparent;
+	color: var(--pbb-ink);
+	transition: background-color 0.2s ease, transform 0.4s ease;
+}
+
+/* Themes (e.g. Woodmart) pad buttons, which squeezed the icon to 0 px wide. */
+.pbb-builder .pbb-icon-btn {
+	padding: 0;
+	min-width: 34px;
+	border-radius: 50%;
+	background: transparent;
+}
+
+.pbb-builder .pbb-icon-btn svg {
+	flex: none;
+	width: 18px;
+	height: 18px;
+}
+
+.pbb-icon-btn:hover {
+	background: rgba(17, 20, 24, 0.06);
+}
+
+.pbb-icon-btn:active svg {
+	transform: rotate(-120deg);
+	transition: transform 0.3s ease;
+}
+
+.pbb-builder button:focus-visible {
+	outline: 2px solid var(--pbb-accent);
+	outline-offset: 2px;
+}
+
+.pbb-sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+/* WebGL fallback */
+.pbb-fallback {
+	display: none;
+	position: absolute;
+	inset: 0;
+	margin: 0;
+	padding: 24px;
+	place-items: center;
+	text-align: center;
+	color: var(--pbb-muted);
+	font-size: 14px;
+}
+
+.pbb-builder--no-webgl .pbb-fallback {
+	display: grid;
+}
+
+.pbb-builder--no-webgl .pbb-loader,
+.pbb-builder--no-webgl .pbb-toolbar,
+.pbb-builder--no-webgl .pbb-hint {
+	display: none;
+}
+
+/* Registration panel */
+.pbb-panel {
+	display: grid;
+	gap: 8px;
+	max-width: 560px;
+	margin: 20px auto 0;
+	text-align: center;
+}
+
+.pbb-label {
+	color: var(--pbb-muted);
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+/* The input mirrors the plate: white for front, yellow for rear. */
+.pbb-builder .pbb-reg-input {
+	width: 100%;
+	height: 72px;
+	margin: 0;
+	padding: 0 20px;
+	border: 2px solid var(--pbb-ink);
+	border-radius: 10px;
+	background: #f4f4f0;
+	box-shadow: inset 0 -3px 0 rgba(17, 20, 24, 0.06), 0 6px 18px rgba(17, 20, 24, 0.06);
+	color: #111;
+	font: 800 40px/1 "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+	letter-spacing: 0.08em;
+	text-align: center;
+	text-transform: uppercase;
+	transition: background-color 0.3s ease, box-shadow 0.2s ease;
+}
+
+.pbb-builder[data-side="rear"] .pbb-reg-input {
+	background: #ffd200;
+}
+
+.pbb-builder .pbb-reg-input::placeholder {
+	color: rgba(17, 20, 24, 0.22);
+}
+
+.pbb-builder .pbb-reg-input:focus {
+	outline: none;
+	box-shadow: 0 0 0 4px rgba(17, 20, 24, 0.12), 0 6px 18px rgba(17, 20, 24, 0.06);
+}
+
+.pbb-status {
+	min-height: 1.4em;
+	margin: 0;
+	color: var(--pbb-muted);
+	font-size: 13px;
+	line-height: 1.4;
+}
+
+.pbb-status[data-state="ok"]::before {
+	content: "✓ ";
+	color: #1a7f37;
+	font-weight: 700;
+}
+
+.pbb-status[data-state="error"] {
+	color: #b42318;
+}
+
+/* Option sections (style, effect colour) */
+.pbb-section {
+	display: grid;
+	gap: 10px;
+	max-width: 720px;
+	margin: 28px auto 0;
+}
+
+.pbb-section[hidden] {
+	display: none;
+}
+
+.pbb-section-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.pbb-legal {
+	padding: 3px 10px;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 700;
+	cursor: help;
+}
+
+.pbb-legal[data-state="ok"] {
+	background: #e7f6ec;
+	color: #1a7f37;
+}
+
+.pbb-legal[data-state="show"] {
+	background: #fff4e5;
+	color: #a15c00;
+}
+
+/* Plate size: which plate (front / rear) and whether both are the same size. */
+.pbb-size-sides {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px 14px;
+}
+
+.pbb-size-sides[hidden] {
+	display: none;
+}
+
+.pbb-size-tabs {
+	display: inline-flex;
+	gap: 2px;
+	padding: 3px;
+	border-radius: 999px;
+	background: #eceef0;
+}
+
+.pbb-builder .pbb-size-tabs button {
+	min-height: 0;
+	margin: 0;
+	padding: 7px 14px;
+	border: 0;
+	border-radius: 999px;
+	background: transparent;
+	color: var(--pbb-muted);
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 1.2;
+	text-transform: none;
+	letter-spacing: 0;
+	box-shadow: none;
+}
+
+.pbb-builder .pbb-size-tabs button[aria-pressed="true"] {
+	background: #fff;
+	color: var(--pbb-ink);
+	box-shadow: 0 1px 3px rgba(17, 20, 24, 0.15);
+}
+
+/* Rear plates are yellow: the tab says so. */
+.pbb-builder .pbb-size-tabs button[data-size-side="rear"][aria-pressed="true"] {
+	background: #f5c400;
+}
+
+.pbb-size-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	color: var(--pbb-ink);
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.pbb-size-link input {
+	width: 16px;
+	height: 16px;
+	margin: 0;
+	accent-color: var(--pbb-ink);
+}
+
+/* Front plate on screen: rear-only sizes are listed under Rear plate only. */
+.pbb-builder .pbb-option.is-rear-only {
+	display: none;
+}
+
+.pbb-size-summary {
+	font-weight: 600;
+	color: var(--pbb-ink);
+}
+
+.pbb-styles {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 8px;
+}
+
+.pbb-builder .pbb-style {
+	display: grid;
+	justify-items: center;
+	gap: 6px;
+	padding: 12px 8px 10px;
+	border-radius: 12px;
+	background: #fff;
+	box-shadow: inset 0 0 0 1px var(--pbb-border);
+	color: var(--pbb-ink);
+	transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.pbb-builder .pbb-style:hover {
+	box-shadow: inset 0 0 0 1px rgba(17, 20, 24, 0.25);
+}
+
+.pbb-builder .pbb-style:active {
+	transform: scale(0.98);
+}
+
+.pbb-builder .pbb-style[aria-checked="true"] {
+	box-shadow: inset 0 0 0 2px var(--pbb-ink), 0 6px 16px rgba(17, 20, 24, 0.08);
+}
+
+.pbb-style-icon {
+	width: 48px;
+	height: 24px;
+	overflow: visible;
+}
+
+.pbb-style-name {
+	font-size: 13px;
+	font-weight: 700;
+}
+
+.pbb-style-desc {
+	min-height: 1.4em;
+	margin: 0;
+	color: var(--pbb-muted);
+	font-size: 13px;
+	text-align: center;
+}
+
+.pbb-swatches {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.pbb-builder .pbb-swatch {
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	background: var(--swatch);
+	box-shadow: inset 0 0 0 1px rgba(17, 20, 24, 0.15);
+	transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.pbb-builder .pbb-swatch.is-metal {
+	background: radial-gradient(circle at 30% 25%, #fff 0%, var(--swatch) 45%, color-mix(in srgb, var(--swatch) 60%, #000) 100%);
+}
+
+.pbb-builder .pbb-swatch:hover {
+	transform: scale(1.06);
+}
+
+.pbb-builder .pbb-swatch[aria-checked="true"] {
+	box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--pbb-ink);
+}
+
+/* Plate size options */
+.pbb-options {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+	gap: 8px;
+}
+
+.pbb-builder .pbb-option {
+	display: grid;
+	justify-items: center;
+	gap: 2px;
+	padding: 10px 6px 9px;
+	border-radius: 12px;
+	background: #fff;
+	box-shadow: inset 0 0 0 1px var(--pbb-border);
+	color: var(--pbb-ink);
+	transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.pbb-builder .pbb-option:hover {
+	box-shadow: inset 0 0 0 1px rgba(17, 20, 24, 0.25);
+}
+
+.pbb-builder .pbb-option[aria-checked="true"] {
+	box-shadow: inset 0 0 0 2px var(--pbb-ink), 0 6px 16px rgba(17, 20, 24, 0.08);
+}
+
+.pbb-size-icon {
+	width: 48px;
+	height: 30px;
+	margin-bottom: 4px;
+}
+
+.pbb-option-name {
+	font-size: 13px;
+	font-weight: 700;
+}
+
+.pbb-option-note {
+	color: var(--pbb-muted);
+	font-size: 11px;
+}
+
+/* Badges */
+.pbb-builder .pbb-style[hidden] {
+	display: none;
+}
+
+.pbb-builder .pbb-option:disabled {
+	opacity: 0.35;
+	cursor: not-allowed;
+}
+
+.pbb-badge-art,
+.pbb-badge-none {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 2px;
+	width: 26px;
+	height: 34px;
+	margin-bottom: 4px;
+	border-radius: 3px;
+	background: #ffd200;
+	box-shadow: inset 0 0 0 1px rgba(17, 20, 24, 0.12);
+}
+
+.pbb-badge-art.is-ev {
+	background: #00a650;
+}
+
+.pbb-badge-flag {
+	display: block;
+	width: 20px;
+	height: 12px;
+}
+
+.pbb-badge-uk {
+	color: #1550a8;
+	font: 800 10px/1 "Arial Narrow", Arial, sans-serif;
+}
+
+.is-ev .pbb-badge-uk {
+	color: #fff;
+}
+
+/* Gel badge icons: the 42 x 98 mm sticker on the yellow plate. */
+.pbb-gel-sticker {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	overflow: hidden;
+	width: 11px;
+	height: 26px;
+	border-radius: 2px;
+	box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), 0 1px 1px rgba(17, 20, 24, 0.25);
+}
+
+.pbb-gel .pbb-badge-uk {
+	display: flex;
+	flex: 1;
+	align-items: center;
+	font: 900 5px/1 "Arial Black", Arial, sans-serif;
+}
+
+.is-gel-uk-white .pbb-gel-sticker,
+.is-gel-uk-blue .pbb-gel-sticker {
+	background: #fff;
+}
+
+.is-gel-uk-white .pbb-badge-flag,
+.is-gel-uk-blue .pbb-badge-flag {
+	flex: none;
+	width: 11px;
+	height: 17px;
+}
+
+.is-gel-uk-white .pbb-badge-flag {
+	border-bottom: 1px solid #111;
+}
+
+.is-gel-uk-white .pbb-badge-uk {
+	color: #111;
+}
+
+.is-gel-uk-blue .pbb-gel-sticker {
+	background: #012169;
+}
+
+/* 4D badge icon: the blue design lifted off the plate on a thick tile. */
+.is-4d .pbb-gel-sticker {
+	box-shadow: 1px 2px 0 #0b1a4d, 2px 3px 3px rgba(17, 20, 24, 0.35);
+	transform: translate(-1px, -1px);
+}
+
+.is-gel-uk-blue .pbb-badge-uk,
+.is-gel-ev-uk .pbb-badge-uk {
+	color: #fff;
+}
+
+.is-gel-ev .pbb-gel-sticker,
+.is-gel-ev-uk .pbb-gel-sticker {
+	background: #00a650;
+}
+
+.is-gel-ev-uk .pbb-badge-flag {
+	flex: none;
+	width: 8px;
+	height: 5px;
+	margin-top: 2px;
+}
+
+.pbb-badge-none {
+	background: linear-gradient(to top right, transparent calc(50% - 1px), #c4c7cc 50%, transparent calc(50% + 1px)), #f4f5f6;
+}
+
+.pbb-builder .pbb-swatch.is-none {
+	background: linear-gradient(to top right, transparent calc(50% - 1px), #c4c7cc 50%, transparent calc(50% + 1px)), #fff;
+}
+
+.pbb-segmented button:disabled {
+	opacity: 0.35;
+	cursor: not-allowed;
+}
+
+/* Basket */
+.pbb-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.pbb-builder .pbb-chip {
+	height: 36px;
+	padding: 0 16px;
+	border-radius: 999px;
+	background: #fff;
+	box-shadow: inset 0 0 0 1px var(--pbb-border);
+	color: var(--pbb-ink);
+	font-size: 13px;
+	font-weight: 700;
+}
+
+.pbb-builder .pbb-chip[aria-checked="true"] {
+	background: var(--pbb-ink);
+	color: #fff;
+}
+
+.pbb-builder .pbb-chip:disabled {
+	opacity: 0.35;
+	cursor: not-allowed;
+}
+
+.pbb-extras {
+	display: grid;
+	gap: 6px;
+}
+
+.pbb-check {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 12px;
+	border-radius: 10px;
+	background: #fff;
+	box-shadow: inset 0 0 0 1px var(--pbb-border);
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.pbb-check input {
+	flex: none;
+	width: 18px;
+	height: 18px;
+	margin: 0;
+	accent-color: var(--pbb-ink);
+}
+
+/* In-store fitting: last in the add-ons list, with a line saying it means collecting. */
+.pbb-check.pbb-fitting {
+	box-shadow: inset 0 0 0 1px rgba(245, 196, 0, 0.9);
+	background: #fffbea;
+}
+
+.pbb-check.pbb-fitting small {
+	display: block;
+	margin-top: 2px;
+	color: var(--pbb-muted);
+	font-size: 12px;
+}
+
+.pbb-plates {
+	margin-bottom: 4px;
+}
+
+.pbb-extras-note {
+	margin: 0;
+	color: var(--pbb-muted);
+	font-size: 13px;
+	line-height: 1.4;
+}
+
+.pbb-check-price {
+	margin-left: auto;
+	color: var(--pbb-muted);
+}
+
+.pbb-summary {
+	display: grid;
+	gap: 4px;
+	padding-top: 8px;
+	border-top: 1px solid var(--pbb-border);
+	color: var(--pbb-muted);
+	font-size: 13px;
+}
+
+.pbb-line {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+/* Total + Add to basket: sticks to the bottom of the screen while the builder is in view. */
+.pbb-buybar {
+	position: sticky;
+	bottom: 0;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	max-width: 752px;
+	margin: 16px auto 0;
+	padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+	background: rgba(255, 255, 255, 0.92);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	box-shadow: 0 -1px 0 var(--pbb-border);
+}
+
+.pbb-total {
+	display: grid;
+}
+
+.pbb-total span {
+	color: var(--pbb-muted);
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.pbb-total strong {
+	font-size: 24px;
+	line-height: 1.1;
+}
+
+.pbb-builder .pbb-add {
+	height: 50px;
+	padding: 0 28px;
+	border-radius: 999px;
+	background: var(--pbb-ink);
+	color: #fff;
+	font-size: 15px;
+	font-weight: 700;
+	transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+.pbb-builder .pbb-add:active {
+	transform: scale(0.98);
+}
+
+.pbb-builder .pbb-add:disabled {
+	opacity: 0.35;
+	cursor: not-allowed;
+}
+
+.pbb-builder .pbb-add.is-busy {
+	opacity: 0.6;
+	cursor: progress;
+}
+
+.pbb-cart-msg {
+	min-height: 1.4em;
+	margin: 0;
+	font-size: 14px;
+	text-align: center;
+}
+
+.pbb-cart-msg[data-state="ok"] {
+	color: #1a7f37;
+}
+
+.pbb-cart-msg[data-state="error"] {
+	color: #b42318;
+}
+
+.pbb-cart-msg a {
+	color: inherit;
+	font-weight: 700;
+}
+
+@media (max-width: 600px) {
+	.pbb-stage {
+		aspect-ratio: 4 / 3;
+		--pbb-radius: 14px;
+	}
+
+	.pbb-builder .pbb-reg-input {
+		height: 60px;
+		font-size: 32px;
+	}
+
+	.pbb-styles {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+/* "On a car" toggle, car picker and paint swatches */
+.pbb-builder .pbb-view-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	height: 36px;
+	min-height: 0;
+	margin: 0;
+	padding: 0 12px;
+	border: 0;
+	border-radius: 999px;
+	background: transparent;
+	color: var(--pbb-muted);
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 1;
+	text-transform: none;
+	letter-spacing: 0;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.pbb-builder .pbb-view-btn[aria-pressed="true"] {
+	background: var(--pbb-ink);
+	color: #fff;
+}
+
+.pbb-builder .pbb-view-btn[hidden] {
+	display: none;
+}
+
+.pbb-carbar {
+	position: absolute;
+	top: 12px;
+	left: 12px;
+	right: 12px;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	pointer-events: none;
+}
+
+.pbb-carbar[hidden] {
+	display: none;
+}
+
+.pbb-carbar > * {
+	pointer-events: auto;
+}
+
+.pbb-builder .pbb-car-select {
+	width: auto;
+	height: 34px;
+	min-height: 0;
+	margin: 0;
+	padding: 0 30px 0 14px;
+	border: 0;
+	border-radius: 999px;
+	background: var(--pbb-surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23111418' stroke-width='2.5' d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center / 14px;
+	box-shadow: 0 0 0 1px var(--pbb-border);
+	color: var(--pbb-ink);
+	font-size: 13px;
+	font-weight: 700;
+	appearance: none;
+	-webkit-appearance: none;
+}
+
+.pbb-builder .pbb-car-select:disabled {
+	padding-right: 14px;
+	background-image: none;
+	opacity: 1;
+}
+
+.pbb-paints {
+	display: flex;
+	gap: 6px;
+	padding: 5px 8px;
+	border-radius: 999px;
+	background: var(--pbb-surface);
+	box-shadow: 0 0 0 1px var(--pbb-border);
+}
+
+.pbb-builder .pbb-paint {
+	width: 22px;
+	height: 22px;
+	min-height: 0;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: var(--paint);
+	box-shadow: inset 0 0 0 1px rgba(17, 20, 24, 0.25);
+}
+
+.pbb-builder .pbb-paint[aria-checked="true"] {
+	box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--pbb-ink);
+}
+
+/* The car bar takes the top of the stage, where the hint sits. */
+.pbb-builder.is-car-view .pbb-hint {
+	display: none;
+}
+
+.pbb-builder.is-car-loading .pbb-loader {
+	opacity: 1;
+}
+
+/* Phones: pinned preview, swipeable step cards, fixed buy bar (steps.js adds .is-steps). */
+.pbb-stepnav,
+.pbb-builder .pbb-next {
+	display: none;
+}
+
+@media (max-width: 760px) {
+	.pbb-builder.is-steps .pbb-stage {
+		position: sticky;
+		top: calc(var(--pbb-sticky-top, 0px) + 6px);
+		z-index: 3;
+		aspect-ratio: auto;
+		height: 42svh;
+		min-height: 240px;
+		max-height: 400px;
+		/* A page-coloured surround and shadow so options scrolling underneath don't show round its corners. */
+		box-shadow: 0 0 0 6px var(--pbb-page-bg), 0 10px 22px rgba(0, 0, 0, 0.28);
+	}
+
+
+	.is-steps .pbb-stepnav {
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 8px;
+		margin: 12px 0 10px;
+	}
+
+	/* A clear labelled pill, so going back a step is obvious. */
+	.pbb-builder .pbb-step-back {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		height: 40px;
+		min-height: 0;
+		margin: 0;
+		padding: 0 14px 0 10px;
+		border: 0;
+		border-radius: 999px;
+		background: #fff;
+		box-shadow: inset 0 0 0 2px var(--pbb-ink);
+		color: var(--pbb-ink);
+		font-size: 14px;
+		font-weight: 700;
+		line-height: 1;
+		text-transform: none;
+		letter-spacing: 0;
+	}
+
+	.pbb-builder .pbb-step-back:active {
+		background: #f1f2f3;
+	}
+
+	/* Nothing to go back to on the first card: keep its space so the title doesn't jump. */
+	.pbb-builder .pbb-step-back:disabled {
+		visibility: hidden;
+	}
+
+	.pbb-step-title {
+		display: grid;
+		line-height: 1.2;
+	}
+
+	.pbb-step-title span {
+		color: var(--pbb-muted);
+		font-size: 11px;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.pbb-step-title strong {
+		font-size: 17px;
+	}
+
+	.pbb-dots {
+		display: flex;
+		gap: 6px;
+	}
+
+	.pbb-builder .pbb-dots button {
+		flex: none;
+		width: 8px;
+		height: 8px;
+		min-width: 0;
+		min-height: 0;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		border-radius: 50%;
+		box-shadow: none;
+		font-size: 0;
+		line-height: 0;
+		background: rgba(17, 20, 24, 0.15);
+		transition: width 0.25s ease, background-color 0.25s ease;
+	}
+
+	.pbb-builder .pbb-dots button[aria-current="step"] {
+		width: 20px;
+		border-radius: 999px;
+		background: var(--pbb-ink);
+	}
+
+	.is-steps .pbb-track {
+		display: flex;
+		align-items: flex-start;
+		gap: 24px;
+		overflow-x: auto;
+		overflow-y: hidden;
+		overscroll-behavior-x: contain;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: none;
+		transition: height 0.3s ease;
+	}
+
+	.is-steps .pbb-track::-webkit-scrollbar {
+		display: none;
+	}
+
+	.is-steps .pbb-step {
+		flex: 0 0 100%;
+		min-width: 0;
+		padding: 2px 2px 8px;
+		scroll-snap-align: start;
+		scroll-snap-stop: always;
+	}
+
+	.is-steps .pbb-step > .pbb-panel,
+	.is-steps .pbb-step > .pbb-section {
+		max-width: none;
+		margin: 0;
+	}
+
+	.is-steps .pbb-step > .pbb-section + .pbb-section {
+		margin-top: 16px;
+	}
+
+	/* The step title names the card, so the section's own heading goes. */
+	.is-steps .pbb-panel .pbb-field,
+	.is-steps .pbb-step > .pbb-section > .pbb-label:first-child,
+	.is-steps .pbb-section-head .pbb-label {
+		display: none;
+	}
+
+	.is-steps .pbb-section-head {
+		justify-content: center;
+	}
+
+	.is-steps .pbb-options {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 6px;
+	}
+
+	.pbb-builder.is-steps .pbb-option {
+		padding: 8px 4px 7px;
+	}
+
+	/* First card: the reg box with the character styles under it. */
+	.is-steps .pbb-step-start > .pbb-section {
+		margin-top: 10px;
+	}
+
+	.is-steps .pbb-step-start .pbb-status {
+		margin-top: 4px;
+		font-size: 12px;
+		line-height: 1.3;
+	}
+
+	/* Character styles: four to a row in compact tiles, so all seven fit on the card without scrolling. */
+	.is-steps .pbb-styles {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 6px;
+	}
+
+	.pbb-builder.is-steps .pbb-style {
+		gap: 4px;
+		padding: 8px 2px 7px;
+		border-radius: 10px;
+	}
+
+	.is-steps .pbb-style-icon {
+		width: 34px;
+		height: 17px;
+	}
+
+	.is-steps .pbb-style-name {
+		font-size: 11px;
+		line-height: 1.15;
+		text-align: center;
+	}
+
+	.is-steps .pbb-style-desc {
+		font-size: 12px;
+	}
+
+	.is-steps .pbb-size-sides {
+		flex-wrap: nowrap;
+	}
+
+	.is-steps .pbb-size-link {
+		font-size: 12px;
+	}
+
+	/* Sizes four to a row, like the styles: the front list is two rows. */
+	.is-steps [data-pbb-sizes] {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 5px;
+	}
+
+	.is-steps [data-pbb-sizes] .pbb-option-name {
+		font-size: 11px;
+	}
+
+	.is-steps [data-pbb-sizes] .pbb-option-note {
+		font-size: 9px;
+		line-height: 1.2;
+	}
+
+	.is-steps [data-pbb-sizes] .pbb-size-icon {
+		width: 32px;
+		height: 20px;
+	}
+
+	.is-steps .pbb-size-summary {
+		font-size: 12px;
+	}
+
+	.is-steps .pbb-note-extra {
+		display: none;
+	}
+
+	.pbb-builder.is-steps .pbb-size-tabs button {
+		padding: 5px 10px;
+		font-size: 12px;
+		white-space: nowrap;
+	}
+
+	.is-steps .pbb-size-sides {
+		gap: 6px;
+	}
+
+	.is-steps .pbb-size-link {
+		white-space: nowrap;
+	}
+
+	/* Plates (pair / front only / rear only): compact pills on the size card. */
+	.is-steps .pbb-plates {
+		gap: 5px;
+		margin-bottom: 0;
+	}
+
+	.pbb-builder.is-steps .pbb-plates .pbb-chip {
+		flex: 1;
+		height: auto;
+		min-height: 0;
+		padding: 6px 4px;
+		font-size: 12px;
+	}
+
+	.is-steps [data-pbb-sizes] {
+		margin-top: -2px;
+	}
+
+	.is-steps .pbb-section:has(> [data-pbb-sizes]) {
+		gap: 7px;
+	}
+
+	.pbb-builder.is-steps [data-pbb-sizes] .pbb-option:not(.is-vehicle) {
+		padding: 6px 3px 5px;
+	}
+
+	.is-steps [data-pbb-sizes] .pbb-size-icon {
+		height: 18px;
+	}
+
+	/* Motorbike and trailer plates: compact chips on their own row after the car sizes. */
+	.pbb-builder.is-steps [data-pbb-sizes] .is-vehicle {
+		order: 10;
+		min-height: 0;
+		padding: 7px 3px;
+	}
+
+	.pbb-builder.is-steps [data-pbb-sizes] .is-vehicle:not(.is-rear-only) ~ .is-vehicle,
+	.pbb-builder.is-steps [data-pbb-sizes] .is-vehicle {
+		grid-row: auto;
+	}
+
+	.pbb-builder.is-steps [data-pbb-sizes] [data-size="motorbike"] {
+		grid-column-start: 1;
+	}
+
+	.is-steps [data-pbb-sizes] .is-vehicle .pbb-size-icon,
+	.is-steps [data-pbb-sizes] .is-vehicle .pbb-option-note {
+		display: none;
+	}
+
+	.is-steps .pbb-option-name {
+		font-size: 12px;
+		line-height: 1.2;
+		text-align: center;
+	}
+
+	.is-steps .pbb-option-note {
+		font-size: 10px;
+	}
+
+	.is-steps .pbb-size-icon {
+		width: 40px;
+		height: 25px;
+	}
+
+	.pbb-builder.is-steps .pbb-buybar {
+		bottom: var(--pbb-sticky-bottom, 0px);
+		max-width: none;
+		margin: 0;
+		padding: 10px 2px calc(10px + env(safe-area-inset-bottom));
+	}
+
+	.is-steps .pbb-total strong {
+		font-size: 20px;
+	}
+
+	.pbb-builder.is-steps .pbb-next {
+		display: block;
+		height: 50px;
+		padding: 0 22px;
+		border-radius: 999px;
+		background: var(--pbb-ink);
+		color: #fff;
+		font-size: 15px;
+		font-weight: 700;
+		white-space: nowrap;
+	}
+
+	.pbb-builder.is-steps .pbb-add {
+		display: none;
+	}
+
+	.pbb-builder.is-steps.is-last-step .pbb-add {
+		display: block;
+	}
+
+	.pbb-builder.is-steps.is-last-step .pbb-next {
+		display: none;
+	}
+}
+
+/* Phones: full-screen, app-style builder (steps.js adds .is-app and moves it to <body>). */
+.pbb-appbar {
+	display: none;
+}
+
+html.pbb-app-open,
+html.pbb-app-open body {
+	overflow: hidden !important;
+	overscroll-behavior: none;
+}
+
+@media (max-width: 760px) {
+	.pbb-builder.is-app {
+		position: fixed;
+		top: var(--pbb-app-top, 0px);
+		left: 0;
+		right: 0;
+		/* Above the theme's sticky header, below cookie-consent banners (CookieYes uses 9999999). */
+		z-index: 99999;
+		display: flex;
+		flex-direction: column;
+		height: var(--pbb-app-h, 100dvh);
+		margin: 0;
+		background: #f4f5f6;
+		-webkit-tap-highlight-color: transparent;
+		-webkit-user-select: none;
+		user-select: none;
+	}
+
+	.pbb-builder.is-app input {
+		-webkit-user-select: text;
+		user-select: text;
+	}
+
+	.is-app .pbb-appbar {
+		display: grid;
+		grid-template-columns: 44px 1fr 44px;
+		align-items: center;
+		flex: none;
+		height: calc(52px + env(safe-area-inset-top));
+		padding: env(safe-area-inset-top) 6px 0;
+		background: #111418;
+		color: #fff;
+	}
+
+	.pbb-builder .pbb-app-btn {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		border-radius: 50%;
+		color: #fff;
+		text-decoration: none;
+	}
+
+	.pbb-builder .pbb-app-btn:active {
+		background: rgba(255, 255, 255, 0.12);
+	}
+
+	.pbb-app-logo {
+		justify-self: center;
+		height: 26px;
+		width: auto;
+		filter: brightness(0) invert(1);
+	}
+
+	.pbb-app-count {
+		position: absolute;
+		top: 4px;
+		right: 2px;
+		min-width: 18px;
+		height: 18px;
+		padding: 0 5px;
+		border-radius: 999px;
+		background: #f5c400;
+		color: #111418;
+		font-size: 11px;
+		font-weight: 800;
+		line-height: 18px;
+		text-align: center;
+	}
+
+	.pbb-app-count:empty {
+		display: none;
+	}
+
+	/* Preview: edge to edge under the app bar, shrinking when the keyboard is up. */
+	.pbb-builder.is-app .pbb-stage {
+		position: relative;
+		top: 0;
+		flex: none;
+		z-index: 1;
+		height: clamp(180px, calc(var(--pbb-app-h, 100dvh) * 0.4), 400px);
+		min-height: 0;
+		max-height: none;
+		border-radius: 0;
+		box-shadow: none;
+	}
+
+	.is-app .pbb-steps {
+		display: flex;
+		flex: 1 1 auto;
+		flex-direction: column;
+		min-height: 0;
+		margin-top: -16px;
+		padding: 0 16px;
+		border-radius: 20px 20px 0 0;
+		background: #f4f5f6;
+		position: relative;
+		z-index: 2;
+	}
+
+	.is-app .pbb-stepnav {
+		grid-template-columns: auto 1fr;
+		margin: 0;
+		padding: 10px 0 12px;
+	}
+
+	/* The dots become a progress bar across the top of the sheet. */
+	.is-app .pbb-dots {
+		grid-column: 1 / -1;
+		order: -1;
+		gap: 4px;
+		margin-bottom: 4px;
+	}
+
+	.pbb-builder.is-app .pbb-dots button {
+		flex: 1;
+		width: auto;
+		height: 4px;
+		border-radius: 999px;
+	}
+
+	.pbb-builder.is-app .pbb-dots button[aria-current="step"],
+	.pbb-builder.is-app .pbb-dots button.is-done {
+		width: auto;
+		background: var(--pbb-ink);
+	}
+
+	.pbb-builder.is-app .pbb-step-back {
+		width: 40px;
+		padding: 0;
+		justify-content: center;
+		box-shadow: none;
+		background: #fff;
+	}
+
+	.pbb-builder.is-app .pbb-step-back span {
+		display: none;
+	}
+
+	/* Keep the back button's slot on step 1 so the title stays put. */
+	.pbb-builder.is-app .pbb-step-back:disabled {
+		visibility: hidden;
+	}
+
+	.is-app .pbb-step-title strong {
+		font-size: 20px;
+	}
+
+	.is-app .pbb-track {
+		flex: 1 1 auto;
+		min-height: 0;
+		align-items: stretch;
+	}
+
+	.is-app .pbb-step {
+		overflow-y: auto;
+		overscroll-behavior-y: contain;
+		-webkit-overflow-scrolling: touch;
+		padding-bottom: 12px;
+		scrollbar-width: none;
+	}
+
+	.is-app .pbb-step::-webkit-scrollbar {
+		display: none;
+	}
+
+	.is-app .pbb-check {
+		min-height: 52px;
+		border-radius: 14px;
+	}
+
+	.pbb-builder.is-app .pbb-buybar {
+		position: relative;
+		bottom: 0;
+		flex: none;
+		padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+		background: #fff;
+		box-shadow: 0 -1px 0 var(--pbb-border), 0 -8px 24px rgba(0, 0, 0, 0.06);
+	}
+
+	.pbb-builder.is-app .pbb-next,
+	.pbb-builder.is-app .pbb-add {
+		flex: 1;
+		max-width: 240px;
+		height: 52px;
+		background: #f5c400;
+		color: #111418;
+	}
+
+	/* "Added to basket" floats above the buy bar like a toast. */
+	.pbb-builder.is-app .pbb-cart-msg {
+		position: absolute;
+		left: 16px;
+		right: 16px;
+		bottom: calc(84px + env(safe-area-inset-bottom));
+		z-index: 4;
+		padding: 12px 16px;
+		border-radius: 14px;
+		background: #111418;
+		color: #fff;
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+		transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+	}
+
+	.pbb-builder.is-app .pbb-cart-msg:empty {
+		display: none;
+		visibility: hidden;
+		opacity: 0;
+		transform: translateY(8px);
+		pointer-events: none;
+	}
+
+	.pbb-builder.is-app .pbb-cart-msg[data-state="ok"] {
+		color: #fff;
+	}
+
+	.pbb-builder.is-app .pbb-cart-msg[data-state="error"] {
+		background: #b42318;
+		color: #fff;
+	}
+
+	.pbb-builder.is-app .pbb-cart-msg a {
+		color: #f5c400;
+	}
+
+	/* Buttons press in slightly, like native controls. */
+	.is-app button:active:not(:disabled),
+	.is-app .pbb-check:active {
+		transform: scale(0.97);
+	}
+}
+
+/* Added to basket: pop-up that heads to checkout. */
+.pbb-added {
+	position: fixed;
+	inset: 0;
+	z-index: 100000;
+	display: grid;
+	place-items: center;
+	padding: 20px;
+	background: rgba(17, 20, 24, 0.55);
+	animation: pbb-fade 0.2s ease;
+}
+
+.pbb-added-card {
+	display: grid;
+	justify-items: center;
+	gap: 10px;
+	width: min(100%, 380px);
+	padding: 26px 22px 18px;
+	border-radius: 20px;
+	background: #fff;
+	box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+	text-align: center;
+	animation: pbb-pop 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+.pbb-added-tick {
+	display: grid;
+	place-items: center;
+	width: 52px;
+	height: 52px;
+	border-radius: 50%;
+	background: #1a7f37;
+	color: #fff;
+}
+
+.pbb-builder .pbb-added h3 {
+	margin: 4px 0 0;
+	color: var(--pbb-ink);
+	font-size: 22px;
+	line-height: 1.2;
+	text-transform: none;
+	letter-spacing: 0;
+}
+
+.pbb-added-reg {
+	margin: 0;
+	color: var(--pbb-muted);
+	font-size: 15px;
+	font-weight: 600;
+}
+
+.pbb-builder .pbb-added-go {
+	position: relative;
+	display: block;
+	overflow: hidden;
+	width: 100%;
+	margin-top: 8px;
+	padding: 16px;
+	border-radius: 999px;
+	background: #f5c400;
+	color: #111418;
+	font-size: 17px;
+	font-weight: 800;
+	text-decoration: none;
+}
+
+/* Fills while the countdown runs. */
+.pbb-added-bar {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	height: 4px;
+	width: 100%;
+	background: rgba(17, 20, 24, 0.35);
+	transform-origin: left;
+	animation: pbb-countdown linear forwards;
+}
+
+.pbb-added-auto {
+	margin: 0;
+	color: var(--pbb-muted);
+	font-size: 13px;
+}
+
+.pbb-added-more {
+	display: flex;
+	gap: 18px;
+	margin-top: 4px;
+	font-size: 14px;
+}
+
+.pbb-builder .pbb-added-more button,
+.pbb-builder .pbb-added-more a {
+	min-height: 0;
+	margin: 0;
+	padding: 6px 2px;
+	border: 0;
+	background: none;
+	color: var(--pbb-ink);
+	font-size: 14px;
+	font-weight: 600;
+	text-decoration: underline;
+	text-transform: none;
+	letter-spacing: 0;
+	box-shadow: none;
+	cursor: pointer;
+}
+
+@keyframes pbb-fade {
+	from { opacity: 0; }
+}
+
+@keyframes pbb-pop {
+	from { opacity: 0; transform: scale(0.92) translateY(10px); }
+}
+
+@keyframes pbb-countdown {
+	from { transform: scaleX(0); }
+	to { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pbb-added,
+	.pbb-added-card {
+		animation: none;
+	}
+}
+
+/* Featured pages (home, Hounslow): the builder in its own section after the opening banner. */
+.pbb-feature {
+	max-width: 1100px;
+	margin: 40px auto;
+	padding: 0 16px;
+}
+
+.pbb-feature-head {
+	margin: 0 auto 18px;
+	text-align: center;
+}
+
+.pbb-feature-head h2 {
+	margin: 0 0 6px;
+}
+
+.pbb-feature-head p {
+	margin: 0;
+	color: #6b7178;
+	font-size: 16px;
+}
+
+/* "New" pill and the three selling points above the builder on landing pages. */
+.pbb-new {
+	display: inline-block;
+	margin-bottom: 8px;
+	padding: 4px 10px;
+	border-radius: 999px;
+	background: #f7d333;
+	color: #0d0e10;
+	font-size: 12px;
+	font-weight: 800;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+}
+
+.pbb-feature-points {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 8px;
+	margin: 14px 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.pbb-feature-points li {
+	margin: 0;
+	padding: 7px 12px 7px 30px;
+	border-radius: 999px;
+	background: #0d0e10;
+	color: #fff;
+	font-size: 14px;
+	font-weight: 600;
+	position: relative;
+}
+
+.pbb-feature-points li::before {
+	content: "";
+	position: absolute;
+	left: 12px;
+	top: 50%;
+	width: 10px;
+	height: 6px;
+	margin-top: -5px;
+	border: solid #f7d333;
+	border-width: 0 0 2.5px 2.5px;
+	transform: rotate(-45deg);
+}
+
+@media (max-width: 760px) {
+	.pbb-feature {
+		margin: 24px auto;
+	}
+
+	.pbb-feature-points li {
+		font-size: 13px;
+	}
+}
+
+/* Shop product pages: the builder replaces the Product Add-Ons form and the theme's sticky add-to-cart bar,
+   unless the customer switches to the classic form (body.pbb-classic, product-mode.js). */
+.pbb-product-page:not(.pbb-classic) form.cart,
+.pbb-product-page:not(.pbb-classic) .wd-sticky-btn,
+.pbb-product-page.pbb-classic .pbb-builder {
+	display: none !important;
+}
+
+.pbb-modes {
+	display: flex;
+	gap: 4px;
+	margin: 0 0 14px;
+	padding: 4px;
+	border-radius: 999px;
+	background: #f1f2f3;
+}
+
+.pbb-modes button {
+	display: inline-flex;
+	flex: 1;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	min-height: 0;
+	margin: 0;
+	padding: 10px 12px;
+	border: 0;
+	border-radius: 999px;
+	background: transparent;
+	color: #6b7178;
+	font-size: 14px;
+	font-weight: 700;
+	line-height: 1.2;
+	text-transform: none;
+	letter-spacing: 0;
+	box-shadow: none;
+	cursor: pointer;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.pbb-modes button[aria-pressed="true"] {
+	background: #111418;
+	color: #fff;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.pbb-product-page .pbb-builder {
+	margin-bottom: 16px;
+}
+
+/* Product pages on phones: a single launch button until the customer opens the builder. */
+.pbb-launcher {
+	display: none;
+}
+
+@media (max-width: 760px) {
+	.pbb-builder.is-launch:not(.is-app) > :not(.pbb-launcher) {
+		display: none !important;
+	}
+
+	.pbb-builder.is-launch:not(.is-app) > .pbb-launcher {
+		display: block;
+	}
+
+	.pbb-builder .pbb-launch {
+		display: flex;
+		align-items: center;
+		gap: 14px;
+		width: 100%;
+		min-height: 0;
+		margin: 0;
+		padding: 16px 18px;
+		border: 0;
+		border-radius: 16px;
+		background: #111418;
+		color: #fff;
+		text-align: left;
+		text-transform: none;
+		letter-spacing: 0;
+		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+	}
+
+	.pbb-builder .pbb-launch svg {
+		flex: none;
+		color: #f5c400;
+	}
+
+	.pbb-launch span {
+		display: grid;
+		gap: 3px;
+	}
+
+	.pbb-launch strong {
+		font-size: 17px;
+		line-height: 1.2;
+	}
+
+	.pbb-launch small {
+		color: rgba(255, 255, 255, 0.72);
+		font-size: 13px;
+		font-weight: 400;
+		line-height: 1.3;
+	}
+
+	.pbb-builder .pbb-launch:active {
+		transform: scale(0.98);
+	}
+}
+
+/* Featured pages on phones: the 3D plate and the reg box stay in the page as a teaser; the rest opens full screen.
+   The plate ignores touches here so the page still scrolls; tapping it opens the builder (steps.js). */
+@media (max-width: 760px) {
+	.pbb-builder.is-teaser:not(.is-app) {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.pbb-builder.is-teaser:not(.is-app) > .pbb-stage,
+	.pbb-builder.is-teaser:not(.is-app) > .pbb-steps {
+		display: block !important;
+	}
+
+	.pbb-builder.is-teaser:not(.is-app) > .pbb-launcher {
+		order: 3;
+	}
+
+	.pbb-builder.is-teaser:not(.is-app) > .pbb-stage {
+		position: relative;
+		top: auto;
+		height: 200px;
+		min-height: 0;
+		border-radius: 16px;
+		box-shadow: none;
+		cursor: pointer;
+	}
+
+	.is-teaser:not(.is-app) .pbb-viewport {
+		pointer-events: none;
+	}
+
+	.is-teaser:not(.is-app) .pbb-toolbar,
+	.is-teaser:not(.is-app) .pbb-carbar,
+	.is-teaser:not(.is-app) .pbb-hint,
+	.is-teaser:not(.is-app) .pbb-stepnav,
+	.is-teaser:not(.is-app) .pbb-step:not(:first-child) {
+		display: none !important;
+	}
+
+	.is-teaser:not(.is-app) .pbb-track {
+		height: auto !important;
+		overflow: visible;
+	}
+
+	.pbb-builder.is-teaser:not(.is-app) > .pbb-launcher {
+		margin-top: 2px;
+	}
+}
+
+/* Tablets (761–1024 px): the theme's bottom toolbar stays on pages with a launch button, so lift the buy bar above it. */
+@media (min-width: 761px) and (max-width: 1024px) {
+	body.sticky-toolbar-on .pbb-builder.is-launch:not(.is-app) .pbb-buybar {
+		bottom: 55px;
+	}
+}
+
+/* The theme's bottom toolbar (Shop / Cart / Get in touch) takes room the builder needs on phones; hide it on builder pages
+   (not product pages, where the builder opens full screen over it). */
+@media (max-width: 1024px) {
+	body:has(.pbb-builder:not(.is-launch)) .wd-toolbar {
+		display: none !important;
+	}
+
+	body.sticky-toolbar-on:has(.pbb-builder:not(.is-launch)) {
+		padding-bottom: 0 !important;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pbb-canvas,
+	.pbb-loader span {
+		transition: none;
+		animation: none;
+	}
+}
+
+/* Computers: the 3D preview stays in view (below any sticky site header) while the customer
+   scrolls through the options under it. main.js keeps --pbb-sticky-top at the header's height. */
+@media (min-width: 1025px) {
+	.pbb-builder:not(.is-app) > .pbb-stage {
+		position: sticky;
+		top: calc(var(--pbb-sticky-top, 0px) + 12px);
+		z-index: 5;
+		max-height: 56vh;
+		box-shadow: inset 0 0 0 1px var(--pbb-border), 0 14px 30px -18px rgba(0, 0, 0, 0.45);
+	}
+}
+
+/* ------------------------------------------------------------------ checkout in the builder */
+
+.pbb-checkout[hidden] {
+	display: none !important;
+}
+
+.pbb-builder.is-checkout .pbb-steps,
+.pbb-builder.is-checkout .pbb-buybar,
+.pbb-builder.is-checkout .pbb-cart-msg,
+.pbb-builder.is-checkout .pbb-hint {
+	display: none !important;
+}
+
+.pbb-checkout {
+	margin-top: 16px;
+}
+
+.pbb-checkout-head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px 14px;
+	padding: 4px 2px 12px;
+}
+
+.pbb-checkout-back {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	min-height: 40px;
+	padding: 0 14px 0 10px;
+	border: 1.5px solid rgba(17, 20, 24, 0.18);
+	border-radius: 999px;
+	background: #fff;
+	color: var(--pbb-ink);
+	font: inherit;
+	font-size: 14px;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.pbb-checkout-kick {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin: 0;
+	color: #7a6000;
+	font-size: 12px;
+	font-weight: 800;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+}
+
+.pbb-checkout-sum {
+	margin: 0 0 0 auto;
+	font-weight: 800;
+	font-size: 15px;
+}
+
+.pbb-checkout-body {
+	position: relative;
+}
+
+.pbb-checkout-loading {
+	position: absolute;
+	inset: 24px 0 auto;
+	margin: 0;
+	text-align: center;
+	color: var(--pbb-muted);
+}
+
+.pbb-checkout-frame {
+	display: block;
+	width: 100%;
+	height: var(--pbb-frame-h, 900px);
+	border: 0;
+	border-radius: 16px;
+	background: #fff;
+	box-shadow: inset 0 0 0 1px var(--pbb-border);
+	opacity: 0;
+	transition: opacity 0.25s ease;
+}
+
+.pbb-checkout-frame.is-loaded {
+	opacity: 1;
+}
+
+/* Phones (app view): a short preview, the checkout fills the sheet and scrolls inside it. */
+.pbb-builder.is-app.is-checkout .pbb-stage {
+	height: clamp(130px, calc(var(--pbb-app-h, 100dvh) * 0.22), 200px);
+}
+
+.pbb-builder.is-app .pbb-checkout:not([hidden]) {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	min-height: 0;
+	margin: -16px 0 0;
+	padding: 10px 12px 0;
+	border-radius: 20px 20px 0 0;
+	background: #f4f5f6;
+	position: relative;
+	z-index: 2;
+}
+
+.pbb-builder.is-app .pbb-checkout-head {
+	padding-bottom: 8px;
+}
+
+.pbb-builder.is-app .pbb-checkout-body {
+	display: flex;
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+.pbb-builder.is-app .pbb-checkout-frame {
+	flex: 1 1 auto;
+	height: auto;
+	border-radius: 16px 16px 0 0;
+}
+
+/* Checking out on a computer: the preview stops following the page, so it never covers the form. */
+@media (min-width: 1025px) {
+	.pbb-builder.is-checkout:not(.is-app) > .pbb-stage {
+		position: relative;
+		top: auto;
+		max-height: 34vh;
+	}
+}
