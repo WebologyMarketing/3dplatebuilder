@@ -174,3 +174,16 @@ if (pricing) {
 	modeButtons.forEach((b) => b.addEventListener('click', () => setMode(b.dataset.pricingMode)));
 	if (location.hash === '#builder-only' || location.hash === '#outright-builder') setMode('builder');
 }
+
+/* Phones: show the bottom action bar once the first screen has scrolled away, and hide it
+   while the yellow call-to-action band (which has the same buttons) is on screen. */
+const sticky = document.querySelector('[data-sticky-cta]');
+if (sticky && 'IntersectionObserver' in window) {
+	const hero = document.querySelector('main > section');
+	const band = document.querySelector('.plate-band');
+	let pastHero = false;
+	let bandShowing = false;
+	const update = () => { sticky.hidden = !pastHero || bandShowing; };
+	if (hero) new IntersectionObserver(([en]) => { pastHero = !en.isIntersecting; update(); }).observe(hero);
+	if (band) new IntersectionObserver(([en]) => { bandShowing = en.isIntersecting; update(); }).observe(band);
+}

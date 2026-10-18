@@ -2,6 +2,7 @@ import os, sys
 sys.path.insert(0, os.path.dirname(__file__))
 from partials import page, phone_page, desktop_page, builder_markup
 import pages_main as M, pages_other as O
+from shop_demo import shop_home_page
 import pathlib
 OUT = str(pathlib.Path(__file__).resolve().parent.parent / 'site')
 FONT = OUT + '/builder/assets/fonts/charles-wright-bold.json'
@@ -30,4 +31,5 @@ open(f'{OUT}/phone.html','w').write(phone_page(bm[start:end]))
 dm = builder_markup(mobile='inline', url_options=True, reg='AB12 CDE', exit_href='demo.html')
 ds = dm.index('<div class="pbb-builder"'); de = dm.index('\n\t\t<p class="demo-failed">')
 open(f'{OUT}/desktop.html','w').write(desktop_page(dm[ds:de]))
+open(f'{OUT}/shop-home.html','w').write(shop_home_page())
 print('ok')

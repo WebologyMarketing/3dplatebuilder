@@ -18,10 +18,11 @@ IMPORTMAP = '''<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigi
 </script>'''
 
 NAV = [
+    ('index.html#website', 'Websites'),
     ('features.html', 'Features'),
     ('pricing.html', 'Pricing'),
-    ('setup.html', 'How we set you up'),
-    ('demo.html', 'Live demo'),
+    ('setup.html', 'How it works'),
+    ('contact.html', 'Request a demo'),
 ]
 
 BRAND_MARK = '''<svg class="brand-mark" width="40" height="26" viewBox="0 0 40 26" aria-hidden="true"><rect x="1" y="1" width="38" height="24" rx="4" fill="#F7D333" stroke="#fff" stroke-width="1.5"/><path d="M8 18V8m5 10V8m5 10V8m7 10V8m5 10V8" stroke="#111418" stroke-width="3" stroke-linecap="square"/></svg>'''
@@ -32,7 +33,7 @@ def header(current):
     for href, label in NAV:
         cur = ' aria-current="page"' if href == current else ''
         links.append(f'<li><a href="{href}"{cur}>{label}</a></li>')
-    cur = ' aria-current="page"' if current == 'contact.html' else ''
+    cur = ' aria-current="page"' if current == 'demo.html' else ''
     return f'''<a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
 	<div class="wrap">
@@ -41,7 +42,7 @@ def header(current):
 		<nav id="site-nav" class="site-nav" aria-label="Main">
 			<ul>
 				{''.join(links)}
-				<li><a class="btn btn-primary" href="contact.html"{cur}>Request a demo</a></li>
+				<li><a class="btn btn-primary" href="demo.html"{cur}>Try the builder</a></li>
 			</ul>
 		</nav>
 	</div>
@@ -88,6 +89,16 @@ FOOTER = '''<footer class="site-footer">
 </footer>'''
 
 
+def sticky_cta(filename):
+    """Phones: a slim bar with the main action, shown once the visitor scrolls past the first screen."""
+    if filename in ('demo.html', 'contact.html', 'phone.html', 'desktop.html'):
+        return ''
+    return '''<div class="sticky-cta" data-sticky-cta hidden>
+	<a class="btn btn-primary" href="demo.html">Try the 3D builder</a>
+	<a class="btn btn-ghost" href="contact.html">Request a demo</a>
+</div>'''
+
+
 def page(filename, title, description, body, builder=False, extra_head=''):
     head_extra = IMPORTMAP if builder else ''
     scripts = '<script src="assets/js/site.js" defer></script>'
@@ -119,6 +130,7 @@ def page(filename, title, description, body, builder=False, extra_head=''):
 <main id="main">
 {body}
 </main>
+{sticky_cta(filename)}
 {FOOTER}
 {scripts}
 </body>

@@ -29,35 +29,45 @@
 		<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav">Menu</button>
 		<nav id="site-nav" class="site-nav" aria-label="Main">
 			<ul>
-				<li><a href="features.html">Features</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="setup.html">How we set you up</a></li><li><a href="demo.html">Live demo</a></li>
-				<li><a class="btn btn-primary" href="contact.html">Request a demo</a></li>
+				<li><a href="index.html#website">Websites</a></li><li><a href="features.html">Features</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="setup.html">How it works</a></li><li><a href="contact.html">Request a demo</a></li>
+				<li><a class="btn btn-primary" href="demo.html">Try the builder</a></li>
 			</ul>
 		</nav>
 	</div>
 </header>
 <main id="main">
 
-<section class="hero studio">
+<section class="hero hero-web studio">
 	<div class="wrap hero-grid">
 		<div class="hero-copy">
-			<h1>Let your customers design their plates in 3D</h1>
-			<p class="lede">A complete number plate shop with a real-time 3D builder built in. Your customers type their reg, see it spaced legally, pick 4D, gel or retro, and check out with Apple Pay. On their phone, in a couple of minutes.</p>
+			<p class="eyebrow">For UK registered number plate suppliers</p>
+			<h1>Your plate shop website, with a 3D builder built in</h1>
+			<p class="lede">We design, build and host a number plate website that sells. Your customers type their reg, see their plates in 3D and pay with Apple Pay, on their phone, in a couple of minutes.</p>
 			<div class="actions">
-				<a class="btn btn-primary" href="#try">Try the live builder</a>
-				<a class="btn btn-ghost" href="contact.html">Request a demo</a>
+				<a class="btn btn-primary btn-lg" href="#try">Try the 3D builder</a>
+				<a class="btn btn-ghost btn-lg" href="#website">See what's in the website</a>
 			</div>
-			<p class="hero-proof"><strong>Already taking real orders at a UK plate shop.</strong> Built by plate makers, for plate makers.</p>
+			<p class="price-anchor">Website and builder from <b>£89 a month</b>. Live in 2–4 weeks.</p>
+			<ul class="ticks">
+				<li>Hosting, updates and backups included</li>
+				<li>Payments go straight to your own Stripe</li>
+				<li>No phone calls: everything by email</li>
+				<li>Built by plate makers, already taking orders</li>
+			</ul>
 		</div>
-		<figure class="hero-art">
-			<img src="assets/img/hero-rear.webp" width="881" height="500" alt="A yellow rear plate, AB12 CDE, in 4D gel characters, rendered by the builder" fetchpriority="high">
-			<img class="plate-front" src="assets/img/hero-front.webp" width="1112" height="318" alt="The matching white front plate in printed characters" loading="lazy" decoding="async">
+		<figure class="hero-web-art" aria-label="A plate shop website we build, on a computer and a phone">
+			<div class="browser">
+				<div class="browser-bar" aria-hidden="true"><span class="dots"><i></i><i></i><i></i></span><span class="url">yourplates.co.uk</span></div>
+				<div class="browser-view"><img src="assets/img/shop-home.webp" width="1200" height="2172" alt="The home page of Your Plates Ltd, a demo plate shop: a reg box, plate styles with prices, the car view and how to order" fetchpriority="high"></div>
+			</div>
+			<div class="mini-phone" aria-hidden="true"><img src="assets/img/phone-poster.webp" width="880" height="1720" alt=""></div>
 		</figure>
 	</div>
 </section>
 
 <section class="section studio" id="try" aria-labelledby="try-title">
-	<div class="wrap phone-split">
-		<div class="phone-block">
+	<div class="wrap try-split">
+		<div class="try-phone"><div class="phone-block">
 	<div class="phone-fit" data-phone>
 		<div class="phone" role="group" aria-label="Phone preview">
 			<span class="phone-btn phone-btn-action" aria-hidden="true"></span>
@@ -87,21 +97,28 @@
 	<p class="phone-caption">The phone layout at iPhone 18 Pro Max size (440 × 956 points). Tap and swipe it like the real thing.</p>
 	<ul class="quick-views phone-views" aria-label="Show a design on the phone"><li><button type="button" data-phone-view="reg=AB12CDE&style=gel-4d-3&side=rear" aria-pressed="false">4D gel, rear</button></li><li><button type="button" data-phone-view="reg=RETRO&style=retro" aria-pressed="false">Retro</button></li><li><button type="button" data-phone-view="reg=AB12CDE&style=gel-3d&badge=uk-4d" aria-pressed="false">UK 4D badge</button></li><li><button type="button" data-phone-view="reg=AB12CDE&size=motorbike" aria-pressed="false">Motorbike</button></li><li><button type="button" data-phone-view="reg=AB12CDE&style=gel-4d-6&view=car" aria-pressed="false">On a car</button></li></ul>
 	<p class="phone-on-phone"><a class="btn btn-primary" href="phone.html">Open the builder full screen</a></p>
-</div>
-		<div class="stack phone-copy">
-			<h2 id="try-title">Have a go. This is the real builder</h2>
-			<p class="lede muted">The same builder that takes real orders today, set up for a demo supplier, Your Plates Ltd. It's running live at iPhone 18 Pro Max size, because the phone is where plenty of plate buyers design and pay. Type a reg, swipe through the steps, turn the plate.</p>
+</div></div>
+		<div class="stack try-head">
+			<p class="eyebrow">The 3D builder</p>
+			<h2 id="try-title">Go on, design a plate</h2>
+			<p class="lede muted">This is the real builder, running live at phone size for a demo shop, Your Plates Ltd. Type a reg, swipe through the steps, turn the plate. Your customers get exactly this, in your colours.</p>
+		</div>
+		<div class="stack try-rest">
 			<ul class="feature-list">
-				<li><b>The plate stays in view</b><span>Pinned at the top while customers choose, so every change shows straight away.</span></li>
-				<li><b>One step at a time</b><span>Reg and style, plate size, badge, border, add-ons. Swipe or tap Next, with a progress bar along the top.</span></li>
-				<li><b>The total is always there</b><span>The price and the next button sit at the bottom, and the keyboard never covers them.</span></li>
-				<li><b>Back works like an app</b><span>The arrow and the phone's own back gesture both close the builder.</span></li>
+				<li><b>Legal spacing as they type</b><span>AB12CDE becomes AB12 CDE in Charles Wright characters, and the builder says if a reg won't fit a size.</span></li>
+				<li><b>Every style, in 3D</b><span>Printed, 3D gel, 4D, 4D gel and retro, with badges, borders and an "on a car" view.</span></li>
+				<li><b>Made for phones</b><span>One step at a time, the plate always in view and the price always showing.</span></li>
 			</ul>
 			<div class="actions">
 				<button type="button" class="btn btn-ghost" data-reveal="desktop-view" aria-expanded="false" aria-controls="desktop-view">See it on a computer</button>
-				<a class="btn btn-ghost" href="demo.html">Open the full demo</a>
 			</div>
-			<p class="small muted">Example prices. Your shop uses your own price list.</p>
+			<div class="next-card">
+				<p><b>Like it?</b> It comes with a website built around it, or on your own WooCommerce shop.</p>
+				<div class="actions">
+					<a class="btn btn-primary" href="#website">See the website</a>
+					<a class="btn btn-ghost" href="contact.html">Request a demo with your plates</a>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class="wrap desktop-reveal" id="desktop-view" hidden>
@@ -143,87 +160,48 @@
 	</div>
 </section>
 
-<section class="section" aria-labelledby="why-title">
-	<div class="wrap">
-		<div class="intro">
-			<h2 id="why-title">What it does for your shop</h2>
-			<p>Most plate shops still sell from a flat picture and a list of drop-downs. Customers guess, ring up to check, or order the wrong thing. The builder shows them the plate they're buying.</p>
-		</div>
-		<ul class="benefits">
-			<li>
-				<h3>More people finish their order</h3>
-				<p>Customers turn the plate, zoom in on the 4D edge and see the badge before they pay, so they buy with confidence instead of messaging you first.</p>
-			</li>
-			<li>
-				<h3>Fewer wrong orders</h3>
-				<p>Every basket line spells it out: registration, front and rear sizes in mm, style, badge, border, extras and road legal or show plate. Your workshop makes exactly what the customer saw.</p>
-			</li>
-			<li>
-				<h3>Legal spacing done for them</h3>
-				<p>Type AB12CDE and it becomes AB12 CDE, in 79 mm Charles Wright characters with 11 mm and 33 mm gaps. If a reg won't fit a size, the builder says so before they order.</p>
-			</li>
-			<li>
-				<h3>Apple Pay and Google Pay</h3>
-				<p>Your own WooCommerce checkout opens inside the builder, with Apple Pay and Google Pay through Stripe. Customers pay without losing their design.</p>
-			</li>
-			<li>
-				<h3>Made for phones first</h3>
-				<p>On a phone the builder fills the screen: step cards, a progress bar and a buy bar that the keyboard never covers. Plenty of plates are bought on a phone, in a lunch break or a car park, so this is where it counts.</p>
-			</li>
-			<li>
-				<h3>Documents sorted at checkout</h3>
-				<p>Road-legal orders ask for proof of ID and entitlement at checkout, or later. Orders wait as Awaiting documents until your staff have checked them.</p>
-			</li>
-		</ul>
-	</div>
-</section>
-
-<section class="section studio" aria-labelledby="spec-h">
-	<div class="wrap">
-		<div class="spec-split">
-			<div class="stack">
-				<h2 id="spec-h">Legal spacing, in millimetres</h2>
-				<p class="lede muted">The builder places characters ink to ink, the way BS AU 145e measures them, and lays them out as the customer types. Current, prefix and suffix regs are spaced automatically; dateless and cherished regs stay exactly as typed.</p>
-			</div>
-			<div class="stack">
-				<ul class="spec-list">
-					<li><b>79 mm</b><span>Character height, Charles Wright 2001 typeface</span></li>
-					<li><b>50 mm</b><span>Character width (14 mm for 1 and I), 14 mm stroke</span></li>
-					<li><b>11 mm</b><span>Gap between characters, and the minimum margin</span></li>
-					<li><b>33 mm</b><span>Gap between the two groups</span></li>
-					<li><b>Footer</b><span>Your supplier name, postcode and the BS AU 145e mark on every plate</span></li>
-				</ul>
-				<p class="small muted">The builder helps with BS AU 145e layout. You stay responsible for the plates you make, your RNPS registration and checking your customers' documents.</p>
+<section class="section" id="website" aria-labelledby="web-title">
+	<div class="wrap web-split">
+		<div class="stack">
+			<p class="eyebrow">The website</p>
+			<h2 id="web-title">A complete plate shop, done for you</h2>
+			<p class="lede muted">More than a plug-in. We build the whole shop around the builder, host it and keep it running, so you can get on with making plates.</p>
+			<ul class="web-list"><li><h3>Designed in your colours</h3><p>Your logo, colours and wording on every page. A ready-made plate-shop design on Starter, up to fully custom on Complete.</p></li><li><h3>A page for every plate</h3><p>Styles, sizes, motorbike, 4x4 and show plates, plus pages for the towns you serve, written so people find you on Google.</p></li><li><h3>Checkout that keeps the sale</h3><p>Card, Apple Pay and Google Pay through your own Stripe, inside the builder, so customers pay without losing their design.</p></li><li><h3>DVLA documents built in</h3><p>Proof of ID and entitlement at checkout or after. Road-legal orders wait as Awaiting documents until your staff check them.</p></li><li><h3>Hosted and looked after</h3><p>Fast hosting, a security certificate, daily backups, and WordPress and builder updates. Nothing for you to install.</p></li><li><h3>Changes by email</h3><p>Ask in writing and we make it. Monthly design hours are included on Complete, so your shop keeps up with your range.</p></li></ul>
+			<div class="actions">
+				<a class="btn btn-primary" href="#plans">See website plans</a>
+				<a class="btn btn-ghost" href="setup.html">How we build it</a>
 			</div>
 		</div>
-		<figure class="spec-drawing spec-wide">
-			<div class="spec-scroll" tabindex="0" role="region" aria-label="Dimensioned plate drawing"><svg viewBox="-78 -40 690 210" role="img" aria-labelledby="spec-title"><title id="spec-title">Rear plate, 520 by 111 millimetres, with the legal character spacing marked</title><rect x="0" y="0" width="520" height="111" rx="6" fill="#F7D333"/><g fill="#111418"><path d="M50 0H35.5L32.9 13.1H17.1L14.5 0H0L18.2 79H31.8ZM30.3 26.7 26 49Q25.9 49.4 25.7 50Q25.5 50.6 25 50.6Q24.5 50.6 24.3 50Q24.1 49.4 24 49L19.7 26.7Z" transform="translate(59.00 95.00) scale(1 -1)"/><path d="M50 18Q50 14.2 48.6 10.95Q47.2 7.7 44.75 5.25Q42.3 2.8 39 1.4Q35.7 0 32 0H0V13.6H4V65.4H0V79H32Q35.7 79 39 77.6Q42.3 76.2 44.75 73.75Q47.2 71.3 48.6 68Q50 64.7 50 61V52.7Q50 49.4 49.3 47.15Q48.6 44.9 47.55 43.4Q46.5 41.9 45.35 41Q44.2 40.1 43.3 39.6Q44.3 39 45.45 38.1Q46.6 37.2 47.6 35.75Q48.6 34.3 49.3 32.1Q50 29.9 50 26.5ZM36 53.2V58.4Q36 65.4 29 65.4H18V46.2H29Q36 46.2 36 53.2ZM36 20.6V25.6Q36 32.6 29 32.6H18V13.6H29Q32.4 13.6 34.2 15.45Q36 17.3 36 20.6Z" transform="translate(120.00 95.00) scale(1 -1)"/><path d="M14 0H0V79H14Z" transform="translate(181.00 95.00) scale(1 -1)"/><path d="M50 0H0V5.9Q0 10.4 2.3 15.1Q4.6 19.8 8.6 23.5L31.9 44.7Q34.2 46.9 35.1 48.85Q36 50.8 36 53.4V58.4Q36 65.4 29 65.4H21Q17.8 65.4 15.9 63.75Q14 62.1 14 59.2L0 62.8Q0 65.8 1.4 68.7Q2.8 71.6 5.25 73.9Q7.7 76.2 10.95 77.6Q14.2 79 18 79H32Q35.7 79 39 77.6Q42.3 76.2 44.75 73.75Q47.2 71.3 48.6 68Q50 64.7 50 61V51.3Q50 46.8 48.4 43Q46.8 39.2 42.6 35.4L20.8 15.7Q20.3 15.2 20.05 14.85Q19.8 14.5 19.6 14.2Q19.4 13.8 19.4 13.6H50Z" transform="translate(206.00 95.00) scale(1 -1)"/><path d="M50 16.3Q49.7 13.1 48.25 10.15Q46.8 7.2 44.45 4.95Q42.1 2.7 38.9 1.35Q35.7 0 32 0H18Q14.2 0 10.95 1.4Q7.7 2.8 5.25 5.25Q2.8 7.7 1.4 10.95Q0 14.2 0 18V61Q0 64.7 1.4 68Q2.8 71.3 5.25 73.75Q7.7 76.2 10.95 77.6Q14.2 79 18 79H32Q35.7 79 38.9 77.65Q42.1 76.3 44.45 74.05Q46.8 71.8 48.25 68.8Q49.7 65.8 50 62.5L36 59Q36 61.6 34.2 63.5Q32.4 65.4 29 65.4H21Q14 65.4 14 58.4V20.6Q14 13.6 21 13.6H29Q32.3 13.6 34.15 15.25Q36 16.9 36 19.8Z" transform="translate(289.00 95.00) scale(1 -1)"/><path d="M50 18Q50 14.2 48.6 10.95Q47.2 7.7 44.75 5.25Q42.3 2.8 39 1.4Q35.7 0 32 0H0V13.6H4V65.4H0V79H32Q35.7 79 39 77.6Q42.3 76.2 44.75 73.75Q47.2 71.3 48.6 68Q50 64.7 50 61ZM36 20.6V58.4Q36 65.4 29 65.4H18V13.6H29Q36 13.6 36 20.6Z" transform="translate(350.00 95.00) scale(1 -1)"/><path d="M50 0H0V79H50V65.4H14V46.3H40V32.7H14V13.6H50Z" transform="translate(411.00 95.00) scale(1 -1)"/></g><text x="260" y="107" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" font-weight="700" fill="#111418">YOUR PLATES LTD  AB1 2CD</text><text x="506" y="107" text-anchor="end" font-family="Arial, sans-serif" font-size="5.5" font-weight="700" fill="#111418">BS AU 145e</text><path class="dim" d="M0.0 -14.0H520.0M0.0 -17.0v6M520.0 -17.0v6"/><path class="dim" stroke-dasharray="2 2" d="M0.0 0.0V-14.0M520.0 0.0V-14.0"/><text class="dim-text" x="260.0" y="-18.0" text-anchor="middle" font-size="12">520 mm</text><path class="dim" d="M534.0 0.0V111.0M531.0 0.0h6M531.0 111.0h6"/><text class="dim-text" x="538.0" y="58.5" text-anchor="start" font-size="12">111 mm</text><path class="dim" d="M-14.0 16.0V95.0M-17.0 16.0h6M-17.0 95.0h6"/><text class="dim-text" x="-19.0" y="58.5" text-anchor="end" font-size="12">79 mm</text><path class="dim" stroke-dasharray="2 2" d="M-14 16.0H59.0M-14 95.0H59.0"/><path class="dim" d="M109.0 129.0H120.0M109.0 126.0v6M120.0 126.0v6"/><path class="dim" stroke-dasharray="2 2" d="M109.0 95.0V129.0M120.0 95.0V129.0"/><text class="dim-text" x="104.0" y="133.0" text-anchor="end" font-size="12">11 mm</text><path class="dim" d="M256.0 129.0H289.0M256.0 126.0v6M289.0 126.0v6"/><path class="dim" stroke-dasharray="2 2" d="M256.0 95.0V129.0M289.0 95.0V129.0"/><text class="dim-text" x="272.5" y="125.0" text-anchor="middle" font-size="12">33 mm</text><path class="dim" d="M120.0 155.0H170.0M120.0 152.0v6M170.0 152.0v6"/><path class="dim" stroke-dasharray="2 2" d="M120.0 95.0V155.0M170.0 95.0V155.0"/><text class="dim-text" x="145.0" y="151.0" text-anchor="middle" font-size="12">50 mm</text></svg></div>
-			<figcaption>A standard 520 × 111 mm rear plate, drawn from the builder's own character outlines.</figcaption>
+		<figure class="browser browser-scroll" tabindex="0" aria-label="The demo shop's home page. Hover or focus to scroll it.">
+			<div class="browser-bar" aria-hidden="true"><span class="dots"><i></i><i></i><i></i></span><span class="url">yourplates.co.uk</span></div>
+			<div class="browser-view"><img src="assets/img/shop-home.webp" width="1200" height="2172" alt="The full home page of the demo shop, Your Plates Ltd" loading="lazy" decoding="async"></div>
+			<figcaption>A demo shop. Yours carries your name, colours and prices.</figcaption>
 		</figure>
 	</div>
 </section>
 
-<section class="section" aria-labelledby="how-title">
+
+
+<section class="section studio" aria-labelledby="why-title">
 	<div class="wrap">
 		<div class="intro">
-			<h2 id="how-title">How it works</h2>
-			<p>You don't need to know WordPress. We build the shop, set up the builder with your products and prices, and look after it.</p>
+			<h2 id="why-title">What it does for your shop</h2>
+			<p>Most plate shops still sell from a flat picture and a list of drop-downs. Customers guess, message you to check, or order the wrong thing. Your new shop shows them the plate they're buying.</p>
 		</div>
-		<ol class="steps">
-			<li><h3>Request a demo</h3><p>We set the builder up with your kind of plates and email you a private link, so you can try it in your own time.</p></li>
-			<li><h3>We build your shop</h3><p>We copy your products and prices, and add your logo, supplier name and postcode to the plates.</p></li>
-			<li><h3>Connect Stripe</h3><p>Payments go straight to your own Stripe account, with Apple Pay and Google Pay switched on.</p></li>
-			<li><h3>Go live</h3><p>We test real orders end to end, point your domain at the new shop and you start taking orders.</p></li>
-		</ol>
-		<p style="margin-top:32px"><a class="try-link" href="setup.html">See the full set-up, step by step</a></p>
+		<ul class="benefits benefits-3">
+			<li><h3>More people finish their order</h3><p>Customers turn the plate, zoom in on the 4D edge and see the badge before they pay, so they buy instead of messaging you first.</p></li>
+			<li><h3>Fewer wrong orders</h3><p>Every basket line spells it out: registration, sizes in mm, style, badge, border, extras and road legal or show plate. You make exactly what they saw.</p></li>
+			<li><h3>Less admin</h3><p>Prices on one screen, documents collected at checkout, orders held until they're checked. Support for your shop is by email, with a record of everything.</p></li>
+		</ul>
 	</div>
 </section>
 
-<section class="section" aria-labelledby="plans-title">
+<section class="section" id="plans" aria-labelledby="plans-title">
 	<div class="wrap">
 		<div class="intro">
-			<h2 id="plans-title">A website with the builder, or the builder on your site</h2>
-			<p>Three monthly plans with a one-off set-up fee. Each one adds more of the builder and more website: from a ready-made plate shop on Starter to a fully custom site with local pages and monthly changes on Complete.</p>
+			<p class="eyebrow">Pricing</p>
+			<h2 id="plans-title">Pick your website</h2>
+			<p>Three monthly plans, each with the builder and a website, and a one-off set-up fee. Prices exclude VAT.</p>
 		</div>
 		<div class="plans">
 	<article class="plan">
@@ -262,38 +240,47 @@
 	</div>
 </section>
 
-<section class="section studio" aria-labelledby="proof-title">
-	<div class="wrap proof">
-		<div class="stack">
-			<h2 id="proof-title">Built by plate makers. Already taking orders</h2>
-			<p class="lede muted">The builder was made inside a working UK plate shop, where it's live and taking orders now. 3D Plate Builder is how other plate makers get the same thing.</p>
-			<p><a class="try-link" href="#try">Try the live builder</a></p>
+<section class="section studio" aria-labelledby="how-title">
+	<div class="wrap">
+		<div class="intro">
+			<h2 id="how-title">Live in 2–4 weeks</h2>
+			<p>You don't need to know WordPress, and you won't need to pick up the phone. Everything happens by email and in your account.</p>
 		</div>
-		<div class="stack">
-			<h3 class="proof-sub">Live in a UK plate shop today</h3>
-			<ul class="feature-list">
-				<li><b>The 3D builder on every plate product page</b><span>With the Design in 3D / Classic switch, a Design Your Plates page and the phone app layout.</span></li>
-				<li><b>Checkout inside the builder</b><span>Delivery or collection, card, Apple Pay, Google Pay and Klarna, without leaving the design.</span></li>
-				<li><b>Proof of ID and entitlement checks</b><span>Upload at checkout or send later, Awaiting documents status and staff checks on every road-legal order.</span></li>
-				<li><b>All seven styles and every plate size</b><span>Printed to 4D gel 6 mm and retro, from standard to motorbike, trailer and import plates.</span></li>
-			</ul>
+		<ol class="steps">
+			<li><h3>Try it with your plates</h3><p>Request a demo and we email you a private link to the builder set up with your kind of plates, within 2 working days.</p></li>
+			<li><h3>Choose a plan</h3><p>Pick your website, pay the set-up fee and send your RNPS details, logo and colours through a short form.</p></li>
+			<li><h3>We build your shop</h3><p>Your products, prices, supplier name and postcode go in. You review the shop and ask for changes by email.</p></li>
+			<li><h3>Go live</h3><p>We connect your Stripe, test real orders end to end and point your domain at the new shop.</p></li>
+		</ol>
+		<p style="margin-top:32px"><a class="try-link" href="setup.html">See the full set-up, step by step</a></p>
 	</div>
 </section>
 
-<section class="section" aria-labelledby="faq-title">
+<section class="section" aria-labelledby="spec-h">
+	<div class="wrap">
+		<div class="spec-split">
+			<div class="stack">
+				<h2 id="spec-h">Legal spacing, in millimetres</h2>
+				<p class="lede muted">The builder places characters ink to ink, the way BS AU 145e measures them, and lays them out as the customer types. Current, prefix and suffix regs are spaced automatically; dateless and cherished regs stay as typed.</p>
+				<p class="small muted">The builder helps with BS AU 145e layout. You stay responsible for the plates you make, your RNPS registration and checking your customers' documents.</p>
+			</div>
+			<figure class="spec-drawing">
+				<div class="spec-scroll" tabindex="0" role="region" aria-label="Dimensioned plate drawing"><svg viewBox="-78 -40 690 210" role="img" aria-labelledby="spec-title"><title id="spec-title">Rear plate, 520 by 111 millimetres, with the legal character spacing marked</title><rect x="0" y="0" width="520" height="111" rx="6" fill="#F7D333"/><g fill="#111418"><path d="M50 0H35.5L32.9 13.1H17.1L14.5 0H0L18.2 79H31.8ZM30.3 26.7 26 49Q25.9 49.4 25.7 50Q25.5 50.6 25 50.6Q24.5 50.6 24.3 50Q24.1 49.4 24 49L19.7 26.7Z" transform="translate(59.00 95.00) scale(1 -1)"/><path d="M50 18Q50 14.2 48.6 10.95Q47.2 7.7 44.75 5.25Q42.3 2.8 39 1.4Q35.7 0 32 0H0V13.6H4V65.4H0V79H32Q35.7 79 39 77.6Q42.3 76.2 44.75 73.75Q47.2 71.3 48.6 68Q50 64.7 50 61V52.7Q50 49.4 49.3 47.15Q48.6 44.9 47.55 43.4Q46.5 41.9 45.35 41Q44.2 40.1 43.3 39.6Q44.3 39 45.45 38.1Q46.6 37.2 47.6 35.75Q48.6 34.3 49.3 32.1Q50 29.9 50 26.5ZM36 53.2V58.4Q36 65.4 29 65.4H18V46.2H29Q36 46.2 36 53.2ZM36 20.6V25.6Q36 32.6 29 32.6H18V13.6H29Q32.4 13.6 34.2 15.45Q36 17.3 36 20.6Z" transform="translate(120.00 95.00) scale(1 -1)"/><path d="M14 0H0V79H14Z" transform="translate(181.00 95.00) scale(1 -1)"/><path d="M50 0H0V5.9Q0 10.4 2.3 15.1Q4.6 19.8 8.6 23.5L31.9 44.7Q34.2 46.9 35.1 48.85Q36 50.8 36 53.4V58.4Q36 65.4 29 65.4H21Q17.8 65.4 15.9 63.75Q14 62.1 14 59.2L0 62.8Q0 65.8 1.4 68.7Q2.8 71.6 5.25 73.9Q7.7 76.2 10.95 77.6Q14.2 79 18 79H32Q35.7 79 39 77.6Q42.3 76.2 44.75 73.75Q47.2 71.3 48.6 68Q50 64.7 50 61V51.3Q50 46.8 48.4 43Q46.8 39.2 42.6 35.4L20.8 15.7Q20.3 15.2 20.05 14.85Q19.8 14.5 19.6 14.2Q19.4 13.8 19.4 13.6H50Z" transform="translate(206.00 95.00) scale(1 -1)"/><path d="M50 16.3Q49.7 13.1 48.25 10.15Q46.8 7.2 44.45 4.95Q42.1 2.7 38.9 1.35Q35.7 0 32 0H18Q14.2 0 10.95 1.4Q7.7 2.8 5.25 5.25Q2.8 7.7 1.4 10.95Q0 14.2 0 18V61Q0 64.7 1.4 68Q2.8 71.3 5.25 73.75Q7.7 76.2 10.95 77.6Q14.2 79 18 79H32Q35.7 79 38.9 77.65Q42.1 76.3 44.45 74.05Q46.8 71.8 48.25 68.8Q49.7 65.8 50 62.5L36 59Q36 61.6 34.2 63.5Q32.4 65.4 29 65.4H21Q14 65.4 14 58.4V20.6Q14 13.6 21 13.6H29Q32.3 13.6 34.15 15.25Q36 16.9 36 19.8Z" transform="translate(289.00 95.00) scale(1 -1)"/><path d="M50 18Q50 14.2 48.6 10.95Q47.2 7.7 44.75 5.25Q42.3 2.8 39 1.4Q35.7 0 32 0H0V13.6H4V65.4H0V79H32Q35.7 79 39 77.6Q42.3 76.2 44.75 73.75Q47.2 71.3 48.6 68Q50 64.7 50 61ZM36 20.6V58.4Q36 65.4 29 65.4H18V13.6H29Q36 13.6 36 20.6Z" transform="translate(350.00 95.00) scale(1 -1)"/><path d="M50 0H0V79H50V65.4H14V46.3H40V32.7H14V13.6H50Z" transform="translate(411.00 95.00) scale(1 -1)"/></g><text x="260" y="107" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" font-weight="700" fill="#111418">YOUR PLATES LTD  AB1 2CD</text><text x="506" y="107" text-anchor="end" font-family="Arial, sans-serif" font-size="5.5" font-weight="700" fill="#111418">BS AU 145e</text><path class="dim" d="M0.0 -14.0H520.0M0.0 -17.0v6M520.0 -17.0v6"/><path class="dim" stroke-dasharray="2 2" d="M0.0 0.0V-14.0M520.0 0.0V-14.0"/><text class="dim-text" x="260.0" y="-18.0" text-anchor="middle" font-size="12">520 mm</text><path class="dim" d="M534.0 0.0V111.0M531.0 0.0h6M531.0 111.0h6"/><text class="dim-text" x="538.0" y="58.5" text-anchor="start" font-size="12">111 mm</text><path class="dim" d="M-14.0 16.0V95.0M-17.0 16.0h6M-17.0 95.0h6"/><text class="dim-text" x="-19.0" y="58.5" text-anchor="end" font-size="12">79 mm</text><path class="dim" stroke-dasharray="2 2" d="M-14 16.0H59.0M-14 95.0H59.0"/><path class="dim" d="M109.0 129.0H120.0M109.0 126.0v6M120.0 126.0v6"/><path class="dim" stroke-dasharray="2 2" d="M109.0 95.0V129.0M120.0 95.0V129.0"/><text class="dim-text" x="104.0" y="133.0" text-anchor="end" font-size="12">11 mm</text><path class="dim" d="M256.0 129.0H289.0M256.0 126.0v6M289.0 126.0v6"/><path class="dim" stroke-dasharray="2 2" d="M256.0 95.0V129.0M289.0 95.0V129.0"/><text class="dim-text" x="272.5" y="125.0" text-anchor="middle" font-size="12">33 mm</text><path class="dim" d="M120.0 155.0H170.0M120.0 152.0v6M170.0 152.0v6"/><path class="dim" stroke-dasharray="2 2" d="M120.0 95.0V155.0M170.0 95.0V155.0"/><text class="dim-text" x="145.0" y="151.0" text-anchor="middle" font-size="12">50 mm</text></svg></div>
+				<figcaption>A standard 520 × 111 mm rear plate, drawn from the builder's own character outlines.</figcaption>
+			</figure>
+		</div>
+	</div>
+</section>
+
+<section class="section studio" aria-labelledby="faq-title">
 	<div class="wrap">
 		<h2 id="faq-title">Questions plate makers ask</h2>
 		<div class="faq">
 			<details><summary>Is the builder DVLA approved?</summary><div><p>No. The software has no DVLA approval or certification, and we don't claim it does. It lays characters out to BS AU 145e measurements and puts your supplier name, postcode and the BS AU 145e mark in the footer, which saves you checking every layout by hand.</p><p>You stay responsible for the plates you make, your registration as a Registered Number Plate Supplier and checking your customers' documents.</p></div></details>
-<details><summary>Do I need to know WordPress?</summary><div><p>No. We build the shop, host it and keep it updated. You change prices on one screen (WooCommerce → Plate Builder) and handle orders like any WooCommerce shop.</p></div></details>
 <details><summary>I already have a website. Can you move it over?</summary><div><p>Yes. It's included in Complete and an add-on on Starter and Pro: we copy your products, prices and pages across, and keep your domain. Tell us what you're on now when you request a demo.</p></div></details>
 <details><summary>I already run WooCommerce. Can I just add the builder?</summary><div><p>Yes, that's Builder only. It's the same three plans without the website. We check your theme, checkout and hosting first, then install the builder, set your prices and test real orders with you. You keep your own hosting and look after WordPress updates; we keep the builder updated. It needs WordPress 6.5 or later.</p></div></details>
-<details><summary>What's the difference between the plans' websites?</summary><div><p>Starter is a ready-made plate-shop design in your logo and colours, with the core pages. Pro adds a home page designed around your shop, landing pages for each plate type, edited product photos and search basics. Complete is fully custom, with local pages for the towns you serve, your current site moved across, launch articles and hours of changes every month.</p></div></details>
-<details><summary>Does it work with Shopify, Wix or Squarespace?</summary><div><p>Not today. The builder runs on WordPress and WooCommerce.</p></div></details>
-<details><summary>Can I use my own prices and styles?</summary><div><p>Your prices, yes: you set them yourself, and the builder's live total always matches them. Seven character styles come built in (printed, 3D gel, 4D 3 mm and 6 mm, 4D gel 3 mm and 6 mm, and retro). A style you make that isn't on the list can be added as a custom style.</p></div></details>
+<details><summary>Do I need to know WordPress?</summary><div><p>No. We build the shop, host it and keep it updated. You change prices on one screen (WooCommerce → Plate Builder) and handle orders like any WooCommerce shop.</p></div></details>
 <details><summary>Who gets the money, and what are the fees?</summary><div><p>Card, Apple Pay and Google Pay payments go through your own Stripe account, so the money goes to you and Stripe charges its fees to you directly.</p></div></details>
-<details><summary>What happens to the documents customers upload?</summary><div><p>They're kept in a private folder that the web server never serves, and only staff who can see orders can download them, through a signed link. By default, abandoned uploads are deleted after 2 days and order documents 30 days after your staff verify them. You can change that period; check it against your own data protection and RNPS record-keeping advice.</p></div></details>
-<details><summary>How do I get help once I'm live?</summary><div><p>By email, at hello@3dplatebuilder.com. We don't run phone lines: everything is handled in writing, so there's always a record of what was asked and done. Support tickets from your shop's admin are coming soon.</p></div></details>
 <details><summary>How long is the contract?</summary><div><p>Monthly plans have a minimum term of 12 months, then one month's notice. Your domain, products, customers and orders stay yours.</p></div></details>
 		</div>
 	</div>
@@ -302,17 +289,21 @@
 <section class="plate-band" aria-labelledby="cta-title">
 	<div class="wrap">
 		<div>
-			<h2 id="cta-title">See it with your own plates</h2>
-			<p>Request a demo and we'll set the builder up with your styles, sizes and prices, then email you a private link to try it. No sales calls.</p>
+			<h2 id="cta-title">Try it, then see it with your plates</h2>
+			<p>Have a go with the builder now. When you're ready, request a demo and we'll email you a private link set up with your styles, sizes and prices. No sales calls.</p>
 		</div>
 		<div class="actions">
-			<a class="btn btn-dark" href="contact.html">Request a demo</a>
-			<a class="btn btn-dark" href="demo.html">Try the live demo</a>
+			<a class="btn btn-dark" href="demo.html">Try the 3D builder</a>
+			<a class="btn btn-dark-ghost" href="contact.html">Request a demo</a>
 		</div>
 	</div>
 </section>
 
 </main>
+<div class="sticky-cta" data-sticky-cta hidden>
+	<a class="btn btn-primary" href="demo.html">Try the 3D builder</a>
+	<a class="btn btn-ghost" href="contact.html">Request a demo</a>
+</div>
 <footer class="site-footer">
 	<div class="wrap">
 		<div class="footer-grid">
