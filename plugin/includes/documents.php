@@ -497,10 +497,10 @@ function pbb_contact_page_url() {
 	return $page ? get_permalink( $page ) : home_url( '/contact-us/' );
 }
 
-/** The shop's postal address from WooCommerce → Settings → General, on one line ('' if not set). */
+/** The supplier name and the shop's postal address from WooCommerce → Settings → General, on one line ('' if no address is set). */
 function pbb_store_address() {
 	$parts = array(
-		get_bloginfo( 'name' ),
+		pbb_shop_supplier()['supplier'],
 		get_option( 'woocommerce_store_address', '' ),
 		get_option( 'woocommerce_store_address_2', '' ),
 		get_option( 'woocommerce_store_city', '' ),
