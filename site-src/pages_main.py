@@ -61,7 +61,10 @@ def cta_band(heading='See it with your own plates', text='Request a demo and we\
 
 # Real shops for the "Shops we've built" strip: (image in assets/img/shops/, shop name, web address, one line).
 # The section only appears once there's at least one. Screenshots must be the shop owner's, with permission.
-SHOPS = []
+SHOPS = [
+    ('plateboss-builder.webp', 'PlateBoss.co.uk', 'plateboss.co.uk/design-your-plates',
+     'A plate maker in Hounslow, London, and the builder\'s first shop. It runs on every plate product page and its own Design Your Plates page, with checkout in the builder and document checks on every road-legal order.'),
+]
 
 WEBSITE_ITEMS = [
     ('Designed in your colours', 'Your logo, colours and wording on every page. A ready-made plate-shop design on Starter, up to fully custom on Complete.'),
@@ -76,6 +79,22 @@ WEBSITE_ITEMS = [
 def shops_strip():
     if not SHOPS:
         return ''
+    if len(SHOPS) == 1:
+        img, name, url, line = SHOPS[0]
+        return f"""<section class="section" aria-labelledby="shops-title">
+	<div class="wrap shop-feature">
+		<figure class="browser">
+			<div class="browser-bar" aria-hidden="true"><span class="dots"><i></i><i></i><i></i></span><span class="url">{url}</span></div>
+			<img class="browser-shot" src="assets/img/shops/{img}" width="1200" height="626" alt="The 3D builder on {name}, showing a yellow rear plate" loading="lazy" decoding="async">
+		</figure>
+		<div class="stack">
+			<p class="eyebrow">Live today</p>
+			<h2 id="shops-title">Already selling plates at {name}</h2>
+			<p class="lede muted">{line}</p>
+			<p><a class="try-link" href="https://{url}" rel="noopener">See it on {name}</a></p>
+		</div>
+	</div>
+</section>"""
     cards = ''.join(f'<li><figure class="browser browser-sm"><div class="browser-bar" aria-hidden="true"><span class="dots"><i></i><i></i><i></i></span><span class="url">{url}</span></div><img src="assets/img/shops/{img}" alt="The {name} website" loading="lazy" decoding="async"></figure><p><b>{name}</b> {line}</p></li>' for img, name, url, line in SHOPS)
     return f"""<section class="section" aria-labelledby="shops-title">
 	<div class="wrap">

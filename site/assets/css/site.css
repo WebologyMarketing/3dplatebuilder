@@ -1102,3 +1102,7 @@ p { margin: 0; max-width: var(--measure); }
 @media (max-width: 900px) {
 	.try-split { grid-template-columns: 1fr; grid-template-areas: "head" "phone" "rest"; }
 }
+/* One real shop, featured. */
+.shop-feature { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: center; }
+.browser-shot { display: block; width: 100%; height: auto; }
+@media (max-width: 900px) { .shop-feature { grid-template-columns: 1fr; } }
