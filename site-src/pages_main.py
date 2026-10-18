@@ -70,7 +70,7 @@ def home(font):
 				<a class="btn btn-primary" href="#try">Try the live builder</a>
 				<a class="btn btn-ghost" href="contact.html">Request a demo</a>
 			</div>
-			<p class="hero-proof"><strong>Built by, and running at, PlateBoss.co.uk.</strong> A UK plate maker that built it for its own shop.</p>
+			<p class="hero-proof"><strong>Already taking real orders at a UK plate shop.</strong> Built by plate makers, for plate makers.</p>
 		</div>
 		<figure class="hero-art">
 			<img src="assets/img/hero-rear.webp" width="881" height="500" alt="A yellow rear plate, AB12 CDE, in 4D gel characters, rendered by the builder" fetchpriority="high">
@@ -84,7 +84,7 @@ def home(font):
 		{phone_preview(views=True)}
 		<div class="stack phone-copy">
 			<h2 id="try-title">Have a go. This is the real builder</h2>
-			<p class="lede muted">The same builder that takes orders at PlateBoss.co.uk, set up for a demo supplier, Your Plates Ltd. It's running live at iPhone 18 Pro Max size, because the phone is where plenty of plate buyers design and pay. Type a reg, swipe through the steps, turn the plate.</p>
+			<p class="lede muted">The same builder that takes real orders today, set up for a demo supplier, Your Plates Ltd. It's running live at iPhone 18 Pro Max size, because the phone is where plenty of plate buyers design and pay. Type a reg, swipe through the steps, turn the plate.</p>
 			<ul class="feature-list">
 				<li><b>The plate stays in view</b><span>Pinned at the top while customers choose, so every change shows straight away.</span></li>
 				<li><b>One step at a time</b><span>Reg and style, plate size, badge, border, add-ons. Swipe or tap Next, with a progress bar along the top.</span></li>
@@ -196,12 +196,12 @@ def home(font):
 <section class="section studio" aria-labelledby="proof-title">
 	<div class="wrap proof">
 		<div class="stack">
-			<h2 id="proof-title">Built by a plate maker. Running at PlateBoss.co.uk</h2>
-			<p class="lede muted">PlateBoss is a UK plate maker in Hounslow. We built the builder for our own shop, and it's live and taking orders there now. [BRAND NAME] is how other plate makers get the same thing.</p>
-			<p><a class="try-link" href="https://plateboss.co.uk" rel="noopener">See it working at PlateBoss.co.uk</a></p>
+			<h2 id="proof-title">Built by plate makers. Already taking orders</h2>
+			<p class="lede muted">The builder was made inside a working UK plate shop, where it's live and taking orders now. [BRAND NAME] is how other plate makers get the same thing.</p>
+			<p><a class="try-link" href="#try">Try the live builder</a></p>
 		</div>
 		<div class="stack">
-			<h3 class="proof-sub">Live at PlateBoss.co.uk today</h3>
+			<h3 class="proof-sub">Live in a UK plate shop today</h3>
 			<ul class="feature-list">
 				<li><b>The 3D builder on every plate product page</b><span>With the Design in 3D / Classic switch, a Design Your Plates page and the phone app layout.</span></li>
 				<li><b>Checkout inside the builder</b><span>Delivery or collection, card, Apple Pay, Google Pay and Klarna, without leaving the design.</span></li>
@@ -289,7 +289,7 @@ def demo():
 			<div class="demo-notes demo-notes-stack">
 				<div>
 					<h3>What's real here</h3>
-					<p>Everything you can see and touch: the 3D plate, styles, sizes, badges, borders, the car view, extras, the live price and the phone layout. It's the same code that runs on PlateBoss.co.uk.</p>
+					<p>Everything you can see and touch: the 3D plate, styles, sizes, badges, borders, the car view, extras, the live price and the phone layout. It's the same code that runs in a live plate shop.</p>
 				</div>
 				<div>
 					<h3>What's different on your shop</h3>

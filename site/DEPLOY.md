@@ -11,7 +11,7 @@ The one piece of server code is `contact.php`, which emails demo requests to `he
 3. Upload **the contents of this folder** (where `index.html` sits), not the folder above it.
 4. Don't upload `placeholders.json`, `tools/`, `DEPLOY.md` or `LAUNCH-NOTES.md`. They're harmless if you do, but nobody needs to see them.
 
-The 3D builder files in `plateboss-builder/` must keep their folder structure, because they load each other by relative path. The builder loads Three.js r170 from jsDelivr, so visitors need an internet connection, as they would for any website.
+The 3D builder files in `builder/` must keep their folder structure, because they load each other by relative path. The builder loads Three.js r170 from jsDelivr, so visitors need an internet connection, as they would for any website.
 
 ## Fasthosts domain, your Plesk server
 
@@ -94,4 +94,4 @@ Until `https://3dplatebuilder.com/contact.php` is a real `https://` address, or 
 
 The site loads its typeface, Archivo, from Google Fonts. To avoid sending visitors' IP addresses to Google, download Archivo (it's free under the SIL Open Font License), put the files in `assets/fonts/`, replace the three Google Fonts `<link>` lines in each page with your own `@font-face` rule, and remove the Google Fonts line from the privacy and cookie pages.
 
-For Three.js, the builder kit's README suggests copying the three files into `plateboss-builder/assets/vendor/three/` for production. On this static site, that means changing the import map in `index.html` and `demo.html` to point at the local copies. Use exactly version 0.170.0.
+For Three.js, the builder kit's README suggests copying the three files into `builder/assets/vendor/three/` for production. On this static site, that means changing the import map in `index.html` and `demo.html` to point at the local copies. Use exactly version 0.170.0.

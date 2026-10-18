@@ -81,7 +81,7 @@ function insetPolygon(points, d) {
 	});
 }
 
-/** Height of a hex plate's points above the centre line (PlateBoss cuts them above the middle). */
+/** Height of a hex plate's points above the centre line (cut above the middle). */
 const hexPointY = (plate) => plate.height / 2 - plate.height * (plate.point ?? 0.5);
 
 function hexPoints(width, height, chamfer, py) {

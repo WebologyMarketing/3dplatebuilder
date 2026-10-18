@@ -7,8 +7,8 @@ import { mountProductMode } from './product-mode.js';
 import { fixedSide } from './plate-sizes.js';
 
 /**
- * Boots every [plateboss_builder] on the page and wires the controls.
- * Instances are exposed on window.PlateBoss for the later steps (styles, cart).
+ * Boots every [plate_builder] on the page and wires the controls.
+ * Instances are exposed on window.PlateBuilder for the later steps (styles, cart).
  */
 
 const instances = [];
@@ -169,4 +169,4 @@ function trackStickyHeader() {
 }
 trackStickyHeader();
 
-window.PlateBuilder = window.PlateBoss = Object.assign(window.PlateBuilder || window.PlateBoss || {}, { instances, init });
+window.PlateBuilder = Object.assign(window.PlateBuilder || {}, { instances, init });

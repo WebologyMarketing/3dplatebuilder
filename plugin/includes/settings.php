@@ -13,8 +13,8 @@ add_action(
 	function () {
 		add_submenu_page(
 			'woocommerce',
-			__( 'Plate Builder', 'plateboss-builder' ),
-			__( 'Plate Builder', 'plateboss-builder' ),
+			__( 'Plate Builder', '3d-plate-builder' ),
+			__( 'Plate Builder', '3d-plate-builder' ),
 			'manage_woocommerce',
 			'pbb-settings',
 			'pbb_render_settings'
@@ -37,25 +37,25 @@ function pbb_shop_editable() {
 /** The everyday shop fields: key => [label, type, help]. */
 function pbb_shop_fields() {
 	return array(
-		'supplier'              => array( __( 'Supplier name', 'plateboss-builder' ), 'text', __( 'Exactly as registered with the DVLA. Printed in the footer of every plate.', 'plateboss-builder' ) ),
-		'postcode'              => array( __( 'Supplier postcode', 'plateboss-builder' ), 'text', __( 'The postcode of the registered premises. Printed next to the name.', 'plateboss-builder' ) ),
-		'logo'                  => array( __( 'Footer logo (URL)', 'plateboss-builder' ), 'url', __( 'Optional. A wide logo from your media library; leave empty to print the name as text.', 'plateboss-builder' ) ),
-		'accent'                => array( __( 'Button colour', 'plateboss-builder' ), 'color', __( 'Buttons and highlights in the builder, the checkout and the promo blocks.', 'plateboss-builder' ) ),
-		'accent_ink'            => array( __( 'Text on buttons', 'plateboss-builder' ), 'color', __( 'Must be easy to read on the button colour.', 'plateboss-builder' ) ),
-		'dark'                  => array( __( 'Dark panels', 'plateboss-builder' ), 'color', __( 'Banners, the documents notice and the floating button.', 'plateboss-builder' ) ),
-		'fitting_note'          => array( __( 'Fitting note in the builder', 'plateboss-builder' ), 'text', __( 'Under "In-store fitting while you wait".', 'plateboss-builder' ) ),
-		'fitting_checkout_note' => array( __( 'Fitting note at checkout', 'plateboss-builder' ), 'text', __( 'Shown when fitting is in the basket.', 'plateboss-builder' ) ),
-		'car_badge'             => array( __( 'Car badge (URL)', 'plateboss-builder' ), 'url', __( 'Optional. An SVG or PNG for the boot and grille in the "on a car" view (5:3 shape). Leave empty for no badge.', 'plateboss-builder' ) ),
+		'supplier'              => array( __( 'Supplier name', '3d-plate-builder' ), 'text', __( 'Exactly as registered with the DVLA. Printed in the footer of every plate.', '3d-plate-builder' ) ),
+		'postcode'              => array( __( 'Supplier postcode', '3d-plate-builder' ), 'text', __( 'The postcode of the registered premises. Printed next to the name.', '3d-plate-builder' ) ),
+		'logo'                  => array( __( 'Footer logo (URL)', '3d-plate-builder' ), 'url', __( 'Optional. A wide logo from your media library; leave empty to print the name as text.', '3d-plate-builder' ) ),
+		'accent'                => array( __( 'Button colour', '3d-plate-builder' ), 'color', __( 'Buttons and highlights in the builder, the checkout and the promo blocks.', '3d-plate-builder' ) ),
+		'accent_ink'            => array( __( 'Text on buttons', '3d-plate-builder' ), 'color', __( 'Must be easy to read on the button colour.', '3d-plate-builder' ) ),
+		'dark'                  => array( __( 'Dark panels', '3d-plate-builder' ), 'color', __( 'Banners, the documents notice and the floating button.', '3d-plate-builder' ) ),
+		'fitting_note'          => array( __( 'Fitting note in the builder', '3d-plate-builder' ), 'text', __( 'Under "In-store fitting while you wait".', '3d-plate-builder' ) ),
+		'fitting_checkout_note' => array( __( 'Fitting note at checkout', '3d-plate-builder' ), 'text', __( 'Shown when fitting is in the basket.', '3d-plate-builder' ) ),
+		'car_badge'             => array( __( 'Car badge (URL)', '3d-plate-builder' ), 'url', __( 'Optional. An SVG or PNG for the boot and grille in the "on a car" view (5:3 shape). Leave empty for no badge.', '3d-plate-builder' ) ),
 	);
 }
 
 function pbb_save_shop() {
 	if ( ! current_user_can( 'manage_woocommerce' ) ) {
-		wp_die( esc_html__( 'You are not allowed to do that.', 'plateboss-builder' ) );
+		wp_die( esc_html__( 'You are not allowed to do that.', '3d-plate-builder' ) );
 	}
 	check_admin_referer( 'pbb_save_shop' );
 	if ( ! pbb_shop_editable() ) {
-		wp_die( esc_html__( 'Your shop details are locked until your account is verified.', 'plateboss-builder' ) );
+		wp_die( esc_html__( 'Your shop details are locked until your account is verified.', '3d-plate-builder' ) );
 	}
 
 	$saved = get_option( 'pbb_shop', array() );
@@ -102,7 +102,7 @@ function pbb_save_shop() {
 
 function pbb_save_pricing() {
 	if ( ! current_user_can( 'manage_woocommerce' ) ) {
-		wp_die( esc_html__( 'You are not allowed to do that.', 'plateboss-builder' ) );
+		wp_die( esc_html__( 'You are not allowed to do that.', '3d-plate-builder' ) );
 	}
 	check_admin_referer( 'pbb_save_pricing' );
 
@@ -146,32 +146,32 @@ function pbb_render_settings() {
 	$product_id = pbb_get_product_id();
 	?>
 	<div class="wrap">
-		<h1><?php esc_html_e( 'Plate Builder', 'plateboss-builder' ); ?></h1>
+		<h1><?php esc_html_e( 'Plate Builder', '3d-plate-builder' ); ?></h1>
 
 		<?php
 		$updated = isset( $_GET['updated'] ) ? sanitize_key( $_GET['updated'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( 'shop-json' === $updated ) :
 			?>
-			<div class="notice notice-error is-dismissible"><p><?php esc_html_e( 'Shop details saved, but the advanced JSON could not be read, so it was left as it was.', 'plateboss-builder' ); ?></p></div>
+			<div class="notice notice-error is-dismissible"><p><?php esc_html_e( 'Shop details saved, but the advanced JSON could not be read, so it was left as it was.', '3d-plate-builder' ); ?></p></div>
 		<?php elseif ( 'shop' === $updated ) : ?>
-			<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Shop details saved.', 'plateboss-builder' ); ?></p></div>
+			<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Shop details saved.', '3d-plate-builder' ); ?></p></div>
 		<?php elseif ( $updated ) : ?>
-			<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Prices saved.', 'plateboss-builder' ); ?></p></div>
+			<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Prices saved.', '3d-plate-builder' ); ?></p></div>
 		<?php endif; ?>
 
 		<?php pbb_render_shop_form(); ?>
 
-		<h2 class="title" id="pbb-prices"><?php esc_html_e( 'Prices', 'plateboss-builder' ); ?></h2>
+		<h2 class="title" id="pbb-prices"><?php esc_html_e( 'Prices', '3d-plate-builder' ); ?></h2>
 
 		<p>
-			<?php esc_html_e( 'A plate is priced from its character style (front & rear, or a single plate), plus a surcharge per plate for non-standard sizes. Badge, border and extras are charged once per basket line. Motorbike and trailer plates have one fixed price.', 'plateboss-builder' ); ?>
+			<?php esc_html_e( 'A plate is priced from its character style (front & rear, or a single plate), plus a surcharge per plate for non-standard sizes. Badge, border and extras are charged once per basket line. Motorbike and trailer plates have one fixed price.', '3d-plate-builder' ); ?>
 		</p>
 		<?php if ( $product_id ) : ?>
 			<p>
 				<?php
 				printf(
 					/* translators: %s: link to the product */
-					esc_html__( 'Builder orders are added to the basket as %s (hidden from your shop).', 'plateboss-builder' ),
+					esc_html__( 'Builder orders are added to the basket as %s (hidden from your shop).', '3d-plate-builder' ),
 					'<a href="' . esc_url( get_edit_post_link( $product_id ) ) . '">' . esc_html( get_the_title( $product_id ) ) . '</a>'
 				);
 				?>
@@ -182,7 +182,7 @@ function pbb_render_settings() {
 			<input type="hidden" name="action" value="pbb_save_pricing">
 			<?php wp_nonce_field( 'pbb_save_pricing' ); ?>
 
-			<h2><?php esc_html_e( 'Character style: front & rear plates', 'plateboss-builder' ); ?></h2>
+			<h2><?php esc_html_e( 'Character style: front & rear plates', '3d-plate-builder' ); ?></h2>
 			<table class="form-table" role="presentation">
 				<?php
 				foreach ( $c['styles'] as $id => $style ) {
@@ -191,7 +191,7 @@ function pbb_render_settings() {
 				?>
 			</table>
 
-			<h2><?php esc_html_e( 'Character style: one plate (front only or rear only)', 'plateboss-builder' ); ?></h2>
+			<h2><?php esc_html_e( 'Character style: one plate (front only or rear only)', '3d-plate-builder' ); ?></h2>
 			<table class="form-table" role="presentation">
 				<?php
 				foreach ( $c['styles'] as $id => $style ) {
@@ -200,7 +200,7 @@ function pbb_render_settings() {
 				?>
 			</table>
 
-			<h2><?php esc_html_e( 'Plate size (added per plate)', 'plateboss-builder' ); ?></h2>
+			<h2><?php esc_html_e( 'Plate size (added per plate)', '3d-plate-builder' ); ?></h2>
 			<table class="form-table" role="presentation">
 				<?php
 				foreach ( $p['size'] as $id => $price ) {
@@ -209,7 +209,7 @@ function pbb_render_settings() {
 				?>
 			</table>
 
-			<h2><?php esc_html_e( 'Motorbike and trailer plates (one plate, fixed price)', 'plateboss-builder' ); ?></h2>
+			<h2><?php esc_html_e( 'Motorbike and trailer plates (one plate, fixed price)', '3d-plate-builder' ); ?></h2>
 			<table class="form-table" role="presentation">
 				<?php
 				foreach ( $p['flat'] as $id => $price ) {
@@ -218,7 +218,7 @@ function pbb_render_settings() {
 				?>
 			</table>
 
-			<h2><?php esc_html_e( 'Badge (once per order line; half price on motorbike and trailer plates)', 'plateboss-builder' ); ?></h2>
+			<h2><?php esc_html_e( 'Badge (once per order line; half price on motorbike and trailer plates)', '3d-plate-builder' ); ?></h2>
 			<table class="form-table" role="presentation">
 				<?php
 				foreach ( $c['badges'] as $id => $badge ) {
@@ -229,7 +229,7 @@ function pbb_render_settings() {
 				?>
 			</table>
 
-			<h2><?php esc_html_e( 'Border (once per order line)', 'plateboss-builder' ); ?></h2>
+			<h2><?php esc_html_e( 'Border (once per order line)', '3d-plate-builder' ); ?></h2>
 			<table class="form-table" role="presentation">
 				<?php
 				foreach ( $c['borders'] as $id => $border ) {
@@ -240,13 +240,13 @@ function pbb_render_settings() {
 				?>
 			</table>
 
-			<h2><?php esc_html_e( 'In-store fitting (shown in the builder)', 'plateboss-builder' ); ?></h2>
-			<p><?php esc_html_e( 'Customers who pick fitting in the builder go to checkout with Collect and "Fit my plates while I wait" ticked; the fee itself is charged by that checkout option, so keep this the same as it.', 'plateboss-builder' ); ?></p>
+			<h2><?php esc_html_e( 'In-store fitting (shown in the builder)', '3d-plate-builder' ); ?></h2>
+			<p><?php esc_html_e( 'Customers who pick fitting in the builder go to checkout with Collect and "Fit my plates while I wait" ticked; the fee itself is charged by that checkout option, so keep this the same as it.', '3d-plate-builder' ); ?></p>
 			<table class="form-table" role="presentation">
-				<?php pbb_price_field( 'services', 'fitting', __( 'In-store fitting', 'plateboss-builder' ), $p['services']['fitting'] ); ?>
+				<?php pbb_price_field( 'services', 'fitting', __( 'In-store fitting', '3d-plate-builder' ), $p['services']['fitting'] ); ?>
 			</table>
 
-			<h2><?php esc_html_e( 'Extras (once per order line)', 'plateboss-builder' ); ?></h2>
+			<h2><?php esc_html_e( 'Extras (once per order line)', '3d-plate-builder' ); ?></h2>
 			<table class="form-table" role="presentation">
 				<?php
 				foreach ( $c['accessories'] as $id => $label ) {
@@ -255,7 +255,7 @@ function pbb_render_settings() {
 				?>
 			</table>
 
-			<?php submit_button( __( 'Save prices', 'plateboss-builder' ) ); ?>
+			<?php submit_button( __( 'Save prices', '3d-plate-builder' ) ); ?>
 		</form>
 
 		<?php do_action( 'pbb_settings_after' ); ?>
@@ -269,11 +269,11 @@ function pbb_render_shop_form() {
 	$editable = pbb_shop_editable();
 	$saved    = get_option( 'pbb_shop', array() );
 	?>
-	<h2 class="title" id="pbb-shop"><?php esc_html_e( 'Shop details', 'plateboss-builder' ); ?></h2>
+	<h2 class="title" id="pbb-shop"><?php esc_html_e( 'Shop details', '3d-plate-builder' ); ?></h2>
 	<?php if ( ! $editable ) : ?>
-		<div class="notice notice-info inline"><p><?php esc_html_e( 'You can change these once we have checked your documents and verified your account.', 'plateboss-builder' ); ?></p></div>
+		<div class="notice notice-info inline"><p><?php esc_html_e( 'You can change these once we have checked your documents and verified your account.', '3d-plate-builder' ); ?></p></div>
 	<?php endif; ?>
-	<p><?php esc_html_e( 'The builder helps you lay plates out to BS AU 145e. You stay responsible, as the registered supplier, for the plates you make.', 'plateboss-builder' ); ?></p>
+	<p><?php esc_html_e( 'The builder helps you lay plates out to BS AU 145e. You stay responsible, as the registered supplier, for the plates you make.', '3d-plate-builder' ); ?></p>
 	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 		<input type="hidden" name="action" value="pbb_save_shop">
 		<?php wp_nonce_field( 'pbb_save_shop' ); ?>
@@ -299,12 +299,12 @@ function pbb_render_shop_form() {
 		</table>
 		<?php if ( current_user_can( 'manage_options' ) ) : ?>
 			<details>
-				<summary><?php esc_html_e( 'Advanced: the whole shop config as JSON', 'plateboss-builder' ); ?></summary>
-				<p class="description"><?php esc_html_e( 'Product and page mappings, category presets, menus and the sheeting print. Only print a sheeting brand on the plate backs if you have the maker\'s permission.', 'plateboss-builder' ); ?></p>
+				<summary><?php esc_html_e( 'Advanced: the whole shop config as JSON', '3d-plate-builder' ); ?></summary>
+				<p class="description"><?php esc_html_e( 'Product and page mappings, category presets, menus and the sheeting print. Only print a sheeting brand on the plate backs if you have the maker\'s permission.', '3d-plate-builder' ); ?></p>
 				<textarea name="pbb_shop_json" rows="16" class="large-text code" spellcheck="false"><?php echo esc_textarea( wp_json_encode( is_array( $saved ) ? $saved : array(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ); ?></textarea>
 			</details>
 		<?php endif; ?>
-		<?php submit_button( __( 'Save shop details', 'plateboss-builder' ) ); ?>
+		<?php submit_button( __( 'Save shop details', '3d-plate-builder' ) ); ?>
 		</fieldset>
 	</form>
 	<hr>

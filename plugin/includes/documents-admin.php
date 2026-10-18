@@ -16,7 +16,7 @@ add_action(
 	'add_meta_boxes',
 	function () {
 		$screen = function_exists( 'wc_get_page_screen_id' ) ? wc_get_page_screen_id( 'shop-order' ) : 'shop_order';
-		add_meta_box( 'pbb-documents', __( 'Plate documents (DVLA)', 'plateboss-builder' ), 'pbb_render_documents_box', $screen, 'side', 'high' );
+		add_meta_box( 'pbb-documents', __( 'Plate documents (DVLA)', '3d-plate-builder' ), 'pbb_render_documents_box', $screen, 'side', 'high' );
 	}
 );
 
@@ -26,7 +26,7 @@ function pbb_render_documents_box( $post_or_order ) {
 		return;
 	}
 	if ( 'yes' !== $order->get_meta( '_pbb_docs_required' ) ) {
-		echo '<p>' . esc_html__( 'No road-legal builder plates in this order, so no documents are needed.', 'plateboss-builder' ) . '</p>';
+		echo '<p>' . esc_html__( 'No road-legal builder plates in this order, so no documents are needed.', '3d-plate-builder' ) . '</p>';
 		return;
 	}
 
@@ -36,8 +36,8 @@ function pbb_render_documents_box( $post_or_order ) {
 	$verified = $order->get_meta( '_pbb_docs_verified' );
 	$purged   = $order->get_meta( '_pbb_docs_purged' );
 
-	echo '<p><strong>' . esc_html__( 'Customer chose:', 'plateboss-builder' ) . '</strong> '
-		. ( 'upload' === $method ? esc_html__( 'uploaded at checkout', 'plateboss-builder' ) : esc_html__( 'send later (email, WhatsApp, post or in store)', 'plateboss-builder' ) )
+	echo '<p><strong>' . esc_html__( 'Customer chose:', '3d-plate-builder' ) . '</strong> '
+		. ( 'upload' === $method ? esc_html__( 'uploaded at checkout', '3d-plate-builder' ) : esc_html__( 'send later (email, WhatsApp, post or in store)', '3d-plate-builder' ) )
 		. '</p>';
 
 	echo '<ul style="margin:0 0 1em">';
@@ -48,7 +48,7 @@ function pbb_render_documents_box( $post_or_order ) {
 			$type = isset( $group['options'][ $f['type'] ] ) ? $group['options'][ $f['type'] ] : $f['type'];
 			echo esc_html( $type ) . '<br>';
 			if ( $purged ) {
-				echo '<em>' . esc_html__( 'File deleted after the retention period.', 'plateboss-builder' ) . '</em>';
+				echo '<em>' . esc_html__( 'File deleted after the retention period.', '3d-plate-builder' ) . '</em>';
 			} else {
 				$url = wp_nonce_url(
 					add_query_arg(
@@ -64,7 +64,7 @@ function pbb_render_documents_box( $post_or_order ) {
 				echo '<a href="' . esc_url( $url ) . '">' . esc_html( $f['name'] ) . '</a>';
 			}
 		} else {
-			echo '<em>' . esc_html__( 'Not uploaded yet', 'plateboss-builder' ) . '</em>';
+			echo '<em>' . esc_html__( 'Not uploaded yet', '3d-plate-builder' ) . '</em>';
 		}
 		echo '</li>';
 	}
@@ -77,8 +77,8 @@ function pbb_render_documents_box( $post_or_order ) {
 			. esc_html(
 				sprintf(
 					/* translators: 1: staff name, 2: date */
-					__( 'Verified by %1$s on %2$s', 'plateboss-builder' ),
-					$user ? $user->display_name : __( 'staff', 'plateboss-builder' ),
+					__( 'Verified by %1$s on %2$s', '3d-plate-builder' ),
+					$user ? $user->display_name : __( 'staff', '3d-plate-builder' ),
 					wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), (int) $order->get_meta( '_pbb_docs_verified_at' ) )
 				)
 			) . '</p>';
@@ -91,21 +91,21 @@ function pbb_render_documents_box( $post_or_order ) {
 	}
 
 	// Verification form. Saved with the order's own "Update" button (WooCommerce checks its nonce).
-	echo '<hr><p><strong>' . esc_html__( 'Verify documents', 'plateboss-builder' ) . '</strong><br>'
-		. esc_html__( 'Record which documents you have seen, then tick to release the order to Processing.', 'plateboss-builder' ) . '</p>';
+	echo '<hr><p><strong>' . esc_html__( 'Verify documents', '3d-plate-builder' ) . '</strong><br>'
+		. esc_html__( 'Record which documents you have seen, then tick to release the order to Processing.', '3d-plate-builder' ) . '</p>';
 	foreach ( $types as $kind => $group ) {
 		$current = ! empty( $files[ $kind ]['type'] ) ? $files[ $kind ]['type'] : '';
 		echo '<p><label for="pbb-seen-' . esc_attr( $kind ) . '">' . esc_html( $group['label'] ) . '</label><br>';
 		echo '<select name="pbb_docs_seen[' . esc_attr( $kind ) . ']" id="pbb-seen-' . esc_attr( $kind ) . '" style="width:100%">';
-		echo '<option value="">' . esc_html__( 'Choose…', 'plateboss-builder' ) . '</option>';
+		echo '<option value="">' . esc_html__( 'Choose…', '3d-plate-builder' ) . '</option>';
 		foreach ( $group['options'] as $id => $label ) {
 			echo '<option value="' . esc_attr( $id ) . '"' . selected( $current, $id, false ) . '>' . esc_html( $label ) . '</option>';
 		}
 		echo '</select></p>';
 	}
 	echo '<p><label><input type="checkbox" name="pbb_docs_verify" value="1"> '
-		. esc_html__( 'I have seen valid ID and proof of entitlement for this registration', 'plateboss-builder' ) . '</label></p>';
-	echo '<p class="description">' . esc_html__( 'Then click Update. The order moves from Awaiting documents to Processing.', 'plateboss-builder' ) . '</p>';
+		. esc_html__( 'I have seen valid ID and proof of entitlement for this registration', '3d-plate-builder' ) . '</label></p>';
+	echo '<p class="description">' . esc_html__( 'Then click Update. The order moves from Awaiting documents to Processing.', '3d-plate-builder' ) . '</p>';
 }
 
 add_action(
@@ -127,7 +127,7 @@ add_action(
 		foreach ( $types as $kind => $group ) {
 			$value = isset( $raw[ $kind ] ) ? sanitize_key( $raw[ $kind ] ) : '';
 			if ( ! isset( $group['options'][ $value ] ) ) {
-				WC_Admin_Meta_Boxes::add_error( __( 'Plate documents: choose which ID and entitlement documents you saw before verifying.', 'plateboss-builder' ) );
+				WC_Admin_Meta_Boxes::add_error( __( 'Plate documents: choose which ID and entitlement documents you saw before verifying.', '3d-plate-builder' ) );
 				return;
 			}
 			$seen[ $kind ] = $value;
@@ -143,7 +143,7 @@ add_action(
 		$order->update_meta_data( '_pbb_docs_verified_at', time() );
 		$note = sprintf(
 			/* translators: 1: ID document, 2: entitlement document */
-			__( 'DVLA documents verified. ID: %1$s. Entitlement: %2$s.', 'plateboss-builder' ),
+			__( 'DVLA documents verified. ID: %1$s. Entitlement: %2$s.', '3d-plate-builder' ),
 			$types['id']['options'][ $seen['id'] ],
 			$types['entitlement']['options'][ $seen['entitlement'] ]
 		);
@@ -168,7 +168,7 @@ add_action(
 		$kind     = isset( $_GET['kind'] ) ? sanitize_key( wp_unslash( $_GET['kind'] ) ) : '';
 		check_admin_referer( 'pbb_document_download_' . $order_id . '_' . $kind );
 		if ( ! current_user_can( 'edit_shop_orders' ) ) {
-			wp_die( esc_html__( 'You are not allowed to view this document.', 'plateboss-builder' ), 403 );
+			wp_die( esc_html__( 'You are not allowed to view this document.', '3d-plate-builder' ), 403 );
 		}
 
 		$order = wc_get_order( $order_id );
@@ -176,7 +176,7 @@ add_action(
 		$f     = isset( $files[ $kind ] ) ? $files[ $kind ] : null;
 		$path  = $f ? pbb_document_path( $f['file'] ) : '';
 		if ( ! $path || ! is_file( $path ) ) {
-			wp_die( esc_html__( 'Document not found. It may have been deleted after the retention period.', 'plateboss-builder' ), 404 );
+			wp_die( esc_html__( 'Document not found. It may have been deleted after the retention period.', '3d-plate-builder' ), 404 );
 		}
 
 		nocache_headers();
@@ -201,26 +201,26 @@ add_action(
 		$c = pbb_document_contact();
 		?>
 		<hr>
-		<h2><?php esc_html_e( 'Documents (DVLA checks)', 'plateboss-builder' ); ?></h2>
-		<p><?php esc_html_e( 'Shown to customers who choose to send their documents after ordering, on the order confirmation page and in their order email.', 'plateboss-builder' ); ?></p>
+		<h2><?php esc_html_e( 'Documents (DVLA checks)', '3d-plate-builder' ); ?></h2>
+		<p><?php esc_html_e( 'Shown to customers who choose to send their documents after ordering, on the order confirmation page and in their order email.', '3d-plate-builder' ); ?></p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="pbb_save_documents_contact">
 			<?php wp_nonce_field( 'pbb_save_documents_contact' ); ?>
 			<table class="form-table" role="presentation">
 				<tr>
-					<th scope="row"><label for="pbb-doc-email"><?php esc_html_e( 'Email for documents', 'plateboss-builder' ); ?></label></th>
+					<th scope="row"><label for="pbb-doc-email"><?php esc_html_e( 'Email for documents', '3d-plate-builder' ); ?></label></th>
 					<td><input type="email" id="pbb-doc-email" name="pbb_docs[email]" value="<?php echo esc_attr( $c['email'] ); ?>" class="regular-text"></td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="pbb-doc-wa"><?php esc_html_e( 'WhatsApp number (optional)', 'plateboss-builder' ); ?></label></th>
+					<th scope="row"><label for="pbb-doc-wa"><?php esc_html_e( 'WhatsApp number (optional)', '3d-plate-builder' ); ?></label></th>
 					<td><input type="text" id="pbb-doc-wa" name="pbb_docs[whatsapp]" value="<?php echo esc_attr( $c['whatsapp'] ); ?>" class="regular-text"></td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="pbb-doc-address"><?php esc_html_e( 'Postal address (optional)', 'plateboss-builder' ); ?></label></th>
+					<th scope="row"><label for="pbb-doc-address"><?php esc_html_e( 'Postal address (optional)', '3d-plate-builder' ); ?></label></th>
 					<td><textarea id="pbb-doc-address" name="pbb_docs[address]" rows="3" class="large-text"><?php echo esc_textarea( $c['address'] ); ?></textarea></td>
 				</tr>
 			</table>
-			<?php submit_button( __( 'Save document settings', 'plateboss-builder' ) ); ?>
+			<?php submit_button( __( 'Save document settings', '3d-plate-builder' ) ); ?>
 		</form>
 		<?php
 	}
@@ -230,7 +230,7 @@ add_action(
 	'admin_post_pbb_save_documents_contact',
 	function () {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			wp_die( esc_html__( 'You are not allowed to do that.', 'plateboss-builder' ) );
+			wp_die( esc_html__( 'You are not allowed to do that.', '3d-plate-builder' ) );
 		}
 		check_admin_referer( 'pbb_save_documents_contact' );
 		$in = isset( $_POST['pbb_docs'] ) && is_array( $_POST['pbb_docs'] ) ? wp_unslash( $_POST['pbb_docs'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised below.

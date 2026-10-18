@@ -4,7 +4,7 @@ from partials import page, phone_page, desktop_page, builder_markup
 import pages_main as M, pages_other as O
 import pathlib
 OUT = str(pathlib.Path(__file__).resolve().parent.parent / 'site')
-FONT = OUT + '/plateboss-builder/assets/fonts/charles-wright-bold.json'
+FONT = OUT + '/builder/assets/fonts/charles-wright-bold.json'
 P = [
  ('index.html','[BRAND NAME]: 3D number plate builder shops','A complete number plate shop with a real-time 3D plate builder built in, for UK registered number plate suppliers.',M.home(FONT),False),
  ('demo.html','Live demo | [BRAND NAME]','Try the full 3D number plate builder, set up for a demo supplier.',M.demo(),False),

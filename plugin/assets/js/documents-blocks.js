@@ -11,11 +11,11 @@
 	function DocumentsPanel() {
 		const ref = useRef(null);
 		useEffect(() => {
-			const ui = window.PlateBossDocuments.mount(ref.current);
+			const ui = window.PlateBuilderDocuments.mount(ref.current);
 			return () => ui.destroy();
 		}, []);
 		return el(ExperimentalOrderMeta, null, el('div', { ref, className: 'pbb-docs-block' }));
 	}
 
-	registerPlugin('plateboss-documents', { render: DocumentsPanel, scope: 'woocommerce-checkout' });
+	registerPlugin('plate-builder-documents', { render: DocumentsPanel, scope: 'woocommerce-checkout' });
 })();

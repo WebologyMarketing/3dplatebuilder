@@ -176,7 +176,7 @@
 	}
 
 	let uid = 0;
-	window.PlateBossDocuments = { mount: (el) => mount(el, { uid: ++uid }) };
+	window.PlateBuilderDocuments = { mount: (el) => mount(el, { uid: ++uid }) };
 
 	/**
 	 * The PHP placeholder comes from woocommerce_checkout_after_customer_details, which
@@ -209,7 +209,7 @@
 	const boot = () => {
 		const el = findOrCreateContainer();
 		if (!el) return;
-		const ui = window.PlateBossDocuments.mount(el);
+		const ui = window.PlateBuilderDocuments.mount(el);
 		if (window.jQuery) window.jQuery(document.body).on('updated_checkout', () => ui.refresh());
 	};
 	if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

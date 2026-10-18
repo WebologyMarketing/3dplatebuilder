@@ -11,5 +11,5 @@
 /demo-assets/*
   Cache-Control: public, max-age=604800
 
-/plateboss-builder/*
+/builder/*
   Cache-Control: public, max-age=86400

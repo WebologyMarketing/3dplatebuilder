@@ -4,7 +4,7 @@ import json
 FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..100,400..900&amp;display=swap">'
 
 IMPORTMAP = '''<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<!-- Three.js r170, pinned exactly as the builder kit uses it (see plateboss-builder/README.md). -->
+<!-- Three.js r170, pinned exactly as the builder kit uses it (see plugin/README.md). -->
 <script type="importmap">
 {
 	"imports": {
@@ -53,7 +53,7 @@ FOOTER = '''<footer class="site-footer">
 		<div class="footer-grid">
 			<div>
 				<a class="brand" href="index.html">''' + BRAND_MARK + '''<span>[BRAND NAME]</span></a>
-				<p style="margin-top:14px">Number plate shops with a 3D plate builder built in, for UK registered number plate suppliers. Built by, and running at, <a href="https://plateboss.co.uk" rel="noopener">PlateBoss.co.uk</a>.</p>
+				<p style="margin-top:14px">Number plate shops with a 3D plate builder built in, for UK registered number plate suppliers.</p>
 			</div>
 			<div>
 				<h2>Product</h2>
@@ -367,7 +367,7 @@ def phone_page(builder_html):
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Phone builder | [BRAND NAME]</title>
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="plateboss-builder/assets/css/builder.css" data-pbb-css>
+<link rel="stylesheet" href="builder/assets/css/builder.css" data-pbb-css>
 {IMPORTMAP}
 <style>
 	html, body {{ margin: 0; height: 100%; background: #f4f5f6; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }}

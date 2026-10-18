@@ -1,7 +1,7 @@
 /**
  * Live demo wrapper for the plate builder.
  *
- * White-labels the builder through its config only (plateboss-builder/ is a copy of plugin/assets,
+ * White-labels the builder through its config only (builder/ is a copy of plugin/assets,
  * synced by tools/sync-demo-builder.sh):
  *  - neutral demo supplier "Your Plates Ltd", postcode "AB1 2CD", no logo;
  *  - the car badge comes from demo-assets/ (carBadge); plain plate backs (backing: null);
@@ -11,7 +11,7 @@
  * with a panel showing what the plate maker's shop would receive.
  */
 
-const BUILDER = new URL('../../plateboss-builder/assets/', import.meta.url).href;
+const BUILDER = new URL('../../builder/assets/', import.meta.url).href;
 const DEMO_ASSETS = new URL('../../demo-assets/', import.meta.url).href;
 
 /* Example prices (a typical UK price list). A real shop sets its own in WooCommerce → Plate Builder. */

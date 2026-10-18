@@ -25,7 +25,7 @@ function pbb_get_product_id() {
 	}
 
 	$product = new WC_Product_Simple();
-	$product->set_name( __( 'Custom Number Plate', 'plateboss-builder' ) );
+	$product->set_name( __( 'Custom Number Plate', '3d-plate-builder' ) );
 	$product->set_status( 'publish' );
 	$product->set_catalog_visibility( 'hidden' );
 	$product->set_regular_price( '0' ); // Real price is set per basket line from the configuration.
@@ -52,7 +52,7 @@ function pbb_ajax_add_to_cart() {
 
 	$product_id = pbb_product_for_config( $config );
 	if ( ! $product_id ) {
-		wp_send_json_error( array( 'message' => __( 'The shop is not set up for custom plates yet.', 'plateboss-builder' ) ), 500 );
+		wp_send_json_error( array( 'message' => __( 'The shop is not set up for custom plates yet.', '3d-plate-builder' ) ), 500 );
 	}
 
 	// Identical configurations stack as quantity; anything different is its own basket line.
@@ -68,7 +68,7 @@ function pbb_ajax_add_to_cart() {
 	if ( ! $key ) {
 		$notices = wc_get_notices( 'error' );
 		wc_clear_notices();
-		$message = $notices ? wp_strip_all_tags( $notices[0]['notice'] ) : __( 'Could not add to basket. Please try again.', 'plateboss-builder' );
+		$message = $notices ? wp_strip_all_tags( $notices[0]['notice'] ) : __( 'Could not add to basket. Please try again.', '3d-plate-builder' );
 		wp_send_json_error( array( 'message' => $message ), 400 );
 	}
 

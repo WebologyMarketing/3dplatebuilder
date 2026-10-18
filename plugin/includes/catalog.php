@@ -155,7 +155,7 @@ function pbb_catalog_labels() {
 }
 
 /**
- * Default prices (GBP): typical UK prices, as charged at PlateBoss.co.uk in October 2026.
+ * Default prices (GBP): typical UK prices, October 2026. Each shop sets its own.
  * Edit them in WooCommerce → Plate Builder.
  *
  *   style_pair / style_single  front & rear / one plate, standard size, no extras
@@ -292,7 +292,7 @@ function pbb_format_registration( $raw ) {
 function pbb_sanitize_config( $raw ) {
 	$c = pbb_catalog();
 	if ( ! is_array( $raw ) ) {
-		return new WP_Error( 'pbb_invalid', __( 'Something went wrong. Please refresh and try again.', 'plateboss-builder' ) );
+		return new WP_Error( 'pbb_invalid', __( 'Something went wrong. Please refresh and try again.', '3d-plate-builder' ) );
 	}
 
 	$pick = function ( $key, $allowed, $default ) use ( $raw ) {
@@ -302,7 +302,7 @@ function pbb_sanitize_config( $raw ) {
 
 	$registration = pbb_format_registration( isset( $raw['registration'] ) ? $raw['registration'] : '' );
 	if ( '' === $registration ) {
-		return new WP_Error( 'pbb_registration', __( 'Please enter your registration.', 'plateboss-builder' ) );
+		return new WP_Error( 'pbb_registration', __( 'Please enter your registration.', '3d-plate-builder' ) );
 	}
 
 	$size      = $pick( 'size', $c['sizes'], 'standard' );
@@ -319,16 +319,16 @@ function pbb_sanitize_config( $raw ) {
 		$rear_size = $size;
 		$plates    = 'rear';
 	} elseif ( $c['sizes'][ $size ]['rear_only'] ) {
-		return new WP_Error( 'pbb_size', __( 'That size is for rear plates only. Please choose another front plate size.', 'plateboss-builder' ) );
+		return new WP_Error( 'pbb_size', __( 'That size is for rear plates only. Please choose another front plate size.', '3d-plate-builder' ) );
 	}
 	$in_use = array_unique( 'pair' === $plates ? array( $size, $rear_size ) : array( 'rear' === $plates ? $rear_size : $size ) );
 
 	foreach ( $in_use as $s ) {
 		if ( null !== $c['badges'][ $badge ]['sizes'] && ! in_array( $s, $c['badges'][ $badge ]['sizes'], true ) ) {
-			return new WP_Error( 'pbb_badge', __( 'That badge isn\'t available on this plate size.', 'plateboss-builder' ) );
+			return new WP_Error( 'pbb_badge', __( 'That badge isn\'t available on this plate size.', '3d-plate-builder' ) );
 		}
 		if ( isset( $c['sizes'][ $s ]['styles'] ) && ! in_array( $style, $c['sizes'][ $s ]['styles'], true ) ) {
-			return new WP_Error( 'pbb_style', __( 'That character style isn\'t available on this plate size yet.', 'plateboss-builder' ) );
+			return new WP_Error( 'pbb_style', __( 'That character style isn\'t available on this plate size yet.', '3d-plate-builder' ) );
 		}
 	}
 
@@ -473,27 +473,27 @@ function pbb_describe_config( array $config ) {
 	}
 
 	$lines = array(
-		__( 'Registration', 'plateboss-builder' ) => $config['registration'],
-		__( 'Plates', 'plateboss-builder' )       => $c['plates'][ $config['plates'] ],
-		__( 'Size', 'plateboss-builder' )         => $size_text,
-		__( 'Style', 'plateboss-builder' )        => $style,
+		__( 'Registration', '3d-plate-builder' ) => $config['registration'],
+		__( 'Plates', '3d-plate-builder' )       => $c['plates'][ $config['plates'] ],
+		__( 'Size', '3d-plate-builder' )         => $size_text,
+		__( 'Style', '3d-plate-builder' )        => $style,
 	);
 	if ( 'none' !== $config['badge'] ) {
-		$lines[ __( 'Badge', 'plateboss-builder' ) ] = $c['badges'][ $config['badge'] ]['label'];
+		$lines[ __( 'Badge', '3d-plate-builder' ) ] = $c['badges'][ $config['badge'] ]['label'];
 	}
 	if ( 'none' !== $config['border'] ) {
-		$lines[ __( 'Border', 'plateboss-builder' ) ] = $c['borders'][ $config['border'] ]['label'];
+		$lines[ __( 'Border', '3d-plate-builder' ) ] = $c['borders'][ $config['border'] ]['label'];
 	}
 	if ( $config['accessories'] ) {
 		$names = array();
 		foreach ( $config['accessories'] as $a ) {
 			$names[] = $c['accessories'][ $a ];
 		}
-		$lines[ __( 'Extras', 'plateboss-builder' ) ] = implode( ', ', $names );
+		$lines[ __( 'Extras', '3d-plate-builder' ) ] = implode( ', ', $names );
 	}
-	$lines[ __( 'Use', 'plateboss-builder' ) ] = $config['road_legal']
-		? __( 'Road legal', 'plateboss-builder' )
-		: __( 'Show plate (not for road use)', 'plateboss-builder' );
+	$lines[ __( 'Use', '3d-plate-builder' ) ] = $config['road_legal']
+		? __( 'Road legal', '3d-plate-builder' )
+		: __( 'Show plate (not for road use)', '3d-plate-builder' );
 
 	return $lines;
 }

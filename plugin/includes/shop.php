@@ -31,8 +31,8 @@ function pbb_shop_defaults() {
 		'dark'                  => '#0D0E10',
 
 		// Wording.
-		'fitting_note'          => __( 'Collect from the shop and we fit them on the spot.', 'plateboss-builder' ),
-		'fitting_checkout_note' => __( 'In-store fitting is only available when you collect your plates.', 'plateboss-builder' ),
+		'fitting_note'          => __( 'Collect from the shop and we fit them on the spot.', '3d-plate-builder' ),
+		'fitting_checkout_note' => __( 'In-store fitting is only available when you collect your plates.', '3d-plate-builder' ),
 
 		// "On a car" view: the badge on the car's boot and grille. Empty = no badge.
 		'car_badge'             => '',
@@ -138,8 +138,8 @@ add_action(
 		echo '<div class="notice notice-warning"><p>';
 		printf(
 			/* translators: %s: link to the settings screen */
-			esc_html__( 'Plate Builder: set your supplier name and postcode, exactly as registered with the DVLA, so they print correctly on every plate. %s', 'plateboss-builder' ),
-			'<a href="' . esc_url( $url ) . '">' . esc_html__( 'Set them now', 'plateboss-builder' ) . '</a>'
+			esc_html__( 'Plate Builder: set your supplier name and postcode, exactly as registered with the DVLA, so they print correctly on every plate. %s', '3d-plate-builder' ),
+			'<a href="' . esc_url( $url ) . '">' . esc_html__( 'Set them now', '3d-plate-builder' ) . '</a>'
 		);
 		echo '</p></div>';
 	}

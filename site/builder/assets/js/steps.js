@@ -1,5 +1,5 @@
 /**
- * Phones: the builder fills the screen like an app ([plateboss_builder mobile="app"], the default),
+ * Phones: the builder fills the screen like an app ([plate_builder mobile="app"], the default),
  * or opens full screen from a "Design your plates" button (mobile="launch", used on product pages),
  * or stays in the page (mobile="inline"). The option sections become a row of cards under the preview.
  * Customers swipe (native scroll-snap) or use Back / Next; the buy bar's button

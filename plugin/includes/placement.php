@@ -28,9 +28,9 @@ add_action(
 			array(
 				'post_type'    => 'page',
 				'post_status'  => 'publish',
-				'post_title'   => __( 'Design Your Plates', 'plateboss-builder' ),
+				'post_title'   => __( 'Design Your Plates', '3d-plate-builder' ),
 				'post_name'    => 'design-your-plates',
-				'post_content' => '[plateboss_builder]',
+				'post_content' => '[plate_builder]',
 			)
 		);
 		if ( $id && ! is_wp_error( $id ) ) {
@@ -108,20 +108,20 @@ add_filter(
 
 		$preset = pbb_landing_pages()[ get_queried_object_id() ] ?? array();
 		/* translators: %s: plate style, e.g. "4D" */
-		$title = ! empty( $preset['name'] ) ? sprintf( __( 'Design your %s plates in 3D', 'plateboss-builder' ), $preset['name'] ) : __( 'Design your plates in 3D', 'plateboss-builder' );
+		$title = ! empty( $preset['name'] ) ? sprintf( __( 'Design your %s plates in 3D', '3d-plate-builder' ), $preset['name'] ) : __( 'Design your plates in 3D', '3d-plate-builder' );
 		$atts  = array_merge( array( 'mobile' => 'launch', 'teaser' => true ), array_intersect_key( $preset, array_flip( array( 'style', 'size', 'badge' ) ) ) );
 
 		ob_start();
 		?>
 		<section class="pbb-feature" id="design-your-plates">
 			<div class="pbb-feature-head">
-				<span class="pbb-new"><?php esc_html_e( 'New', 'plateboss-builder' ); ?></span>
+				<span class="pbb-new"><?php esc_html_e( 'New', '3d-plate-builder' ); ?></span>
 				<h2><?php echo esc_html( $title ); ?></h2>
-				<p><?php esc_html_e( 'Enter your reg, choose your style and see exactly what you\'re getting, then order and pay right here.', 'plateboss-builder' ); ?></p>
+				<p><?php esc_html_e( 'Enter your reg, choose your style and see exactly what you\'re getting, then order and pay right here.', '3d-plate-builder' ); ?></p>
 				<ul class="pbb-feature-points">
-					<li><?php esc_html_e( 'See it in 3D, front and rear', 'plateboss-builder' ); ?></li>
-					<li><?php esc_html_e( 'Legal spacing checked as you type', 'plateboss-builder' ); ?></li>
-					<li><?php esc_html_e( 'Live price, Apple Pay & Google Pay', 'plateboss-builder' ); ?></li>
+					<li><?php esc_html_e( 'See it in 3D, front and rear', '3d-plate-builder' ); ?></li>
+					<li><?php esc_html_e( 'Legal spacing checked as you type', '3d-plate-builder' ); ?></li>
+					<li><?php esc_html_e( 'Live price, Apple Pay & Google Pay', '3d-plate-builder' ); ?></li>
 				</ul>
 			</div>
 			<?php echo pbb_shortcode( $atts ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the template. ?>
@@ -154,7 +154,7 @@ add_filter(
 		$item->object_id        = pbb_builder_page_id();
 		$item->object           = 'page';
 		$item->type             = 'custom';
-		$item->title            = __( '3D Plate Builder', 'plateboss-builder' );
+		$item->title            = __( '3D Plate Builder', '3d-plate-builder' );
 		$item->url              = pbb_builder_url();
 		$item->target           = '';
 		$item->attr_title       = '';
@@ -201,7 +201,7 @@ add_action(
 		?>
 		<a class="pbb-fab" href="<?php echo esc_url( pbb_builder_url() ); ?>">
 			<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 2.5l8.5 4.75v9.5L12 21.5l-8.5-4.75v-9.5zM12 12l8.5-4.75M12 12v9.5M12 12L3.5 7.25"/></svg>
-			<span><?php esc_html_e( 'Design in 3D', 'plateboss-builder' ); ?></span>
+			<span><?php esc_html_e( 'Design in 3D', '3d-plate-builder' ); ?></span>
 		</a>
 		<style>
 			<?php echo pbb_shop_css_vars(); // phpcs:ignore WordPress.Security.EscapeOutput -- built from sanitised hex colours. ?>
@@ -243,11 +243,11 @@ add_action(
 		?>
 		<div class="pbb-strip" data-pbb-strip hidden>
 			<a class="pbb-strip-link" href="<?php echo esc_url( $href ); ?>">
-				<span class="pbb-strip-new"><?php esc_html_e( 'New', 'plateboss-builder' ); ?></span>
-				<span class="pbb-strip-text"><?php esc_html_e( 'See your plates in 3D before you order', 'plateboss-builder' ); ?></span>
-				<span class="pbb-strip-cta"><?php esc_html_e( 'Try the 3D builder', 'plateboss-builder' ); ?> &rarr;</span>
+				<span class="pbb-strip-new"><?php esc_html_e( 'New', '3d-plate-builder' ); ?></span>
+				<span class="pbb-strip-text"><?php esc_html_e( 'See your plates in 3D before you order', '3d-plate-builder' ); ?></span>
+				<span class="pbb-strip-cta"><?php esc_html_e( 'Try the 3D builder', '3d-plate-builder' ); ?> &rarr;</span>
 			</a>
-			<button type="button" class="pbb-strip-close" data-pbb-strip-close aria-label="<?php esc_attr_e( 'Hide this message', 'plateboss-builder' ); ?>">&times;</button>
+			<button type="button" class="pbb-strip-close" data-pbb-strip-close aria-label="<?php esc_attr_e( 'Hide this message', '3d-plate-builder' ); ?>">&times;</button>
 		</div>
 		<script>
 		(function () {
@@ -279,16 +279,16 @@ add_action(
 			return;
 		}
 		/* translators: %s: plate style, e.g. "4D" */
-		$title = sprintf( __( 'Design your %s plates in 3D', 'plateboss-builder' ), $preset['name'] );
+		$title = sprintf( __( 'Design your %s plates in 3D', '3d-plate-builder' ), $preset['name'] );
 		?>
 		<a class="pbb-band" href="<?php echo esc_url( pbb_builder_link( $preset ) ); ?>">
 			<span class="pbb-band-plate" aria-hidden="true">YOUR REG</span>
 			<span class="pbb-band-copy">
-				<span class="pbb-strip-new"><?php esc_html_e( 'New', 'plateboss-builder' ); ?></span>
+				<span class="pbb-strip-new"><?php esc_html_e( 'New', '3d-plate-builder' ); ?></span>
 				<strong><?php echo esc_html( $title ); ?></strong>
-				<span><?php esc_html_e( 'Type your reg, turn it round, see every detail, then order and pay in the builder.', 'plateboss-builder' ); ?></span>
+				<span><?php esc_html_e( 'Type your reg, turn it round, see every detail, then order and pay in the builder.', '3d-plate-builder' ); ?></span>
 			</span>
-			<span class="pbb-band-cta"><?php esc_html_e( 'Start designing', 'plateboss-builder' ); ?> &rarr;</span>
+			<span class="pbb-band-cta"><?php esc_html_e( 'Start designing', '3d-plate-builder' ); ?> &rarr;</span>
 		</a>
 		<?php
 	},
@@ -351,16 +351,16 @@ add_action(
 		}
 		$preset = pbb_landing_pages()[ get_queried_object_id() ] ?? array();
 		/* translators: %s: plate style, e.g. "4D" */
-		$title = ! empty( $preset['name'] ) ? sprintf( __( 'See your %s plates in 3D before you order', 'plateboss-builder' ), $preset['name'] ) : __( 'See your plates in 3D before you order', 'plateboss-builder' );
+		$title = ! empty( $preset['name'] ) ? sprintf( __( 'See your %s plates in 3D before you order', '3d-plate-builder' ), $preset['name'] ) : __( 'See your plates in 3D before you order', '3d-plate-builder' );
 		?>
 		<template id="pbb-hero-cta">
 			<div class="pbb-hero-cta">
-				<span class="pbb-strip-new"><?php esc_html_e( 'New', 'plateboss-builder' ); ?></span>
+				<span class="pbb-strip-new"><?php esc_html_e( 'New', '3d-plate-builder' ); ?></span>
 				<p class="pbb-hero-cta-title"><?php echo esc_html( $title ); ?></p>
-				<p class="pbb-hero-cta-text"><?php esc_html_e( 'Type your reg, pick your style and turn it round. Then order and pay right there.', 'plateboss-builder' ); ?></p>
+				<p class="pbb-hero-cta-text"><?php esc_html_e( 'Type your reg, pick your style and turn it round. Then order and pay right there.', '3d-plate-builder' ); ?></p>
 				<a class="pbb-hero-cta-btn" href="<?php echo esc_url( pbb_landing_link() ); ?>">
 					<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" d="M12 2.5l8.5 4.75v9.5L12 21.5l-8.5-4.75v-9.5zM12 12l8.5-4.75M12 12v9.5M12 12L3.5 7.25"/></svg>
-					<?php esc_html_e( 'Design in 3D', 'plateboss-builder' ); ?> <span aria-hidden="true">&rarr;</span>
+					<?php esc_html_e( 'Design in 3D', '3d-plate-builder' ); ?> <span aria-hidden="true">&rarr;</span>
 				</a>
 			</div>
 		</template>

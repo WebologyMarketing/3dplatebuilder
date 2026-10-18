@@ -7,7 +7,7 @@ Fill the site's [PLACEHOLDERS] from placeholders.json and remove the draft price
 
 Run it from the site folder (the one with index.html). Keep a copy of the unfilled site first:
 it edits the files in place. Empty values in placeholders.json are left untouched.
-The builder's own files (plateboss-builder/) are never changed.
+The builder's own files (builder/) are never changed.
 """
 import json, pathlib, re, sys
 
@@ -21,7 +21,7 @@ for group, items in json.loads((root / 'placeholders.json').read_text(encoding='
 
 final = '--final' in sys.argv
 files = [p for p in root.rglob('*') if p.suffix in {'.html', '.js', '.md', '.txt', '.xml', '.toml', '.php'}
-         and 'plateboss-builder' not in p.parts and p.name not in {'fill-placeholders.py', 'LAUNCH-NOTES.md'}]
+         and 'builder' not in p.parts and p.name not in {'fill-placeholders.py', 'LAUNCH-NOTES.md'}]
 changed = 0
 for path in files:
     text = path.read_text(encoding='utf-8')
