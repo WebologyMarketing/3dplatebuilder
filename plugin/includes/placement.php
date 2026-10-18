@@ -205,8 +205,8 @@ add_action(
 		</a>
 		<style>
 			<?php echo pbb_shop_css_vars(); // phpcs:ignore WordPress.Security.EscapeOutput -- built from sanitised hex colours. ?>
-			.pbb-fab{position:fixed;left:16px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:9990;display:inline-flex;align-items:center;gap:8px;padding:12px 18px 12px 14px;border-radius:999px;background:var(--pbb-dark);color:#fff!important;font-size:15px;font-weight:700;line-height:1;text-decoration:none!important;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .2s ease}
-			.pbb-fab svg{color:var(--pbb-accent)}
+			.pbb-fab{position:fixed;left:16px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:9990;display:inline-flex;align-items:center;gap:8px;padding:12px 18px 12px 14px;border-radius:999px;background:var(--pbb-brand-dark);color:#fff!important;font-size:15px;font-weight:700;line-height:1;text-decoration:none!important;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .2s ease}
+			.pbb-fab svg{color:var(--pbb-brand)}
 			.pbb-fab:hover{transform:translateY(-2px)}
 			@media (max-width:1024px){body.sticky-toolbar-on .pbb-fab{bottom:calc(72px + env(safe-area-inset-bottom))}}
 			@media (max-width:420px){.pbb-fab{padding:11px 15px 11px 12px;font-size:14px}}
@@ -304,27 +304,27 @@ add_action(
 		?>
 		<style id="pbb-promo-css">
 			<?php echo pbb_shop_css_vars(); // phpcs:ignore WordPress.Security.EscapeOutput -- built from sanitised hex colours. ?>
-			.pbb-strip{position:relative;z-index:100;display:flex;align-items:center;background:var(--pbb-dark);color:#fff;font-size:14px;line-height:1.3}
+			.pbb-strip{position:relative;z-index:100;display:flex;align-items:center;background:var(--pbb-brand-dark);color:#fff;font-size:14px;line-height:1.3}
 			.pbb-strip[hidden]{display:none}
 			.pbb-strip-link{flex:1;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 12px;padding:9px 44px 9px 16px;color:#fff!important;text-decoration:none!important}
-			.pbb-strip-new{display:inline-block;padding:3px 8px;border-radius:999px;background:var(--pbb-accent);color:var(--pbb-accent-ink);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+			.pbb-strip-new{display:inline-block;padding:3px 8px;border-radius:999px;background:var(--pbb-brand);color:var(--pbb-brand-ink);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 			.pbb-strip-text{font-weight:500}
-			.pbb-strip-cta{font-weight:800;color:var(--pbb-accent);text-decoration:underline;text-underline-offset:3px}
+			.pbb-strip-cta{font-weight:800;color:var(--pbb-brand);text-decoration:underline;text-underline-offset:3px}
 			.pbb-strip-close{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;background:none;color:#cfcfcf;font-size:22px;line-height:1;cursor:pointer}
-			.pbb-hero-cta{width:100%;max-width:520px;margin:22px 0 4px;padding:18px 20px;border-radius:16px;background:rgba(13,14,16,.78);border:1px solid color-mix(in srgb,var(--pbb-accent) 45%,transparent);color:#fff;text-align:left;box-shadow:0 18px 40px -20px rgba(0,0,0,.8);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+			.pbb-hero-cta{width:100%;max-width:520px;margin:22px 0 4px;padding:18px 20px;border-radius:16px;background:rgba(13,14,16,.78);border:1px solid color-mix(in srgb,var(--pbb-brand) 45%,transparent);color:#fff;text-align:left;box-shadow:0 18px 40px -20px rgba(0,0,0,.8);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 			.pbb-hero-cta.is-centred{margin-left:auto;margin-right:auto;text-align:center}
 			.pbb-hero-cta-title{margin:10px 0 0!important;color:#fff!important;font-size:24px!important;font-weight:800!important;line-height:1.15!important}
 			.pbb-hero-cta-text{margin:6px 0 0!important;color:#d9d7cf!important;font-size:15px!important;line-height:1.45!important}
-			.pbb-hero-cta-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;min-height:54px;padding:0 26px;border-radius:12px;background:var(--pbb-accent);color:var(--pbb-accent-ink)!important;font-weight:800;font-size:17px;letter-spacing:.05em;text-transform:uppercase;text-decoration:none!important;box-shadow:0 8px 20px -8px color-mix(in srgb,var(--pbb-accent) 70%,transparent);transition:transform .15s ease}
+			.pbb-hero-cta-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;min-height:54px;padding:0 26px;border-radius:12px;background:var(--pbb-brand);color:var(--pbb-brand-ink)!important;font-weight:800;font-size:17px;letter-spacing:.05em;text-transform:uppercase;text-decoration:none!important;box-shadow:0 8px 20px -8px color-mix(in srgb,var(--pbb-brand) 70%,transparent);transition:transform .15s ease}
 			.pbb-hero-cta-btn:hover{transform:translateY(-1px);background:#ffe066}
 			@media (max-width:640px){.pbb-hero-cta{padding:16px}.pbb-hero-cta-title{font-size:20px!important}.pbb-hero-cta-btn{width:100%}}
-			.pbb-band{display:flex;align-items:center;gap:18px;margin:0 0 24px;padding:16px 20px;border-radius:16px;background:var(--pbb-dark);color:#fff!important;text-decoration:none!important;box-shadow:0 10px 30px -18px rgba(0,0,0,.6)}
+			.pbb-band{display:flex;align-items:center;gap:18px;margin:0 0 24px;padding:16px 20px;border-radius:16px;background:var(--pbb-brand-dark);color:#fff!important;text-decoration:none!important;box-shadow:0 10px 30px -18px rgba(0,0,0,.6)}
 			.pbb-band:hover .pbb-band-cta{background:#ffe066}
 			.pbb-band-plate{flex:none;padding:8px 14px;border-radius:6px;background:#F9D71C;color:#111;font-weight:900;font-size:22px;letter-spacing:2px;transform:perspective(400px) rotateY(-18deg) rotateX(8deg);box-shadow:-6px 10px 18px rgba(0,0,0,.5)}
 			.pbb-band-copy{flex:1;display:flex;flex-direction:column;gap:4px;font-size:14px;color:#d9d7cf}
 			.pbb-band-copy strong{font-size:20px;line-height:1.15;color:#fff}
 			.pbb-band-copy .pbb-strip-new{align-self:flex-start}
-			.pbb-band-cta{flex:none;padding:12px 18px;border-radius:12px;background:var(--pbb-accent);color:var(--pbb-accent-ink);font-weight:800;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+			.pbb-band-cta{flex:none;padding:12px 18px;border-radius:12px;background:var(--pbb-brand);color:var(--pbb-brand-ink);font-weight:800;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
 			@media (max-width:640px){
 				.pbb-strip{font-size:13px}
 				.pbb-strip-text{display:none}

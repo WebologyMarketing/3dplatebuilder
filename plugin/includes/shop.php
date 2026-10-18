@@ -98,9 +98,12 @@ function pbb_shop_colour( $key ) {
 	return $colour;
 }
 
-/** The brand colours as CSS custom properties, for the builder and the promo blocks. */
+/**
+ * The brand colours as CSS custom properties, for the builder and the promo blocks.
+ * Named --pbb-brand*: builder.css already uses --pbb-accent for its own dark UI colour.
+ */
 function pbb_shop_css_vars() {
-	return ':root{--pbb-accent:' . pbb_shop_colour( 'accent' ) . ';--pbb-accent-ink:' . pbb_shop_colour( 'accent_ink' ) . ';--pbb-dark:' . pbb_shop_colour( 'dark' ) . '}';
+	return ':root{--pbb-brand:' . pbb_shop_colour( 'accent' ) . ';--pbb-brand-ink:' . pbb_shop_colour( 'accent_ink' ) . ';--pbb-brand-dark:' . pbb_shop_colour( 'dark' ) . '}';
 }
 
 /** The backing print as plain strings for the builder, or null for plain sheeting. */

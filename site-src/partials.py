@@ -367,7 +367,7 @@ def phone_page(builder_html):
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Phone builder | [BRAND NAME]</title>
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="builder/assets/css/builder.css" data-pbb-css>
+<link rel="stylesheet" href="builder/assets/css/builder.css?v=1.10.2" data-pbb-css>
 {IMPORTMAP}
 <style>
 	html, body {{ margin: 0; height: 100%; background: #f4f5f6; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }}
