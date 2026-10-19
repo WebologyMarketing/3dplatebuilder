@@ -7,3 +7,6 @@
 - `site/` pages are generated: edit `site-src/`, run `python3 site-src/build.py`, then `python3 site/tools/fill-placeholders.py --final`. Don't hand-edit the generated HTML.
 - Three.js stays pinned to r170 (0.170.0) from jsDelivr until it's vendored.
 - Commit on a branch, open a PR to `main`; never push secrets.
+- Deploys (Plesk Git, both from GitHub `WebologyMarketing/3dplatebuilder`):
+  - `staging` branch → staging.3dplatebuilder.com automatically on every push (webhook): `site/` is copied to the `site` folder and `plugin/` to the test shop's `wp-content/plugins/3d-plate-builder`. Merge work branches into `staging` to preview them.
+  - `main` → 3dplatebuilder.com (`httpdocs`), deployed by hand with Deploy now after the PR is merged. Never deploy unmerged work to live.
