@@ -12,7 +12,6 @@ P = [
  ('features.html','Features | [BRAND NAME]','Everything the 3D plate builder does: legal spacing, 4D and gel styles, badges, phone app layout, checkout and document checks.',M.features(),False),
  ('pricing.html','Pricing | [BRAND NAME]','Monthly plans with a set-up fee, or buy your plate shop outright.',O.pricing(),False),
  ('setup.html','How we set you up | [BRAND NAME]','How we build your plate shop: products and prices, supplier details, Stripe, test orders and go live.',O.setup(),False),
- ('start.html','Start your shop | [BRAND NAME]','Sign up for a number plate shop website with the 3D plate builder built in. Three quick steps.',O.start(),False),
  ('contact.html','Ask a question | [BRAND NAME]','Ask us a question about 3D Plate Builder. We reply by email.',O.contact(),False),
  ('website.html','What you get | [BRAND NAME]','The plate shop website you get: the pages, how far we customise it, everything it does and the 3D builder at its heart.',M.website(),False),
  ('privacy.html','Privacy notice | [BRAND NAME]','How [BRAND NAME] uses personal information.',O.privacy(),False),
@@ -21,6 +20,11 @@ P = [
 ]
 for f,t,d,b,bl in P:
     open(f'{OUT}/{f}','w').write(page(f,t,d,b,builder=bl))
+# Old start.html links now go to sign-up in the customer portal, keeping ?plan=.
+_go = 'https://app.3dplatebuilder.com/signup'
+_start = ('<section class="page-head"><div class="wrap"><div class="intro"><h1>Start your shop</h1><p>Sign-up has moved to your account area. <a id="go" href="' + _go + '">Continue to sign up</a>.</p></div></div></section>\n'
+  "<script>(function(){var p=new URLSearchParams(location.search).get('plan');var u='" + _go + "'+(p&&/^(starter|pro|complete)$/.test(p)?'?plan='+p:'');document.getElementById('go').href=u;location.replace(u);})();</script>")
+open(f'{OUT}/start.html','w').write(page('start.html','Start your shop | [BRAND NAME]','Sign up for a number plate shop website with the 3D plate builder built in.',_start,extra_head=f'<meta name="robots" content="noindex"><noscript><meta http-equiv="refresh" content="0;url={_go}"></noscript>'))
 nf = '''<section class="page-head"><div class="wrap"><div class="intro"><h1>Page not found</h1><p>That page isn't here. Try the <a href="index.html">home page</a> or the <a href="demo.html">live demo</a>.</p></div></div></section>'''
 open(f'{OUT}/404.html','w').write(page('404.html','Page not found | [BRAND NAME]','Page not found.',nf).replace('href="index.html"','href="/"'))
 import re as _re

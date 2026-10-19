@@ -111,7 +111,7 @@ def website():
     pages = ''.join(f'<li><div><h3>{h}</h3><p>{t}</p></div>{tag(w)}</li>' for h, t, w in PAGES)
     levels = ''.join(
         f'<li class="level"><p class="level-name">{n}</p><h3>{h}</h3><ul>' + ''.join(f'<li>{i}</li>' for i in items) +
-        f'</ul><a class="btn btn-ghost" href="start.html?plan={n.lower()}">Start with {n}</a></li>' for n, h, items in LEVELS)
+        f'</ul><a class="btn btn-ghost" href="https://app.3dplatebuilder.com/signup?plan={n.lower()}">Start with {n}</a></li>' for n, h, items in LEVELS)
     funcs = ''.join(
         f'<div class="func-group"><h3>{g}</h3><ul>' + ''.join(f'<li><span>{t}</span>{tag(w)}</li>' for t, w in items) + '</ul></div>' for g, items in FUNCTIONS)
     return f"""
@@ -122,7 +122,7 @@ def website():
 			<h1 id="w-title">A plate shop that sells, built and run for you</h1>
 			<p class="lede">A complete number plate website, with plates that look real in 3D, designed in your brand, hosted and looked after. Here's exactly what's in it.</p>
 			<div class="actions">
-				<a class="btn btn-primary btn-lg" href="start.html">Start your shop</a>
+				<a class="btn btn-primary btn-lg" href="https://app.3dplatebuilder.com/signup">Start your shop</a>
 				<a class="btn btn-ghost btn-lg" href="pricing.html">See prices</a>
 			</div>
 			<p class="price-anchor">From <b>[£ STARTER MONTHLY] a month</b> + [£ STARTER SET-UP] set-up. No VAT to add: we're not VAT registered.</p>

@@ -36,7 +36,7 @@ def setup():
 		<div class="intro">
 			<p class="eyebrow">Sign-up to live</p>
 			<h1 id="s-title">How it works</h1>
-			<p>You run the workshop; we build the shop. From sign-up to your first order usually takes [TIMELINE TOTAL], all online and by email. No calls, no meetings. <a href="start.html">Start your shop</a>.</p>
+			<p>You run the workshop; we build the shop. From sign-up to your first order usually takes [TIMELINE TOTAL], all online and by email. No calls, no meetings. <a href="https://app.3dplatebuilder.com/signup">Start your shop</a>.</p>
 		</div>
 	</div>
 </section>

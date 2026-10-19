@@ -79,7 +79,7 @@ def plan_card(pid, inherit, featured):
 		<ul>{builder}</ul>
 		<p class="plan-sub">Your website</p>
 		<ul>{website}</ul>
-		<a class="{btn}" href="start.html?plan={pid}">Start with {t['name']}</a>
+		<a class="{btn}" href="https://app.3dplatebuilder.com/signup?plan={pid}">Start with {t['name']}</a>
 	</article>'''
 
 
@@ -171,7 +171,7 @@ def pricing():
 				<p class="price"><strong>[£ OUTRIGHT PRICE] one-off</strong></p>
 				<p class="muted">then [£ OUTRIGHT HOSTING YEARLY] a year</p>
 				<p>{DN('Suggested: £4,950–£7,950 one-off, then £795–£1,195 a year, starting from go-live')}</p>
-				<a class="btn btn-primary" href="start.html?plan=outright">Start your shop</a>
+				<a class="btn btn-primary" href="contact.html">Start your shop</a>
 			</div>
 		</div>
 		</div>
