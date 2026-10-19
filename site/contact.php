@@ -1,7 +1,7 @@
 <?php
 /**
  * Form handler for Plesk (or any PHP host): the Start your shop sign-up and Ask a question.
- * Emails each one to hello@3dplatebuilder.com and answers the form with JSON.
+ * Emails each one to info@plateboss.co.uk (for now) and answers the form with JSON.
  * Both forms post here (https://3dplatebuilder.com/contact.php), with a hidden "type" field.
  * Needs PHP mail() working on the server (Plesk: Mail settings for the domain switched on).
  */
@@ -9,7 +9,7 @@
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
 
-$to   = 'hello@3dplatebuilder.com';            // where requests go
+$to   = 'info@plateboss.co.uk';            // where requests go (until hello@3dplatebuilder.com is set up)
 $from = 'noreply@3dplatebuilder.com';   // a mailbox on your own domain, so SPF/DKIM pass
 
 function reply($ok, $message, $code = 200) {

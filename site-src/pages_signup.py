@@ -89,7 +89,7 @@ def start():
 					</div>
 					<div class="field full checks">
 						<label class="check"><input type="checkbox" name="rnps" value="yes" required> <span>I'm a Registered Number Plate Supplier, and I'll upload my RNPS registration and ID when asked. <span class="req" aria-hidden="true">*</span></span></label>
-						<label class="check"><input type="checkbox" name="terms" value="yes" required> <span>I've read the <a href="terms.html">terms</a> and <a href="privacy.html">privacy notice</a>. <span class="req" aria-hidden="true">*</span></span></label>
+						<label class="check"><input type="checkbox" name="terms" value="yes" required> <span>I've read the <a href="privacy.html">privacy notice</a>, and I understand the <a href="terms.html">full terms</a> come with my payment link, to agree to before I pay. <span class="req" aria-hidden="true">*</span></span></label>
 					</div>
 				</div>
 			</fieldset>

@@ -91,7 +91,7 @@ from pages_signup import start, contact  # noqa: E402,F401
 
 
 BANNER = '''<div class="template-banner" role="note">
-	<p><strong>Template for your solicitor.</strong> This page is a starting draft, not legal advice. Everything in [SQUARE BRACKETS] needs filling in, and the whole page needs checking before the site goes live.</p>
+	<p><strong>Interim version.</strong> Our solicitor is finalising the full wording. This page states how things work today; we'll update it and the date below when the final version is ready.</p>
 </div>'''
 
 
@@ -101,7 +101,7 @@ def legal_page(title, intro, body):
 	<div class="wrap legal">
 		<div class="intro">
 			<h1 id="l-title">{title}</h1>
-			<p>{intro} Last updated: [DATE].</p>
+			<p>{intro} Last updated: 19 October 2026.</p>
 		</div>
 		<div style="margin-top:28px">{BANNER}</div>
 	</div>
@@ -116,114 +116,69 @@ def legal_page(title, intro, body):
 def privacy():
     return legal_page('Privacy notice', 'How [COMPANY LEGAL NAME] trading as [TRADING NAME] uses personal information.', '''
 <h2>Who we are</h2>
-<p>[COMPANY LEGAL NAME] ("we", "us"), trading as [TRADING NAME], company number [COMPANY NUMBER], registered office [REGISTERED ADDRESS]. We are the controller for personal information collected through [DOMAIN]. ICO registration number: [ICO REGISTRATION NUMBER]. Contact us about privacy at [PRIVACY EMAIL].</p>
+<p>[COMPANY LEGAL NAME] ("we", "us"), trading as [TRADING NAME], company number [COMPANY NUMBER], registered office [REGISTERED ADDRESS]. We are responsible for the personal information collected through this website. Contact us about privacy at <a href="mailto:[EMAIL]">[EMAIL]</a>.</p>
 
 <h2>What we collect</h2>
 <ul>
-	<li><strong>Sign-ups:</strong> your name, email, business name, the supplier name and postcode on your RNPS registration, your current website and domain, your brand colour, the plan you chose and your message. <strong>Questions:</strong> your name, email, business name and question.</li>
-	<li><strong>Customers:</strong> contact, billing and account details needed to provide your plan. [ADD ANY OTHERS]</li>
+	<li><strong>Sign-ups:</strong> your name, email, business name, the supplier name and postcode on your RNPS registration, your current website and domain, your brand colour, the plan you chose and your message.</li>
+	<li><strong>Questions:</strong> your name, email, business name and question.</li>
 	<li><strong>Technical data:</strong> your IP address and browser details, which reach the services that deliver this site (see "Who we share it with").</li>
 </ul>
 <p>The live demo on this site doesn't send your designs anywhere. Registrations you type into it stay in your browser.</p>
 
-<h2>Why we use it, and our lawful basis</h2>
-<table>
-	<thead><tr><th>Purpose</th><th>Lawful basis</th></tr></thead>
-	<tbody>
-		<tr><td>Replying to sign-ups and questions, and setting up your shop</td><td>Steps at your request before a contract; legitimate interests [CONFIRM]</td></tr>
-		<tr><td>Providing your plan, billing and support</td><td>Contract</td></tr>
-		<tr><td>Keeping business records</td><td>Legal obligation</td></tr>
-		<tr><td>Occasional product news to business contacts</td><td>Legitimate interests, with an opt-out in every email [CONFIRM UNDER PECR]</td></tr>
-	</tbody>
-</table>
+<h2>Why we use it</h2>
+<ul>
+	<li>To reply to your sign-up or question and, if you go ahead, to set up and provide your plan. This is a step you've asked us to take before entering a contract.</li>
+	<li>To keep the business records the law requires.</li>
+</ul>
+<p>We don't sell your information and we don't send marketing emails.</p>
 
 <h2>Who we share it with</h2>
 <ul>
-	<li>Form handling: [FORM PROVIDER]</li>
-	<li>Email: [EMAIL PROVIDER]</li>
-	<li>Website hosting: [HOSTING PROVIDER]</li>
-	<li>Fonts: Google Fonts (Google LLC), which receives your IP address when this site loads its typeface. [OR: REMOVE IF YOU SELF-HOST THE FONT]</li>
-	<li>3D library: jsDelivr, which delivers the Three.js files for the demo and receives your IP address.</li>
-	<li>[ACCOUNTANT / PAYMENT PROVIDER / CRM]</li>
+	<li>Our web host and email provider, who store and deliver the site and our email for us.</li>
+	<li>Google Fonts (Google LLC), which receives your IP address when this site loads its typefaces.</li>
+	<li>jsDelivr, which delivers the Three.js files for the live demo and receives your IP address.</li>
 </ul>
-<p>[INTERNATIONAL TRANSFERS: describe any transfers outside the UK and the safeguards used.]</p>
 
 <h2>Our customers' shops</h2>
-<p>When we host a shop for a plate maker, that plate maker is the controller for its own customers' data, including proof of ID and entitlement documents uploaded at checkout. We act as their processor under our data processing agreement [DPA REFERENCE]. Questions about a particular shop's orders should go to that shop.</p>
+<p>When we host a shop for a plate maker, that plate maker is responsible for its own customers' data, including proof of ID and entitlement documents uploaded at checkout. We handle that data only on their behalf. Questions about a particular shop's orders should go to that shop.</p>
 
 <h2>How long we keep it</h2>
-<p>Sign-ups and questions that don't lead to an order: [RETENTION PERIOD]. Customer records: [RETENTION PERIOD]. Accounting records: as long as the law requires.</p>
+<p>Only as long as we need it to reply to you and, if you become a customer, to provide your plan, plus any period the law requires for business records.</p>
 
 <h2>Your rights</h2>
-<p>You can ask to see, correct or delete your information, object to or restrict how we use it, or ask for a copy to take elsewhere. Email [PRIVACY EMAIL]. You can also complain to the Information Commissioner's Office at ico.org.uk.</p>
+<p>You can ask to see, correct or delete your information, object to or restrict how we use it, or ask for a copy to take elsewhere. Email <a href="mailto:[EMAIL]">[EMAIL]</a>. You can also complain to the Information Commissioner's Office at ico.org.uk.</p>
 ''')
 
 
 def terms():
-    return legal_page('Terms of service', 'The terms for [BRAND NAME] plans, set-up and outright purchases. For business customers only.', '''
-<h2>1. About these terms</h2>
-<p>These terms are between [COMPANY LEGAL NAME] ("we") and the business that orders a plan ("you"). They apply to business customers only, not consumers. [CONFIRM]</p>
+    return legal_page('Terms of service', 'How [BRAND NAME] plans work while our full terms are finalised. For business customers only.', '''
+<h2>Before you pay, you'll get the full terms</h2>
+<p>Signing up on this site costs nothing and doesn't commit you to anything. When we email your secure link to pay the set-up fee, it comes with our full terms of service. You'll read and agree to them before you pay anything.</p>
 
-<h2>2. What we provide</h2>
-<p>A WooCommerce website with the 3D plate builder, set up as described for your plan on our pricing page at the time you order. Features marked "coming soon" are not part of any plan until we tell you in writing that they are. [SERVICE DESCRIPTION / ORDER FORM REFERENCE]</p>
-
-<h2>3. Set-up</h2>
-<p>The set-up fee is paid before work starts and is [REFUNDABLE / NON-REFUNDABLE] once work has started. Timings depend on you providing the items on our set-up checklist. [SET-UP TERMS]</p>
-
-<h2>4. Monthly plans</h2>
-<p>Billed monthly in advance. Minimum term [MINIMUM TERM], then [NOTICE PERIOD] notice. [PRICE CHANGE TERMS] [LATE PAYMENT TERMS]</p>
-
-<h2>5. Buying outright</h2>
-<p>A one-off fee for your website and a licence to use the builder for one shop on one domain. The licence is not transferable and does not allow resale, sharing or copying of the builder. Hosting, updates and support are billed yearly at [£ OUTRIGHT HOSTING YEARLY]. [WHAT HAPPENS IF YEARLY FEE IS NOT RENEWED] [SELF-HOSTING TERMS]</p>
-
-<h2>5b. Website work included in plans</h2>
-<p>Page counts, product counts, design level, launch articles and monthly change hours are as listed for your plan on our pricing page when you order. Unused monthly hours don't carry over. [WEBSITE SCOPE TERMS]</p>
-
-<h2>6. Your responsibilities</h2>
+<h2>The main points</h2>
 <ul>
-	<li>You must be a Registered Number Plate Supplier with the DVLA, and keep that registration current.</li>
-	<li>The builder helps with BS AU 145e character layout and legal spacing. It is not approved or certified by the DVLA. You are responsible for checking that every plate you make and sell is legal, and for checking customers' proof of ID and entitlement.</li>
-	<li>You are the controller for your customers' personal data and must have your own privacy notice and lawful basis. [DPA REFERENCE]</li>
-	<li>Your prices, product descriptions and delivery terms are yours to set and to get right.</li>
+	<li>Plans are for businesses only, not consumers. You must be a Registered Number Plate Supplier with the DVLA and keep that registration current.</li>
+	<li>Each plan includes what's listed for it on our <a href="pricing.html">pricing page</a> when you sign up. Anything marked "coming soon" isn't part of a plan until we tell you in writing that it is.</li>
+	<li>The builder helps with BS AU 145e character layout and legal spacing. It is not approved or certified by the DVLA. You're responsible for checking every plate you make and sell is legal, and for checking customers' proof of ID and entitlement.</li>
+	<li>Your customers pay you through your own Stripe account, under Stripe's terms. We never hold your customers' money.</li>
+	<li>Your content, logo, products, customers and orders are yours. We own the builder software and our site designs.</li>
+	<li>The law of England and Wales applies.</li>
 </ul>
-
-<h2>7. Hosting, availability and support</h2>
-<p>[SERVICE LEVEL: uptime target, maintenance windows, support hours [SUPPORT HOURS], response times.]</p>
-
-<h2>8. Payments to you</h2>
-<p>Payments from your customers go through your own Stripe account under Stripe's terms. We don't hold your customers' money.</p>
-
-<h2>9. Intellectual property</h2>
-<p>We own the builder software and our site designs. You own your content, logo, products and data. The builder includes Three.js, used under the MIT licence. [FONT AND THIRD-PARTY LICENCE TERMS]</p>
-
-<h2>10. Ending the agreement</h2>
-<p>[TERMINATION RIGHTS] When the agreement ends, [EXIT TERMS].</p>
-
-<h2>11. Liability</h2>
-<p>[LIABILITY CAP AND EXCLUSIONS]</p>
-
-<h2>12. Law</h2>
-<p>These terms are governed by the law of England and Wales, and the courts of England and Wales have exclusive jurisdiction. [CONFIRM]</p>
+<p>Questions about any of this: <a href="mailto:[EMAIL]">[EMAIL]</a>.</p>
 ''')
 
 
 def cookies():
     return legal_page('Cookies', 'Which cookies and similar technologies [DOMAIN] uses.', '''
 <h2>What this site uses</h2>
-<p>As built, this site sets no cookies of its own and doesn't use analytics or advertising trackers. The live demo keeps your design in the page while you use it and stores nothing on your device afterwards.</p>
-<table>
-	<thead><tr><th>Name</th><th>Provider</th><th>Purpose</th><th>Duration</th></tr></thead>
-	<tbody>
-		<tr><td>None set by default</td><td>[BRAND NAME]</td><td>–</td><td>–</td></tr>
-		<tr><td>[ADD IF YOU INSTALL ANALYTICS, CHAT OR A FORM SERVICE THAT SETS COOKIES]</td><td>[PROVIDER]</td><td>[PURPOSE]</td><td>[DURATION]</td></tr>
-	</tbody>
-</table>
+<p>This site sets no cookies of its own and doesn't use analytics or advertising trackers. The live demo keeps your design in the page while you use it and stores nothing on your device afterwards.</p>
 
 <h2>Third-party services</h2>
-<p>The site loads its typeface from Google Fonts and the 3D library (Three.js) from jsDelivr. These services receive your IP address so they can send the files. [CHECK WHETHER EITHER SETS COOKIES IN YOUR CONFIGURATION]</p>
+<p>The site loads its typefaces from Google Fonts and the 3D library (Three.js) from jsDelivr. These services receive your IP address so they can send the files.</p>
 
-<h2>If you add analytics later</h2>
-<p>Non-essential cookies need consent before they're set. Add a consent banner and list each cookie in the table above. [CONSENT TOOL]</p>
+<h2>If this changes</h2>
+<p>If we ever add analytics or anything else that sets non-essential cookies, we'll ask for your consent first and list each cookie on this page.</p>
 
 <h2>Managing cookies</h2>
 <p>You can block or delete cookies in your browser settings.</p>
