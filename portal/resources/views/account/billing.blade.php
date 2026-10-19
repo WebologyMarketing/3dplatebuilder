@@ -47,7 +47,7 @@
         <h2 style="margin-bottom:8px">Add-ons you've asked for</h2>
         <div class="rows">
           @foreach ($addons as $a)
-            <div class="row"><span>{{ $a->name() }}</span><span>{{ money($a->price_pence) }} <span class="pill {{ $a->status === 'invoiced' ? 'good' : 'warn' }}">{{ $a->status === 'invoiced' ? 'On your next invoice' : 'Waiting for us' }}</span></span></div>
+            <div class="row"><span>{{ $a->name() }}</span><span>{{ money($a->price_pence) }} <span class="pill {{ $a->status === 'invoiced' ? 'good' : 'warn' }}">{{ $a->status === 'invoiced' ? 'Billed' : 'Waiting for us' }}</span></span></div>
           @endforeach
         </div>
       </div>
@@ -60,7 +60,7 @@
         <dt>Plan</dt><dd>{{ $shop->planName() }}</dd>
         <dt>Monthly</dt><dd>{{ money($shop->planConfig()['monthly']) }}</dd>
         <dt>Set-up fee</dt><dd>{{ money($shop->planConfig()['setup']) }}</dd>
-        @if ($shop->current_period_end)<dt>Next payment</dt><dd>{{ $shop->current_period_end->format('j F Y') }}</dd>@endif
+        <dt>Monthly payments</dt><dd>@if ($shop->billingStarted()){{ $shop->current_period_end ? 'Next on '.$shop->current_period_end->format('j F Y') : 'Started' }}@else Start when your shop goes live @endif</dd>
         <dt>Minimum term</dt><dd>{{ config('portal.minimum_term_months') }} months</dd>
       </dl>
       <p class="small muted" style="margin-top:14px">No VAT to add: we're not VAT registered. To change plan or cancel after your minimum term, email hello@3dplatebuilder.com with {{ config('portal.notice_days') }} days' notice.</p>

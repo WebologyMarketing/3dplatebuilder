@@ -75,7 +75,7 @@
     <form method="post" action="{{ route('products.addons') }}" class="card" aria-labelledby="h-ad" style="border:2px solid var(--ink)">
       @csrf
       <h2 id="h-ad">Add-ons from us</h2>
-      <p class="lead">One-off work, added to your next invoice once we've confirmed it. No VAT to add.</p>
+      <p class="lead">One-off work. Once we've confirmed it, we bill it to the card you signed up with. No VAT to add.</p>
       <div class="stack" style="gap:8px">
         @foreach ($addons as $key => $a)
           @php $asked = in_array($key, $requested); @endphp

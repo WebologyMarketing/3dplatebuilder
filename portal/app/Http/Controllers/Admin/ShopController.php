@@ -6,6 +6,10 @@ use App\Http\Controllers\Account\DetailsController;
 use App\Http\Controllers\Controller;
 use App\Mail\PortalNotice;
 use App\Models\Shop;
+use App\Services\Billing;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -42,7 +46,7 @@ class ShopController extends Controller
         ]);
     }
 
-    public function update(Request $request, Shop $shop)
+    public function update(Request $request, Shop $shop, Billing $billing)
     {
         $data = $request->validate([
             'stage' => ['required', Rule::in(array_keys(Shop::STAGES))],
@@ -52,12 +56,42 @@ class ShopController extends Controller
         ]);
 
         $before = $shop->stage;
-        $shop->update($data);
+        $goingLive = $data['stage'] === 'live' && $before !== 'live';
+
+        // Going live starts the monthly subscription. The first month was paid at sign-up,
+        // so the first monthly charge is a month from today.
+        $firstCharge = null;
+        if ($goingLive && $shop->plan !== 'outright' && ! $shop->billingStarted()) {
+            if (! $shop->setup_paid_at) {
+                return back()->withInput()->with('error', 'They haven\'t paid at sign-up yet, so monthly billing can\'t start. The shop stays at "'.$shop->stageLabel().'".');
+            }
+            $firstCharge = now()->addMonthNoOverflow();
+            try {
+                $sub = $billing->startSubscription($shop, $firstCharge);
+            } catch (Throwable $e) {
+                Log::error('Starting the subscription failed for shop '.$shop->id.': '.$e->getMessage());
+
+                return back()->withInput()->with('error', 'Stripe didn\'t start their monthly billing, so the shop is still at "'.$shop->stageLabel().'". Try again, or check Stripe.');
+            }
+            $shop->fill([
+                'stripe_subscription_id' => $sub['id'],
+                'subscription_status' => $sub['status'],
+                'current_period_end' => ! empty($sub['current_period_end']) ? Carbon::createFromTimestamp($sub['current_period_end']) : $firstCharge,
+            ]);
+        }
+        if ($goingLive && ! $shop->live_at) {
+            $shop->live_at = now();
+        }
+
+        $shop->fill($data)->save();
 
         if ($before !== $shop->stage && in_array($shop->stage, ['review', 'live'], true)) {
             $lines = $shop->stage === 'review'
                 ? ['Your shop is ready for you to check.'.($shop->preview_url ? ' Have a look at your preview link and tell us anything you\'d like changed.' : '')]
-                : ['Your shop is live and ready to take orders.'];
+                : array_values(array_filter([
+                    'Your shop is live and ready to take orders.',
+                    $firstCharge ? 'Your monthly payments of '.money($shop->planMonthlyPence()).' start now. You paid your first month when you signed up, so the first one is taken on '.$firstCharge->format('j F Y').', then on that date each month.' : null,
+                ]));
             foreach ($shop->users as $user) {
                 Mail::to($user->email)->send(new PortalNotice(
                     $shop->stage === 'review' ? 'Your shop is ready to check' : 'Your shop is live',
@@ -68,7 +102,9 @@ class ShopController extends Controller
             }
         }
 
-        return back()->with('status', 'Saved.');
+        return back()->with('status', $firstCharge
+            ? 'Saved. Their monthly billing has started: first payment on '.$firstCharge->format('j F Y').'.'
+            : 'Saved.');
     }
 
     public function licence(Shop $shop)
