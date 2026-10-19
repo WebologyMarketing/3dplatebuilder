@@ -46,17 +46,17 @@ Before any of this, check with Harsh, because it needs a subdomain, DNS, SSL and
    - Set the document root to `/portal/public` inside the Git deploy folder.
    - Issue a Let's Encrypt certificate.
 2. **Database.** Create a MySQL database and user for the portal.
-3. **Git.** Add the repo `WebologyMarketing/3dplatebuilder`, branch `main`. Deploy it manually, like the live site. For Deploy actions:
-   ```
-   cd portal && composer install --no-dev --optimize-autoloader && php artisan migrate --force && php artisan config:cache && php artisan route:cache && php artisan view:cache
-   ```
+3. **Git.** Add the repo `WebologyMarketing/3dplatebuilder`, branch `main`. Deploy it manually, like the live site. For Deploy actions, use `sh portal/deploy.sh`. It:
+   - installs packages;
+   - makes the app key the first time;
+   - migrates the database;
+   - caches config;
+   - makes the admin login if it's missing.
 4. **.env.** Copy `portal/.env.example` to `portal/.env` on the server only, then fill in:
    - the database details;
-   - `MAIL_PASSWORD`, for a `noreply@3dplatebuilder.com` mailbox;
+   - `MAIL_PASSWORD`, for the `noreply@3dplatebuilder.com` mailbox;
    - the Stripe keys (see below).
-
-   Then run `php artisan key:generate` once.
-5. **Your login.** Run `php artisan portal:make-admin` and type your own password.
+5. **Your login.** The first deploy emails hello@3dplatebuilder.com a link to choose your admin password. Nobody types a password on the server. If the link expires, use "Forgotten your password?" on the sign-in page.
 6. **Storage.** Make sure `portal/storage` and `portal/bootstrap/cache` are writable. Uploads (logos, fonts, RNPS documents, plugin zips) live in `portal/storage/app/private` and are never public.
 
 ### Stripe

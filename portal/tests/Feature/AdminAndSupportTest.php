@@ -125,4 +125,16 @@ class AdminAndSupportTest extends TestCase
             $this->get($u)->assertOk();
         }
     }
+
+    public function test_make_admin_emails_a_password_link_and_is_safe_to_rerun(): void
+    {
+        \Illuminate\Support\Facades\Notification::fake();
+        $this->artisan('portal:make-admin', ['--email' => 'Boss@3dplatebuilder.test', '--name' => 'Harsh', '--if-missing' => true])->assertSuccessful();
+        $u = \App\Models\User::where('email', 'boss@3dplatebuilder.test')->first();
+        $this->assertTrue($u->is_admin);
+        \Illuminate\Support\Facades\Notification::assertSentTo($u, \Illuminate\Auth\Notifications\ResetPassword::class);
+
+        $this->artisan('portal:make-admin', ['--email' => 'boss@3dplatebuilder.test', '--if-missing' => true])->expectsOutputToContain('already exists')->assertSuccessful();
+        \Illuminate\Support\Facades\Notification::assertSentToTimes($u, \Illuminate\Auth\Notifications\ResetPassword::class, 1);
+    }
 }
