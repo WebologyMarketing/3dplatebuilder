@@ -161,6 +161,8 @@ def terms():
 	<li>Plans are for businesses only, not consumers. You must be a Registered Number Plate Supplier with the DVLA and keep that registration current.</li>
 	<li>Each plan includes what's listed for it on our <a href="pricing.html">pricing page</a> when you sign up. Anything marked "coming soon" isn't part of a plan until we tell you in writing that it is.</li>
 	<li>The builder helps with BS AU 145e character layout and legal spacing. It is not approved or certified by the DVLA. You're responsible for checking every plate you make and sell is legal, and for checking customers' proof of ID and entitlement.</li>
+	<li>Monthly plans have a minimum term of [MINIMUM TERM]. After that you can cancel any time with [NOTICE PERIOD] notice by email to <a href="mailto:[EMAIL]">[EMAIL]</a>. The set-up fee is paid once, at the start.</li>
+	<li>We're not VAT registered, so no VAT is added to our prices.</li>
 	<li>Your customers pay you through your own Stripe account, under Stripe's terms. We never hold your customers' money.</li>
 	<li>Your content, logo, products, customers and orders are yours. We own the builder software and our site designs.</li>
 	<li>The law of England and Wales applies.</li>

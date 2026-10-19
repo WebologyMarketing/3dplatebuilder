@@ -38,7 +38,7 @@ def start():
 			<fieldset class="start-step">
 				<legend><span class="step-num">1</span> Choose your plan</legend>
 				<div class="plan-picks">{cards}</div>
-				<p class="small muted">Prices exclude VAT. <a href="pricing.html">Compare everything in each plan</a>.</p>
+				<p class="small muted">No VAT to add: we're not VAT registered. <a href="pricing.html">Compare everything in each plan</a>.</p>
 			</fieldset>
 
 			<fieldset class="start-step">
