@@ -1566,3 +1566,27 @@ h3 { font-weight: 700; letter-spacing: -0.015em; line-height: 1.2; }
 .bento-wide { background: var(--black); }
 .bento-wide p { color: var(--muted); }
 .intro .eyebrow { font-size: 0.78rem; color: var(--eyebrow, var(--muted)); line-height: 1.4; }
+
+/* ------------------------------------------------------------------ inner page heads: a white card with a floating plate */
+
+.page-head-art .wrap { position: relative; width: calc(100% - 32px); padding: clamp(32px, 5vw, 64px); border-radius: var(--panel-radius); background: #fff; border: 1px solid var(--line); overflow: hidden; }
+.page-head-art .intro { position: relative; max-width: min(640px, 60%); gap: 16px; }
+.page-head-art .intro p:not(.eyebrow) { font-size: 1.125rem; }
+.head-plate { position: absolute; right: -40px; top: 50%; width: min(38%, 440px); --r: -8deg; transform: translateY(-50%) rotate(var(--r)); filter: drop-shadow(0 26px 30px rgba(22, 25, 28, 0.35)); animation: headFloat 9s ease-in-out infinite; pointer-events: none; }
+@keyframes headFloat { 0%, 100% { transform: translateY(-50%) rotate(var(--r)); } 50% { transform: translateY(calc(-50% - 12px)) rotate(var(--r)); } }
+@media (max-width: 900px) { .head-plate { display: none; } .page-head-art .intro { max-width: none; } .page-head-art .wrap { border-radius: 32px; } }
+
+/* FAQ: the plus turns into a cross, the answer eases in. */
+.faq summary { transition: color 0.2s; }
+.faq summary:hover { color: var(--muted); }
+.faq summary::after { content: "+"; transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.faq details[open] summary::after { content: "+"; transform: rotate(45deg); }
+.faq details[open] > div { animation: heroRise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+/* Links in body copy: an underline that grows on hover. */
+.stack p a:not(.btn), .intro p a:not(.btn), .lede a:not(.btn) { text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); transition: text-decoration-color 0.2s; }
+.stack p a:not(.btn):hover, .intro p a:not(.btn):hover, .lede a:not(.btn):hover { text-decoration-color: currentColor; }
+
+/* Shots and screenshots lift a touch on hover. */
+.shot img, .browser, .style-grid img { transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s; }
+.shot:hover img, .style-grid a:hover img { transform: translateY(-3px) scale(1.01); }

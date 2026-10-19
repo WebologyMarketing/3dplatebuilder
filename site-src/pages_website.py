@@ -1,5 +1,5 @@
 """What you get: the website, how far we customise it, everything it does, the rendering."""
-from blocks import usp_grid, render_showcase, process_strip
+from blocks import render_showcase, process_strip
 
 ALL, PRO, COMPLETE = 'All plans', 'Pro and Complete', 'Complete'
 
@@ -139,7 +139,7 @@ def website():
 <section class="section" aria-labelledby="usp-title">
 	<div class="wrap">
 		<div class="intro"><h2 id="usp-title">Five reasons it sells plates</h2></div>
-		{usp_grid()}
+		{bento()}
 	</div>
 </section>
 
@@ -186,3 +186,8 @@ def website():
 
 {process_strip('w-process-title')}
 """
+
+
+def bento():
+    from pages_home import bento as _b
+    return _b()

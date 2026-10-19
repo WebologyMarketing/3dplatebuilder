@@ -30,9 +30,11 @@ def setup():
     ]
     lis = '\n'.join(f'<li><h3>{t}</h3><div class="stack"><p>{d}</p><p class="when">Usually {w}</p></div></li>' for t, d, w in steps)
     return f'''
-<section class="page-head" aria-labelledby="s-title">
+<section class="page-head page-head-art" aria-labelledby="s-title">
 	<div class="wrap">
+		<img class="head-plate" src="assets/img/hero-front.webp" width="1112" height="318" alt="" aria-hidden="true">
 		<div class="intro">
+			<p class="eyebrow">Sign-up to live</p>
 			<h1 id="s-title">How it works</h1>
 			<p>You run the workshop; we build the shop. From sign-up to your first order usually takes [TIMELINE TOTAL], all online and by email. No calls, no meetings. <a href="start.html">Start your shop</a>.</p>
 		</div>

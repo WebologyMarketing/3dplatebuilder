@@ -225,9 +225,11 @@ def features():
         f'<li><a href="demo.html?reg=3D%20BLDR&amp;style={sid}&amp;side=rear"><img src="assets/img/style-{sid}.webp" width="640" height="480" alt="{label} characters on a rear plate" loading="lazy" decoding="async"><span>{label}</span></a><span class="small muted">{desc}</span></li>'
         for sid, label, desc in STYLES)
     return f'''
-<section class="page-head" aria-labelledby="f-title">
+<section class="page-head page-head-art" aria-labelledby="f-title">
 	<div class="wrap">
+		<img class="head-plate" src="assets/img/hero-rear.webp" width="881" height="500" alt="" aria-hidden="true">
 		<div class="intro">
+			<p class="eyebrow">The 3D builder</p>
 			<h1 id="f-title">Features</h1>
 			<p>Everything the builder does today, in plain English. Each feature is tagged with the plan it comes in. Anything we haven't built yet is listed at the bottom as coming soon.</p>
 		</div>

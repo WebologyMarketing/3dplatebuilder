@@ -138,9 +138,11 @@ def pricing():
     cards = '\n'.join(plan_card(*o) for o in ORDER)
 
     return f'''
-<section class="page-head" aria-labelledby="p-title">
+<section class="page-head page-head-art" aria-labelledby="p-title">
 	<div class="wrap">
+		<img class="head-plate" src="assets/img/hero-rear.webp" width="881" height="500" alt="" aria-hidden="true">
 		<div class="intro">
+			<p class="eyebrow">Plans</p>
 			<h1 id="p-title">Pricing</h1>
 			<p>Every plan is a complete plate shop website with the 3D builder built in, designed, hosted and looked after by us. Each plan adds more builder and more website. All prices exclude VAT.</p>
 		</div>

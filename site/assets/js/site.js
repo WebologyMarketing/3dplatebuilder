@@ -266,3 +266,29 @@ if (sp) {
 		note.classList.add('is-new');
 	}));
 }
+
+/* Fade up the common blocks on every page too, staggered within each group (JS only, so the
+   page reads normally without it). Blocks already in view on load fade in straight away. */
+if (!calm && 'IntersectionObserver' in window) {
+	const groups = ['.feature-group', '.plans > *', '.levels > li', '.funcs > *', '.usps > li', '.web-list > li', '.process > li', '.steps > li', '.render-details > li', '.render-details-row > li', '.style-grid > li', '.page-list > li', '.faq details', '.start-step', '.shop-feature > *', '.outright', '.demo-notes > div'];
+	const io2 = new IntersectionObserver((entries) => {
+		entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io2.unobserve(e.target); } });
+	}, { rootMargin: '0px 0px -6% 0px', threshold: 0.06 });
+	groups.forEach((sel) => {
+		document.querySelectorAll(sel).forEach((el) => {
+			if (el.classList.contains('reveal')) return;
+			const i = [...el.parentElement.children].indexOf(el);
+			el.classList.add('reveal');
+			el.style.setProperty('--d', `${Math.min(i, 6) * 0.06}s`);
+			io2.observe(el);
+		});
+	});
+}
+
+/* Once a block has faded in, drop the reveal class so its own hover transitions run at full speed. */
+document.addEventListener('transitionend', (e) => {
+	const t = e.target;
+	if (t.classList && t.classList.contains('reveal') && t.classList.contains('is-in') && e.propertyName === 'opacity') {
+		t.classList.remove('reveal', 'is-in');
+	}
+});
