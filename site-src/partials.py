@@ -1,7 +1,7 @@
 """Shared page chrome for the [BRAND NAME] site generator."""
 import json
 
-FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..100,400..900&amp;display=swap">'
+FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400..800&amp;family=Geist+Mono:wght@500&amp;family=Archivo:wght@600..800&amp;display=swap">'
 
 IMPORTMAP = '''<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <!-- Three.js r170, pinned exactly as the builder kit uses it (see plugin/README.md). -->
@@ -34,15 +34,16 @@ def header(current):
         cur = ' aria-current="page"' if href == current else ''
         links.append(f'<li><a href="{href}"{cur}>{label}</a></li>')
     cur = ' aria-current="page"' if current == 'start.html' else ''
+    promo = '' if current == 'start.html' else '<div class="promo"><p>Sign up online in about five minutes. No calls, no demos to book. <a href="start.html">Start your shop <span aria-hidden="true">→</span></a></p></div>\n'
     return f'''<a class="skip" href="#main">Skip to content</a>
-<header class="site-header">
+{promo}<header class="site-header">
 	<div class="wrap">
 		<a class="brand" href="index.html">{BRAND_MARK}<span>[BRAND NAME]</span></a>
 		<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav">Menu</button>
 		<nav id="site-nav" class="site-nav" aria-label="Main">
 			<ul>
 				{''.join(links)}
-				<li><a class="btn btn-primary" href="start.html"{cur}>Start your shop</a></li>
+				<li><a class="btn btn-primary" href="start.html"{cur}>Start your shop <span class="arr" aria-hidden="true">→</span></a></li>
 			</ul>
 		</nav>
 	</div>
@@ -114,7 +115,8 @@ def page(filename, title, description, body, builder=False, extra_head=''):
 <title>{title}</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="{description}">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#ffffff">
+<script>document.documentElement.classList.add('js')</script>
 <link rel="canonical" href="https://[DOMAIN]/{'' if filename == 'index.html' else filename}">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{description}">

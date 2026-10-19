@@ -183,3 +183,86 @@ if (sticky && 'IntersectionObserver' in window) {
 	if (hero) new IntersectionObserver(([en]) => { pastHero = !en.isIntersecting; update(); }).observe(hero);
 	if (band) new IntersectionObserver(([en]) => { bandShowing = en.isIntersecting; update(); }).observe(band);
 }
+
+/* ------------------------------------------------------------------ 2026-10 home page motion */
+
+const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* Scroll reveal: .reveal elements fade up once, as they come into view. */
+const reveals = document.querySelectorAll('.reveal');
+if (reveals.length) {
+	if (calm || !('IntersectionObserver' in window)) {
+		reveals.forEach((el) => el.classList.add('is-in'));
+	} else {
+		const io = new IntersectionObserver((entries) => {
+			entries.forEach((e) => {
+				if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+			});
+		}, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+		reveals.forEach((el) => io.observe(el));
+	}
+}
+
+/* The demo iPhone in the hero: types the reg, then steps through the styles with their prices.
+   Pauses while it's off screen or the tab is hidden. */
+const dp = document.querySelector('[data-demo-phone]');
+if (dp) {
+	const REG = '3D BLDR';
+	const regEl = dp.querySelector('[data-dp-reg]');
+	const priceEl = dp.querySelector('[data-dp-price]');
+	const imgs = dp.querySelectorAll('[data-dp-img]');
+	const chips = dp.querySelectorAll('[data-dp-chip]');
+	const prices = (dp.dataset.prices || '').split('|');
+	let n = 0, s = 0, hold = 0, visible = true;
+	const show = () => {
+		regEl.textContent = REG.slice(0, n);
+		dp.classList.toggle('is-typing', n < REG.length);
+		imgs.forEach((im, i) => im.classList.toggle('is-on', i === s));
+		chips.forEach((c, i) => c.classList.toggle('is-on', i === s && n >= REG.length));
+	};
+	const setPrice = () => {
+		priceEl.textContent = prices[s] || '';
+		priceEl.classList.remove('is-new');
+		void priceEl.offsetWidth;
+		priceEl.classList.add('is-new');
+	};
+	if (calm) {
+		n = REG.length; s = 2; show(); setPrice();
+	} else {
+		show();
+		setInterval(() => {
+			if (!visible || document.hidden) return;
+			if (n < REG.length) { n += 1; show(); return; }
+			if (hold < 16) { hold += 1; return; }
+			hold = 0;
+			s = (s + 1) % imgs.length;
+			if (s === 0) n = 0;
+			show();
+			setPrice();
+		}, 140);
+		if ('IntersectionObserver' in window) {
+			new IntersectionObserver((e) => { visible = e[0].isIntersecting; }).observe(dp);
+		}
+	}
+}
+
+/* Rendering panel: style buttons swap the render and its note. */
+const sp = document.querySelector('[data-style-panel]');
+if (sp) {
+	const tabs = sp.querySelectorAll('[data-style-tab]');
+	const imgs = sp.querySelectorAll('[data-style-img]');
+	const notes = (sp.dataset.notes || '').split('|').map((x) => x.split('~'));
+	const nameEl = sp.querySelector('[data-style-name]');
+	const textEl = sp.querySelector('[data-style-text]');
+	const note = nameEl.parentElement;
+	tabs.forEach((t) => t.addEventListener('click', () => {
+		const i = Number(t.dataset.styleTab);
+		tabs.forEach((x) => x.setAttribute('aria-pressed', String(x === t)));
+		imgs.forEach((im, k) => im.classList.toggle('is-on', k === i));
+		nameEl.textContent = notes[i][0];
+		textEl.textContent = notes[i][1];
+		note.classList.remove('is-new');
+		void note.offsetWidth;
+		note.classList.add('is-new');
+	}));
+}
