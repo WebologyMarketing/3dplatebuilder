@@ -161,7 +161,6 @@ def home(font):
 				<div class="hero-phone">{demo_phone()}</div>
 			</div>
 		</div>
-		<p class="hero-proof-line">Already selling plates on <a href="https://plateboss.co.uk" rel="noopener">PlateBoss.co.uk</a></p>
 	</div>
 </section>
 
