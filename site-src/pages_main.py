@@ -63,10 +63,7 @@ def cta_band(heading='Start your plate shop', text='Pick a plan and sign up onli
 
 # Real shops for the "Shops we've built" strip: (image in assets/img/shops/, shop name, web address, one line).
 # The section only appears once there's at least one. Screenshots must be the shop owner's, with permission.
-SHOPS = [
-    ('plateboss-builder.webp', 'PlateBoss.co.uk', 'plateboss.co.uk/design-your-plates',
-     'A plate maker in Hounslow, London, and the builder\'s first shop. It runs on every plate product page and its own Design Your Plates page, with checkout in the builder and document checks on every road-legal order.'),
-]
+SHOPS = []
 
 WEBSITE_ITEMS = [
     ('Designed in your colours', 'Your logo, colours and wording on every page. A ready-made plate-shop design on Starter, up to fully custom on Complete.'),
