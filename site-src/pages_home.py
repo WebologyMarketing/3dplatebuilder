@@ -150,7 +150,7 @@ def home(font):
 					<li>{tick(1.1)}Hosted, updated and looked after</li>
 				</ul>
 				<div class="actions hero-rise" style="--d:.24s">
-					<a class="btn btn-primary btn-lg" href="start.html">Start your shop <span class="arr" aria-hidden="true">→</span></a>
+					<a class="btn btn-primary btn-lg" href="https://app.3dplatebuilder.com/signup">Start your shop <span class="arr" aria-hidden="true">→</span></a>
 					<a class="tlink" href="#try">Try the 3D builder <span class="arr" aria-hidden="true">→</span></a>
 				</div>
 				<p class="price-anchor hero-rise" style="--d:.3s">From <b>[£ STARTER MONTHLY] a month</b> + [£ STARTER SET-UP] set-up. No VAT to add: we're not VAT registered.</p>
@@ -197,7 +197,7 @@ def home(font):
 			<div class="next-card">
 				<p><b>Like it?</b> It comes with a complete website built around it.</p>
 				<div class="actions">
-					<a class="btn btn-primary" href="start.html">Start your shop <span class="arr" aria-hidden="true">→</span></a>
+					<a class="btn btn-primary" href="https://app.3dplatebuilder.com/signup">Start your shop <span class="arr" aria-hidden="true">→</span></a>
 					<a class="btn btn-ghost" href="website.html">See what you get</a>
 				</div>
 			</div>

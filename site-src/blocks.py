@@ -72,6 +72,6 @@ def process_strip(heading_id='process-title', heading='Live in [TIMELINE TOTAL],
 			<p>No demos to book, no calls, no meetings. Everything happens online and by email, so it's all in writing.</p>
 		</div>
 		<ol class="process">{items}</ol>
-		<div class="actions" style="margin-top:32px"><a class="btn btn-primary btn-lg" href="start.html">Start your shop</a><a class="btn btn-ghost btn-lg" href="setup.html">The full set-up, step by step</a></div>
+		<div class="actions" style="margin-top:32px"><a class="btn btn-primary btn-lg" href="https://app.3dplatebuilder.com/signup">Start your shop</a><a class="btn btn-ghost btn-lg" href="setup.html">The full set-up, step by step</a></div>
 	</div>
 </section>'''

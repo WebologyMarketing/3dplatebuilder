@@ -34,7 +34,7 @@ def header(current):
         cur = ' aria-current="page"' if href == current else ''
         links.append(f'<li><a href="{href}"{cur}>{label}</a></li>')
     cur = ' aria-current="page"' if current == 'start.html' else ''
-    promo = '' if current == 'start.html' else '<div class="promo"><p>Sign up online in about five minutes. No calls, no demos to book. <a href="start.html">Start your shop <span aria-hidden="true">→</span></a></p></div>\n'
+    promo = '' if current == 'start.html' else '<div class="promo"><p>Sign up online in about five minutes. No calls, no demos to book. <a href="https://app.3dplatebuilder.com/signup">Start your shop <span aria-hidden="true">→</span></a></p></div>\n'
     return f'''<a class="skip" href="#main">Skip to content</a>
 {promo}<header class="site-header">
 	<div class="wrap">
@@ -43,7 +43,7 @@ def header(current):
 		<nav id="site-nav" class="site-nav" aria-label="Main">
 			<ul>
 				{''.join(links)}
-				<li><a class="btn btn-primary" href="start.html"{cur}>Start your shop <span class="arr" aria-hidden="true">→</span></a></li>
+				<li><a class="btn btn-primary" href="https://app.3dplatebuilder.com/signup"{cur}>Start your shop <span class="arr" aria-hidden="true">→</span></a></li>
 			</ul>
 		</nav>
 	</div>
@@ -70,7 +70,7 @@ FOOTER = '''<footer class="site-footer">
 			<div>
 				<h2>Talk to us</h2>
 				<ul>
-					<li><a href="start.html">Start your shop</a></li>
+					<li><a href="https://app.3dplatebuilder.com/signup">Start your shop</a></li>
 					<li><a href="contact.html">Ask a question</a></li>
 					<li><a href="mailto:[EMAIL]">[EMAIL]</a></li>
 				</ul>
@@ -97,7 +97,7 @@ def sticky_cta(filename):
     if filename in ('start.html', 'contact.html', 'phone.html', 'desktop.html'):
         return ''
     return '''<div class="sticky-cta" data-sticky-cta hidden>
-	<a class="btn btn-primary" href="start.html">Start your shop</a>
+	<a class="btn btn-primary" href="https://app.3dplatebuilder.com/signup">Start your shop</a>
 	<a class="btn btn-ghost" href="demo.html">Try the builder</a>
 </div>'''
 
