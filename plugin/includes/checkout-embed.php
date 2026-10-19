@@ -51,7 +51,8 @@ add_action(
 			.pbb-embed-root { padding: 14px 14px 28px; max-width: 980px; margin: 0 auto; box-sizing: border-box; }
 			.pbb-embed-root .checkout-page, .pbb-embed-root .rtsb-builder-content { padding-top: 0 !important; margin-top: 0 !important; }
 			/* Builder look: the shop's brand colours. */
-			body.pbb-embed #place_order {
+			body.pbb-embed #place_order,
+			body.pbb-embed .wc-block-components-checkout-place-order-button {
 				width: 100%; min-height: 56px; border-radius: 14px; border: 0;
 				background: <?php echo esc_html( pbb_shop_colour( 'accent' ) ); ?> !important; color: <?php echo esc_html( pbb_shop_colour( 'accent_ink' ) ); ?> !important;
 				font-weight: 800; font-size: 18px; letter-spacing: .04em; text-transform: uppercase;
@@ -78,9 +79,14 @@ add_action(
 		?>
 		<script id="pbb-embed-js">
 		(function () {
+			// Classic checkout (shortcode themes) has form.checkout; the block checkout (block themes
+			// such as Twenty Twenty-Five) renders into .wp-block-woocommerce-checkout instead.
 			var form = document.querySelector('form.checkout');
-			if (!form) return;
-			var section = form.closest('.checkout-page') || form.closest('.rtsb-builder-content') || form.closest('.woocommerce') || form;
+			var block = form ? null : document.querySelector('.wp-block-woocommerce-checkout');
+			if (!form && !block) return;
+			var section = form
+				? (form.closest('.checkout-page') || form.closest('.rtsb-builder-content') || form.closest('.woocommerce') || form)
+				: block;
 			var rootEl = document.createElement('div');
 			rootEl.className = 'pbb-embed-root';
 			document.body.appendChild(rootEl);
@@ -100,7 +106,9 @@ add_action(
 				if (a && !a.getAttribute('href').startsWith('#') && !a.closest('.woocommerce-checkout-payment')) a.target = '_blank';
 			}, true);
 
-			if (!window.jQuery) return;
+			// The rest hooks the classic checkout's jQuery events. The block checkout pays in place, and its
+			// order-received page is sent to the whole window by the frame-breaker below.
+			if (!form || !window.jQuery) return;
 			var $ = window.jQuery;
 
 			// Order placed: open the next page (order received, or the bank's page) in the whole window.
