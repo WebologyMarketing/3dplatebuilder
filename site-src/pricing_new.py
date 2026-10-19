@@ -26,10 +26,9 @@ TIERS = {
                  'All seven character styles', 'Every plate size, including motorbike and trailer',
                  'Different front and rear sizes', 'UK, EV and 4D badges, printed or gel', 'Black borders, 1, 2 or 3 mm',
                  'Your supplier name, postcode and BS AU 145e footer', 'Price editor, live prices and extras',
-                 'Design Your Plates page and menu item', 'In-page builder on phones'],
-        website=['A ready-made plate-shop design in your logo and colours',
-                 f'Up to [STARTER PAGES] pages: home, design your plates, valid documents, about, contact {DN("Suggested: 6")}',
-                 f'Up to [STARTER PRODUCTS] products copied from your price list {DN("Suggested: 30")}',
+                 'The builder on your shop page, with ?reg= links', 'In-page builder on phones'],
+        website=['A one-page plate shop in your logo and colours, with the 3D builder on the page',
+                 'Every product chosen inside the builder: styles, sizes, badges, borders and extras',
                  'Hosting, SSL, backups and your domain connected',
                  'Google Analytics and Search Console set up',
                  'Privacy, terms, delivery and returns page templates for you to check'],
@@ -41,8 +40,8 @@ TIERS = {
         builder=['"On a car" view', 'Phone app layout', 'Builder on every plate product page',
                  'Orders added as your real products', 'Floating "Design in 3D" button'],
         website=['A home page designed around your shop',
-                 f'Up to [PRO PAGES] pages, with a landing page for each plate type: 4D, gel, show, motorbike {DN("Suggested: 15")}',
-                 f'Up to [PRO PRODUCTS] products, with your product photos edited and laid out {DN("Suggested: 100")}',
+                 'A landing page for each of the seven character styles, plus sub-pages: up to [PRO PAGES] pages',
+                 'Your product photos edited and laid out',
                  'Search basics on every page: titles, descriptions and product details for Google',
                  'Your Google reviews shown on the site, from your Google Business Profile',
                  'Email addresses on your own domain set up'],
@@ -55,9 +54,8 @@ TIERS = {
                  'Awaiting documents status and staff checks', 'Collect in store and in-store fitting', 'Landing-page and category promos'],
         website=['A fully custom design, made for your shop',
                  f'Up to [COMPLETE PAGES] pages, including local pages for the towns you serve {DN("Suggested: 30")}',
-                 'Unlimited products, and moving your current site across included',
-                 f'[COMPLETE LAUNCH ARTICLES] launch articles written for plate buyers {DN("Suggested: 4")}',
-                 f'[COMPLETE MONTHLY HOURS] hours of changes to your site every month {DN("Suggested: 2")}',
+                 'Moving your current site across included',
+                 'A blog page set up, ready for your articles',
                  'A monthly email report on your visits and orders'],
     ),
 }
@@ -100,7 +98,7 @@ def pricing():
         row('"On a car" view with six paint colours', N, Y, Y),
         row('Phone app layout (full screen, step cards, buy bar)', 'In-page', Y, Y),
         row('Price editor, live prices and extras', Y, Y, Y),
-        row('Design Your Plates page, menu item and ?reg= links', Y, Y, Y),
+        row('The builder on your shop page, with ?reg= links', Y, Y, Y),
         row('Builder on every plate product page, with Classic switch', N, Y, Y),
         row('Orders added as your matching products', N, Y, Y),
         row('Floating "Design in 3D" button', N, Y, Y),
@@ -114,17 +112,17 @@ def pricing():
         row('Delivery choice cards at checkout', S, S, S),
         group('Your website', 'web-row'),
         row('Design', 'Ready-made, in your colours', 'Custom home page', 'Fully custom', 'Fully custom', 'web-row'),
-        row('Pages', 'Up to [STARTER PAGES]', 'Up to [PRO PAGES]', 'Up to [COMPLETE PAGES]', 'Up to [COMPLETE PAGES]', 'web-row'),
-        row('Products set up', 'Up to [STARTER PRODUCTS]', 'Up to [PRO PRODUCTS]', 'Unlimited', 'Unlimited', 'web-row'),
-        row('Landing pages for each plate type', N, Y, Y, Y, 'web-row'),
+        row('Pages', 'One page', 'Up to [PRO PAGES]', 'Up to [COMPLETE PAGES]', 'Up to [COMPLETE PAGES]', 'web-row'),
+        row('Products', 'All, chosen in the builder', 'All, with product pages', 'All, with product pages', 'All, with product pages', 'web-row'),
+        row('Landing pages for each of the seven character styles', N, Y, Y, Y, 'web-row'),
         row('Local pages for the towns you serve', N, N, Y, Y, 'web-row'),
         row('Product photos edited and laid out', N, Y, Y, Y, 'web-row'),
         row('Search basics: titles, descriptions, product details for Google', N, Y, Y, Y, 'web-row'),
         row('Google reviews shown on the site', N, Y, Y, Y, 'web-row'),
         row('Email addresses on your domain set up', N, Y, Y, Y, 'web-row'),
         row('Moving your current site across', 'Add-on', 'Add-on', Y, Y, 'web-row'),
-        row('Launch articles for plate buyers', N, N, '[COMPLETE LAUNCH ARTICLES]', '[COMPLETE LAUNCH ARTICLES]', 'web-row'),
-        row('Changes to your site each month', N, N, '[COMPLETE MONTHLY HOURS] hours', 'Yearly fee covers [OUTRIGHT MONTHLY HOURS] hours', 'web-row'),
+        row('Blog page set up', N, N, Y, Y, 'web-row'),
+        row('Changes after launch', 'By the hour', 'By the hour', 'By the hour', 'By the hour', 'web-row'),
         row('Monthly visits and orders report', N, N, Y, Y, 'web-row'),
         row('Google Analytics and Search Console set up', Y, Y, Y, Y, 'web-row'),
         row('Hosting, SSL and backups', Y, Y, Y, 'Yearly fee', 'web-row'),
@@ -163,7 +161,7 @@ def pricing():
 		<div class="outright" id="outright">
 			<div class="stack">
 				<h3>Buy it outright</h3>
-				<p class="muted">One payment for a Complete website with the builder, for your shop. After that, a yearly fee covers hosting, updates, support and [OUTRIGHT MONTHLY HOURS] hours of changes a month. {DN('Suggested: 1 hour a month')}</p>
+				<p class="muted">One payment for a Complete website with the builder, for your shop. After that, a yearly fee covers hosting, updates and support.</p>
 				<ul class="feature-list">
 					<li><b>Licence</b><span>For one shop on one domain.</span></li>
 					<li><b>Hosting and updates</b><span>Billed yearly from [OUTRIGHT HOSTING START].</span></li>
@@ -208,7 +206,7 @@ def pricing():
 			<li><b>Monthly plans</b><span>Billed monthly in advance. Minimum term [MINIMUM TERM], then [NOTICE PERIOD] notice. {DN('Suggested: 12 months, then 1 month')}</span></li>
 			<li><b>Hosting</b><span>Your shop runs on [HOSTING PROVIDER], with an SSL certificate and backups [BACKUP FREQUENCY].</span></li>
 			<li><b>Updates and support</b><span>We keep WordPress, WooCommerce and the builder up to date on every plan. Support by email, [SUPPORT HOURS]. No phone lines: everything is in writing. Support tickets from your shop's admin are coming soon.</span></li>
-			<li><b>Monthly changes</b><span>Complete includes [COMPLETE MONTHLY HOURS] hours of changes a month. Unused hours don't roll over. Extra work is charged at the design rate below. [MONTHLY HOURS TERMS]</span></li>
+			<li><b>Changes after launch</b><span>No plan includes free design hours. Changes to your site after launch are charged at [£ ADDON DESIGN HOURLY] an hour, and we tell you the cost before we start.</span></li>
 			<li><b>Changing plan</b><span>Move up a plan at any time; we'll switch on the extra features and do the extra website work. [PLAN CHANGE TERMS]</span></li>
 			<li><b>Card fees</b><span>Payments go to your own Stripe account, and Stripe charges its fees to you directly.</span></li>
 			<li><b>It's your shop</b><span>Your domain, products, customers and orders are yours. If you leave, [EXIT TERMS].</span></li>
