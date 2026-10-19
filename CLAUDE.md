@@ -6,4 +6,5 @@
 - `plugin/` is the master copy of the builder. White-label through config and filters; keep the option ids in `includes/catalog.php` and the JS data files in step.
 - `site/` pages are generated: edit `site-src/`, run `python3 site-src/build.py`, then `python3 site/tools/fill-placeholders.py --final`. Don't hand-edit the generated HTML.
 - Three.js stays pinned to r170 (0.170.0) from jsDelivr until it's vendored.
+- `portal/` is the Laravel customer area and admin (app.3dplatebuilder.com). Keys and passwords live only in `portal/.env` on the server. Run `php artisan test` in `portal/` before a PR. See `portal/README.md`.
 - Commit on a branch, open a PR to `main`; never push secrets.
