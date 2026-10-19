@@ -21,9 +21,9 @@ def plan_summary():
 		<a class="plan-more" href="pricing.html#{pid}">Everything in {name}</a>
 	</article>"""
     starter = card('Starter', 'For workshops that want the 3D builder and a proper shop, without the extras.', '[£ STARTER MONTHLY]', '[£ STARTER SET-UP]', 'Suggested: £79–£99 a month, £395–£595 set-up',
-                   ['3D builder with all seven character styles', 'Every plate size, with legal spacing as they type', 'A ready-made plate-shop website in your colours, hosted and updated'], pid='starter')
+                   ['3D builder with all seven character styles', 'Every plate size, including different front and rear sizes', 'UK, EV and 4D badges and borders', 'A ready-made plate-shop website in your colours, hosted and updated'], pid='starter')
     pro = card('Pro', 'For shops that sell mostly online and want the full showroom.', '[£ PRO MONTHLY]', '[£ PRO SET-UP]', 'Suggested: £149–£199 a month, £795–£1,195 set-up',
-               ['Badges, borders and different front and rear sizes', '"On a car" view, phone app layout, builder on every product page', 'A custom home page, plate-type landing pages and search basics'], inherit='Starter', pid='pro')
+               ['"On a car" view and the phone app layout', 'Builder on every plate product page', 'A custom home page, plate-type landing pages and search basics'], inherit='Starter', pid='pro')
     complete = card('Complete', 'For busy shops that want customers to design, pay and send documents in one go.', '[£ COMPLETE MONTHLY]', '[£ COMPLETE SET-UP]', 'Suggested: £279–£349 a month, £1,495–£2,495 set-up',
                     ['Checkout in the builder with Apple Pay and Google Pay', 'Proof of ID and entitlement checks, collect in store and fitting', 'A fully custom site, local pages, your site moved across and monthly changes'], inherit='Pro', featured=True, pid='complete')
     return f"""<div class="plans">
@@ -297,7 +297,7 @@ def features():
 					<li><b>Front and rear</b><span>Standard 520 × 111 mm, short (cut to fit the reg), hex, Japanese import and US import.</span></li>
 					<li><b>Rear only</b><span>Oversized 533 × 152 mm and 4x4 279 × 203 mm.</span></li>
 					<li><b>One-plate vehicles</b><span>Motorbike 229 × 178 mm, trailer, and white commercial trailer, with 64 mm characters where the size needs them.</span></li>
-					<li><b>Different front and rear sizes {tier('Pro')}</b><span>A short front with an oversized rear, for example. Each plate prices its own size, and the order shows both in mm.</span></li>
+					<li><b>Different front and rear sizes</b><span>A short front with an oversized rear, for example. Each plate prices its own size, and the order shows both in mm.</span></li>
 				</ul>
 				<p class="small muted">Motorbike, trailer and import sizes are printed only for now.</p>
 				<a class="try-link" href="demo.html?reg=3D%20BLDR&amp;size=standard&amp;rear=oversized&amp;side=rear">Try a different rear size</a>
@@ -310,7 +310,7 @@ def features():
 
 		<div class="feature-group" id="badges">
 			<div class="copy">
-				{tier('Pro')}
+				{tier('Starter')}
 				<h2>Badges and borders</h2>
 				<ul class="feature-list">
 					<li><b>UK badges</b><span>Printed, gel in white or blue, or a raised 4D tile.</span></li>

@@ -29,7 +29,8 @@ FUNCTIONS = [
         ('Real-time 3D builder: styles, sizes, front and rear', ALL),
         ('Basket lines that spell out every detail', ALL),
         ('Your prices, edited on one screen', ALL),
-        ('Badges, borders and the "on a car" view', PRO),
+        ('Badges, borders and different front and rear sizes', ALL),
+        ('The "on a car" view', PRO),
         ('Builder on every product page', PRO),
     ]),
     ('Paying', [

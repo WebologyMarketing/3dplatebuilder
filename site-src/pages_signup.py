@@ -1,8 +1,8 @@
 """Start your shop (sign-up) and Ask a question. Copy in UK English."""
 
 PLAN_CHOICES = [
-    ('starter', 'Starter', '[£ STARTER MONTHLY] a month', '+ [£ STARTER SET-UP] set-up', 'Our plate-shop design in your colours, with the 3D builder.'),
-    ('pro', 'Pro', '[£ PRO MONTHLY] a month', '+ [£ PRO SET-UP] set-up', 'A home page designed for you, plate-type pages, badges, borders and the car view.'),
+    ('starter', 'Starter', '[£ STARTER MONTHLY] a month', '+ [£ STARTER SET-UP] set-up', 'Our plate-shop design in your colours, with the 3D builder, badges, borders and every size.'),
+    ('pro', 'Pro', '[£ PRO MONTHLY] a month', '+ [£ PRO SET-UP] set-up', 'A home page designed for you, plate-type pages, the car view and the phone app layout.'),
     ('complete', 'Complete', '[£ COMPLETE MONTHLY] a month', '+ [£ COMPLETE SET-UP] set-up', 'Fully custom, with checkout in the builder, document checks and monthly changes.'),
     ('outright', 'Buy outright', '[£ OUTRIGHT PRICE] one-off', 'then [£ OUTRIGHT HOSTING YEARLY] a year', 'Everything in Complete, paid once, then yearly for hosting and updates.'),
 ]
