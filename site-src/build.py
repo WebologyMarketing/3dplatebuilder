@@ -41,10 +41,21 @@ h = hashlib.sha1()
 for f in sorted(glob.glob(f'{OUT}/assets/css/*.css') + glob.glob(f'{OUT}/assets/js/*.js') + glob.glob(f'{OUT}/builder/assets/**/*.*', recursive=True)):
     h.update(open(f, 'rb').read())
 V = h.hexdigest()[:8]
+# Images get their own hash, so only a re-rendered picture is fetched again.
+import re, os
+IMG = re.compile(r'((?:demo-)?assets/img/[\w./-]+\.(?:webp|jpg|jpeg|png|svg))(?=["\s,])')
+_img_hash = {}
+def img_v(m):
+    p = m.group(1)
+    if p not in _img_hash:
+        path = f'{OUT}/{p}'
+        _img_hash[p] = hashlib.sha1(open(path, 'rb').read()).hexdigest()[:8] if os.path.exists(path) else None
+    return f'{p}?v={_img_hash[p]}' if _img_hash[p] else p
 for f in glob.glob(f'{OUT}/*.html'):
     t = open(f).read()
     t = t.replace('assets/css/site.css"', f'assets/css/site.css?v={V}"').replace('assets/js/site.js"', f'assets/js/site.js?v={V}"').replace('assets/js/demo.js"', f'assets/js/demo.js?v={V}"')
     t = t.replace('data-src="phone.html"', f'data-src="phone.html?v={V}"').replace('data-src="desktop.html"', f'data-src="desktop.html?v={V}"')
     t = t.replace('builder/assets/css/builder.css?v=1.10.2"', f'builder/assets/css/builder.css?v={V}"')
+    t = IMG.sub(img_v, t)
     open(f, 'w').write(t)
 print('ok', V)
