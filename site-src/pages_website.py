@@ -4,24 +4,24 @@ from blocks import render_showcase, process_strip
 ALL, PRO, COMPLETE = 'All plans', 'Pro and Complete', 'Complete'
 
 PAGES = [
-    ('Home page', 'Your reg box, plate styles with prices, the car view and how to order.', ALL),
-    ('Design your plates', 'The full 3D builder on its own page, linked from your menu.', ALL),
-    ('Valid documents', 'What customers need to show for road-legal plates.', ALL),
-    ('About and contact', 'Your story, address, opening times and how to reach you.', ALL),
+    ('Your shop page', 'The 3D builder, your prices and how to order, on one page. Every product is chosen inside the builder.', ALL),
     ('Legal pages', 'Privacy, terms, delivery and returns, for you to check.', ALL),
+    ('Design your plates', 'The full 3D builder on its own page, linked from your menu.', PRO),
+    ('Valid documents', 'What customers need to show for road-legal plates.', PRO),
+    ('About and contact', 'Your story, address, opening times and how to reach you.', PRO),
     ('Product pages with the builder', 'Every plate product opens in 3D, with a switch back to the classic form.', PRO),
-    ('A page for each plate type', '4D, gel, show plates, motorbike and more, each with its own builder start point.', PRO),
+    ('A page for each character style', 'Printed, 3D gel, 4D 3 mm and 6 mm, 4D gel 3 mm and 6 mm, and retro, plus sub-pages, each with its own builder start point.', PRO),
     ('Pages for the towns you serve', 'Local pages so people nearby find you on Google.', COMPLETE),
-    ('Launch articles', 'Articles written for plate buyers, to bring in searches.', COMPLETE),
+    ('A blog page', 'Set up and ready for your articles, to bring in searches.', COMPLETE),
 ]
 
 LEVELS = [
     ('Starter', 'Our plate-shop design, in your brand',
-     ['Your logo, colours and wording', 'Our proven plate-shop layout', 'Up to [STARTER PAGES] pages and [STARTER PRODUCTS] products']),
+     ['Your logo, colours and wording', 'Our proven plate-shop layout', 'One page, with every product chosen in the builder']),
     ('Pro', 'A home page designed for your shop',
-     ['Everything in Starter', 'A home page designed around your shop', 'Landing pages for each plate type', 'Your product photos edited and laid out', 'Up to [PRO PAGES] pages and [PRO PRODUCTS] products']),
+     ['Everything in Starter', 'A home page designed around your shop', 'A landing page for each of the seven character styles', 'Your product photos edited and laid out', 'Up to [PRO PAGES] pages']),
     ('Complete', 'A fully custom website',
-     ['Everything in Pro', 'Designed from scratch for your shop', 'Up to [COMPLETE PAGES] pages, unlimited products', 'Your current site moved across', '[COMPLETE MONTHLY HOURS] hours of changes every month']),
+     ['Everything in Pro', 'Designed from scratch for your shop', 'Up to [COMPLETE PAGES] pages', 'A blog page set up', 'Your current site moved across']),
 ]
 
 FUNCTIONS = [
@@ -29,7 +29,8 @@ FUNCTIONS = [
         ('Real-time 3D builder: styles, sizes, front and rear', ALL),
         ('Basket lines that spell out every detail', ALL),
         ('Your prices, edited on one screen', ALL),
-        ('Badges, borders and the "on a car" view', PRO),
+        ('Badges, borders and different front and rear sizes', ALL),
+        ('The "on a car" view', PRO),
         ('Builder on every product page', PRO),
     ]),
     ('Paying', [
@@ -49,7 +50,7 @@ FUNCTIONS = [
         ('Google Analytics and Search Console set up', ALL),
         ('Search basics on every page', PRO),
         ('Your Google reviews on the site', PRO),
-        ('Local town pages and launch articles', COMPLETE),
+        ('Local town pages and a blog page', COMPLETE),
     ]),
     ('Looked after', [
         ('Hosting, security certificate and daily backups', ALL),

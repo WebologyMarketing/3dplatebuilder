@@ -21,11 +21,11 @@ def plan_summary():
 		<a class="plan-more" href="pricing.html#{pid}">Everything in {name}</a>
 	</article>"""
     starter = card('Starter', 'For workshops that want the 3D builder and a proper shop, without the extras.', '[£ STARTER MONTHLY]', '[£ STARTER SET-UP]', 'Suggested: £79–£99 a month, £395–£595 set-up',
-                   ['3D builder with all seven character styles', 'Every plate size, with legal spacing as they type', 'A ready-made plate-shop website in your colours, hosted and updated'], pid='starter')
+                   ['3D builder with all seven character styles', 'Every plate size, including different front and rear sizes', 'UK, EV and 4D badges and borders', 'A one-page shop in your colours, every product chosen in the builder'], pid='starter')
     pro = card('Pro', 'For shops that sell mostly online and want the full showroom.', '[£ PRO MONTHLY]', '[£ PRO SET-UP]', 'Suggested: £149–£199 a month, £795–£1,195 set-up',
-               ['Badges, borders and different front and rear sizes', '"On a car" view, phone app layout, builder on every product page', 'A custom home page, plate-type landing pages and search basics'], inherit='Starter', pid='pro')
+               ['"On a car" view and the phone app layout', 'Builder on every plate product page', 'A custom home page, a landing page for each character style, up to [PRO PAGES] pages'], inherit='Starter', pid='pro')
     complete = card('Complete', 'For busy shops that want customers to design, pay and send documents in one go.', '[£ COMPLETE MONTHLY]', '[£ COMPLETE SET-UP]', 'Suggested: £279–£349 a month, £1,495–£2,495 set-up',
-                    ['Checkout in the builder with Apple Pay and Google Pay', 'Proof of ID and entitlement checks, collect in store and fitting', 'A fully custom site, local pages, your site moved across and monthly changes'], inherit='Pro', featured=True, pid='complete')
+                    ['Checkout in the builder with Apple Pay and Google Pay', 'Proof of ID and entitlement checks, collect in store and fitting', 'A fully custom site of up to [COMPLETE PAGES] pages, a blog page and your site moved across'], inherit='Pro', featured=True, pid='complete')
     return f"""<div class="plans">
 	{starter}
 	{pro}
@@ -74,7 +74,7 @@ WEBSITE_ITEMS = [
     ('Checkout that keeps the sale', 'Card, Apple Pay and Google Pay through your own Stripe, inside the builder, so customers pay without losing their design.'),
     ('DVLA documents built in', 'Proof of ID and entitlement at checkout or after. Road-legal orders wait as Awaiting documents until your staff check them.'),
     ('Hosted and looked after', 'Fast hosting, a security certificate, daily backups, and WordPress and builder updates. Nothing for you to install.'),
-    ('Changes by email', 'Ask in writing and we make it. Monthly design hours are included on Complete, so your shop keeps up with your range.'),
+    ('Changes by email', 'Ask in writing and we make it. We tell you the cost first and charge by the hour, so you only pay for what you ask for.'),
 ]
 
 
@@ -117,7 +117,7 @@ def faq_items(pick=None):
         ("I already run WooCommerce. Can I just add the builder?",
          "<p>Not at the moment. The builder comes as part of a website we build, host and look after, so it always works with your checkout, documents and updates. If you already have a WooCommerce shop, we can move your products and pages across to your new site.</p>"),
         ("What's the difference between the plans' websites?",
-         "<p>Starter is a ready-made plate-shop design in your logo and colours, with the core pages. Pro adds a home page designed around your shop, landing pages for each plate type, edited product photos and search basics. Complete is fully custom, with local pages for the towns you serve, your current site moved across, launch articles and hours of changes every month.</p>"),
+         "<p>Starter is a one-page plate shop in your logo and colours: the 3D builder sits on the page and customers choose every product inside it. Pro adds a home page designed around your shop, a landing page for each of the seven character styles and sub-pages, up to [PRO PAGES] pages, with edited product photos and search basics. Complete is fully custom, up to [COMPLETE PAGES] pages, with a blog page set up and your current site moved across. No plan includes free design hours: changes after launch are [£ ADDON DESIGN HOURLY] an hour.</p>"),
         ("Does it work with Shopify, Wix or Squarespace?",
          "<p>Not today. The builder runs on WordPress and WooCommerce.</p>"),
         ("Can I use my own prices and styles?",
@@ -297,7 +297,7 @@ def features():
 					<li><b>Front and rear</b><span>Standard 520 × 111 mm, short (cut to fit the reg), hex, Japanese import and US import.</span></li>
 					<li><b>Rear only</b><span>Oversized 533 × 152 mm and 4x4 279 × 203 mm.</span></li>
 					<li><b>One-plate vehicles</b><span>Motorbike 229 × 178 mm, trailer, and white commercial trailer, with 64 mm characters where the size needs them.</span></li>
-					<li><b>Different front and rear sizes {tier('Pro')}</b><span>A short front with an oversized rear, for example. Each plate prices its own size, and the order shows both in mm.</span></li>
+					<li><b>Different front and rear sizes</b><span>A short front with an oversized rear, for example. Each plate prices its own size, and the order shows both in mm.</span></li>
 				</ul>
 				<p class="small muted">Motorbike, trailer and import sizes are printed only for now.</p>
 				<a class="try-link" href="demo.html?reg=3D%20BLDR&amp;size=standard&amp;rear=oversized&amp;side=rear">Try a different rear size</a>
@@ -310,7 +310,7 @@ def features():
 
 		<div class="feature-group" id="badges">
 			<div class="copy">
-				{tier('Pro')}
+				{tier('Starter')}
 				<h2>Badges and borders</h2>
 				<ul class="feature-list">
 					<li><b>UK badges</b><span>Printed, gel in white or blue, or a raised 4D tile.</span></li>
@@ -381,7 +381,7 @@ def features():
 			<div class="copy">
 				<h2>On every page of your shop</h2>
 				<ul class="feature-list">
-					<li><b>Design Your Plates page and menu item {tier('Starter')}</b><span>A page with the full builder, linked from your main menu.</span></li>
+					<li><b>The builder on your shop page {tier('Starter')}</b><span>On Starter, the full builder is your one-page shop. On Pro and Complete it also gets its own Design Your Plates page in your menu.</span></li>
 					<li><b>Links with the reg filled in {tier('Starter')}</b><span>Add ?reg=AB12CDE to a link from an ad or a "search your reg" box and the builder opens with it.</span></li>
 					<li><b>Builder on product pages {tier('Pro')}</b><span>Your plate products show the builder where the old options form was, starting on that product's style, size and badge. A Design in 3D / Classic switch lets customers choose.</span></li>
 					<li><b>Floating button {tier('Pro')}</b><span>A "Design in 3D" button in the corner of other pages.</span></li>
