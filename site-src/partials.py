@@ -85,7 +85,7 @@ FOOTER = '''<footer class="site-footer">
 			</div>
 		</div>
 		<div class="footer-legal">
-			<p>[COMPANY LEGAL NAME] trading as [BRAND NAME]. Registered in England and Wales, company number [COMPANY NUMBER]. Registered office: [REGISTERED ADDRESS].</p>
+			<p>[COMPANY LEGAL NAME] trading as [TRADING NAME]. Registered in England and Wales, company number [COMPANY NUMBER]. Registered office: [REGISTERED ADDRESS].</p>
 			<p>The builder helps with BS AU 145e character layout and legal spacing. It is not approved or certified by the DVLA. Each plate maker stays responsible for the plates they make, their RNPS registration and checking customers' documents.</p>
 		</div>
 	</div>

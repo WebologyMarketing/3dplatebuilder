@@ -112,9 +112,9 @@ def legal_page(title, intro, body):
 
 
 def privacy():
-    return legal_page('Privacy notice', 'How [COMPANY LEGAL NAME] trading as [BRAND NAME] uses personal information.', '''
+    return legal_page('Privacy notice', 'How [COMPANY LEGAL NAME] trading as [TRADING NAME] uses personal information.', '''
 <h2>Who we are</h2>
-<p>[COMPANY LEGAL NAME] ("we", "us"), trading as [BRAND NAME], company number [COMPANY NUMBER], registered office [REGISTERED ADDRESS]. We are the controller for personal information collected through [DOMAIN]. ICO registration number: [ICO REGISTRATION NUMBER]. Contact us about privacy at [PRIVACY EMAIL].</p>
+<p>[COMPANY LEGAL NAME] ("we", "us"), trading as [TRADING NAME], company number [COMPANY NUMBER], registered office [REGISTERED ADDRESS]. We are the controller for personal information collected through [DOMAIN]. ICO registration number: [ICO REGISTRATION NUMBER]. Contact us about privacy at [PRIVACY EMAIL].</p>
 
 <h2>What we collect</h2>
 <ul>
