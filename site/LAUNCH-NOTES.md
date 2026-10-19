@@ -92,3 +92,12 @@ I couldn't find published prices for comparable plate-builder platforms, so thes
 - How you'll stop a builder-only licence being copied to other sites. There's no licence-key system in the kit yet, so this is in "Coming soon" and the terms limit it to one domain.
 
 Set-up fees also filter out tyre-kickers and cover your time before the first monthly payment. A 12-month minimum term with one month's notice after that is normal for managed sites, and protects the set-up work.
+
+## 6. Sign-up instead of demos (19 October 2026)
+
+- **No demo requests.** Every "Request a demo" is now **Start your shop** (`start.html`): choose a plan, shop details, then a secure link. The form emails you a "New sign-up" with the plan, RNPS supplier name and postcode, current website, domain and brand colour. Until the portal exists, you reply with a Stripe payment link and ask for the RNPS registration and ID by email. The page says the online account is coming soon.
+- **Contact** is now **Ask a question** (`contact.html`), for anything else.
+- **No builder-only (plugin) sales.** Removed from pricing, the home page, the FAQ, How it works and the terms template. The outright option is a Complete website, paid once.
+- **What you get** (`website.html`): pages per plan, customisation levels with a "try your colours" preview, everything it does with plan tags, and the rendering showcase.
+- **Plan tags are honest, and they show a gap.** Apple Pay and Google Pay in the builder, document checks at checkout, and the phone app layout are Complete or Pro only. If you want those to be part of the package story for everyone, consider putting them on every plan.
+- **"Best on the market".** The site shows the rendering rather than claiming to be the best. A comparative claim like "best 3D plate builder on the market" needs evidence under the ASA's CAP Code; add it only with that evidence.

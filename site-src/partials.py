@@ -18,11 +18,11 @@ IMPORTMAP = '''<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigi
 </script>'''
 
 NAV = [
-    ('index.html#website', 'Websites'),
-    ('features.html', 'Features'),
+    ('website.html', 'What you get'),
+    ('features.html', 'The 3D builder'),
+    ('demo.html', 'Try it'),
     ('pricing.html', 'Pricing'),
     ('setup.html', 'How it works'),
-    ('contact.html', 'Request a demo'),
 ]
 
 BRAND_MARK = '''<svg class="brand-mark" width="40" height="26" viewBox="0 0 40 26" aria-hidden="true"><rect x="1" y="1" width="38" height="24" rx="4" fill="#F7D333" stroke="#fff" stroke-width="1.5"/><path d="M8 18V8m5 10V8m5 10V8m7 10V8m5 10V8" stroke="#111418" stroke-width="3" stroke-linecap="square"/></svg>'''
@@ -33,7 +33,7 @@ def header(current):
     for href, label in NAV:
         cur = ' aria-current="page"' if href == current else ''
         links.append(f'<li><a href="{href}"{cur}>{label}</a></li>')
-    cur = ' aria-current="page"' if current == 'demo.html' else ''
+    cur = ' aria-current="page"' if current == 'start.html' else ''
     return f'''<a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
 	<div class="wrap">
@@ -42,7 +42,7 @@ def header(current):
 		<nav id="site-nav" class="site-nav" aria-label="Main">
 			<ul>
 				{''.join(links)}
-				<li><a class="btn btn-primary" href="demo.html"{cur}>Try the builder</a></li>
+				<li><a class="btn btn-primary" href="start.html"{cur}>Start your shop</a></li>
 			</ul>
 		</nav>
 	</div>
@@ -59,16 +59,18 @@ FOOTER = '''<footer class="site-footer">
 			<div>
 				<h2>Product</h2>
 				<ul>
-					<li><a href="features.html">Features</a></li>
+					<li><a href="website.html">What you get</a></li>
+					<li><a href="features.html">The 3D builder</a></li>
+					<li><a href="demo.html">Try the builder</a></li>
 					<li><a href="pricing.html">Pricing</a></li>
-					<li><a href="demo.html">Live demo</a></li>
-					<li><a href="setup.html">How we set you up</a></li>
+					<li><a href="setup.html">How it works</a></li>
 				</ul>
 			</div>
 			<div>
 				<h2>Talk to us</h2>
 				<ul>
-					<li><a href="contact.html">Request a demo</a></li>
+					<li><a href="start.html">Start your shop</a></li>
+					<li><a href="contact.html">Ask a question</a></li>
 					<li><a href="mailto:[EMAIL]">[EMAIL]</a></li>
 				</ul>
 			</div>
@@ -91,11 +93,11 @@ FOOTER = '''<footer class="site-footer">
 
 def sticky_cta(filename):
     """Phones: a slim bar with the main action, shown once the visitor scrolls past the first screen."""
-    if filename in ('demo.html', 'contact.html', 'phone.html', 'desktop.html'):
+    if filename in ('start.html', 'contact.html', 'phone.html', 'desktop.html'):
         return ''
     return '''<div class="sticky-cta" data-sticky-cta hidden>
-	<a class="btn btn-primary" href="demo.html">Try the 3D builder</a>
-	<a class="btn btn-ghost" href="contact.html">Request a demo</a>
+	<a class="btn btn-primary" href="start.html">Start your shop</a>
+	<a class="btn btn-ghost" href="demo.html">Try the builder</a>
 </div>'''
 
 
@@ -258,7 +260,7 @@ def builder_markup(mobile='launch', url_options=False, reg='', poster='assets/im
 	</div>
 	<p class="pbb-cart-msg" data-pbb-cart-msg aria-live="polite"></p>
 		</div>
-		<p class="demo-failed">The 3D builder couldn't start here. It needs a recent browser with WebGL switched on. <a href="contact.html">Request a demo</a> and we'll email you a demo set up for your shop.</p>
+		<p class="demo-failed">The 3D builder couldn't start here. It needs a recent browser with WebGL switched on. Try it on another device, or <a href="website.html">see what you get</a> with pictures of the builder.</p>
 	</div>
 </div>'''
 
@@ -321,11 +323,11 @@ def spec_svg(font_path, reg='AB12 CDE', plate='#F7D333', title='Rear plate, 520 
 # ------------------------------------------------------------------ live phone preview
 
 PHONE_VIEWS = [
-    ('reg=AB12CDE&style=gel-4d-3&side=rear', '4D gel, rear'),
+    ('reg=3D%20BLDR&style=gel-4d-3&side=rear', '4D gel, rear'),
     ('reg=RETRO&style=retro', 'Retro'),
-    ('reg=AB12CDE&style=gel-3d&badge=uk-4d', 'UK 4D badge'),
-    ('reg=AB12CDE&size=motorbike', 'Motorbike'),
-    ('reg=AB12CDE&style=gel-4d-6&view=car', 'On a car'),
+    ('reg=3D%20BLDR&style=gel-3d&badge=uk-4d', 'UK 4D badge'),
+    ('reg=3D%20BLDR&size=motorbike', 'Motorbike'),
+    ('reg=3D%20BLDR&style=gel-4d-6&view=car', 'On a car'),
 ]
 
 

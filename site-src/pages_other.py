@@ -20,12 +20,12 @@ from pricing_new import pricing  # noqa: E402
 
 def setup():
     steps = [
-        ('Your demo', 'We set the builder up with your kind of plates and prices and email you a private link. Try it, send us your questions, and pick a plan.', '[TIMELINE DEMO]'),
-        ('We copy your products and prices', 'From your current site or your price list. We set up the price editor, your extras, and match each design to your real products.', '[TIMELINE BUILD]'),
-        ('Your website and supplier details', 'Your supplier name and postcode go in the plate footer, exactly as registered. On website packages we design your site to your plan: a ready-made design in your colours on Starter, a custom home page and plate-type pages on Pro, a fully custom site on Complete. On Builder only, we fit the builder into your existing site.', '[TIMELINE BRANDING]'),
-        ('Connect Stripe', "You open (or already have) your own Stripe account. We connect it, switch on Apple Pay and Google Pay and check your domain with Apple.", '[TIMELINE PAYMENTS]'),
-        ('Documents, collection and fitting', 'We set the document lists customers choose from, where send-later documents should go (email, WhatsApp or post), your collection address and your fitting price.', '[TIMELINE DOCUMENTS]'),
-        ('Test orders, together', 'On a private copy of your shop we run real test orders: a road-legal order with uploads, a send-later order, a show plate, a failed then successful card payment, and a staff document check.', '[TIMELINE TESTING]'),
+        ('Sign up online', 'Choose your plan and tell us about your shop. It takes about five minutes.', 'Day 1'),
+        ('Pay and verify', "We email your secure link to pay the set-up fee and upload your RNPS registration and ID. We check them before we build.", 'Within [RESPONSE TIME]'),
+        ('We copy your products and prices', 'From your current site or your price list. We set up the price editor and your extras, and match each design to your products.', '[TIMELINE BUILD]'),
+        ('We design your website', "Your supplier name and postcode go in the plate footer, exactly as registered. Your site is designed to your plan: our plate-shop design in your colours on Starter, a custom home page and plate-type pages on Pro, a fully custom site on Complete. You review a private preview and ask for changes by email.", '[TIMELINE BRANDING]'),
+        ('Connect Stripe', "You open (or already have) your own Stripe account. We connect it and switch on Apple Pay and Google Pay.", '[TIMELINE PAYMENTS]'),
+        ('Test orders', 'On your private preview we run real test orders: a road-legal order with documents, a show plate, a failed then successful card payment.', '[TIMELINE TESTING]'),
         ('Go live', "We point your domain at the new shop, switch Stripe to live and watch the first orders come in with you.", '[TIMELINE GO LIVE]'),
     ]
     lis = '\n'.join(f'<li><h3>{t}</h3><div class="stack"><p>{d}</p><p class="when">Usually {w}</p></div></li>' for t, d, w in steps)
@@ -33,8 +33,8 @@ def setup():
 <section class="page-head" aria-labelledby="s-title">
 	<div class="wrap">
 		<div class="intro">
-			<h1 id="s-title">How we set you up</h1>
-			<p>You run the workshop; we build the shop, or add the builder to the one you have. From your demo to your first order usually takes [TIMELINE TOTAL], all arranged by email. {DN('Suggested: 2–4 weeks, depending on how quickly products and Stripe are ready')}</p>
+			<h1 id="s-title">How it works</h1>
+			<p>You run the workshop; we build the shop. From sign-up to your first order usually takes [TIMELINE TOTAL], all online and by email. No calls, no meetings. <a href="start.html">Start your shop</a>.</p>
 		</div>
 	</div>
 </section>
@@ -52,15 +52,14 @@ def setup():
 	<div class="wrap spec-split">
 		<div class="intro">
 			<h2 id="need-title">What we need from you</h2>
-			<p>Get these together and set-up goes quickly. We'll email you a checklist after your demo.</p>
+			<p>Get these together and set-up goes quickly. We'll email you a checklist when you sign up.</p>
 		</div>
 		<ul class="feature-list">
 			<li><b>Your products and prices</b><span>A link to your current shop, or your price list.</span></li>
-			<li><b>Supplier name and postcode</b><span>Exactly as on your RNPS registration, for the plate footer.</span></li>
+			<li><b>Your RNPS registration and ID</b><span>We verify them before we build. Your supplier name and postcode go in the plate footer exactly as registered.</span></li>
 			<li><b>Your logo</b><span>SVG or a large PNG, if you have one.</span></li>
 			<li><b>A Stripe account</b><span>In your business's name. We'll help you set it up if you don't have one.</span></li>
 			<li><b>Your domain</b><span>Who it's registered with, so we can point it at the new shop.</span></li>
-			<li><b>Builder only: access to your site</b><span>A WordPress admin login for us, and your hosting details, so we can check and install the builder.</span></li>
 			<li><b>Document contacts</b><span>The email, WhatsApp number and postal address customers should send documents to.</span></li>
 			<li><b>Collection and fitting</b><span>Your address, opening hours and fitting price, if you offer them.</span></li>
 		</ul>
@@ -82,113 +81,11 @@ def setup():
 	</div>
 </section>
 
-{cta_band('Ready when you are', "Request a demo and we'll email you a set-up date.")}
+{cta_band()}
 '''
 
 
-def contact():
-    return f'''
-<section class="page-head" aria-labelledby="c-title">
-	<div class="wrap">
-		<div class="intro">
-			<h1 id="c-title">Request a demo</h1>
-			<p>Tell us a bit about your shop. We'll set the builder up with your kind of plates and email you a private demo link. No sales calls.</p>
-		</div>
-	</div>
-</section>
-
-<section class="section-tight" style="padding-top:0">
-	<div class="wrap contact-split">
-		<form class="form-grid" action="[FORM ENDPOINT]" method="post" data-demo-form data-email="[EMAIL]" novalidate>
-			<div class="field">
-				<label for="f-name">Your name <span class="req" aria-hidden="true">*</span></label>
-				<input id="f-name" name="name" type="text" autocomplete="name" required>
-			</div>
-			<div class="field">
-				<label for="f-business">Business name <span class="req" aria-hidden="true">*</span></label>
-				<input id="f-business" name="business" type="text" autocomplete="organization" required>
-			</div>
-			<div class="field full">
-				<label for="f-email">Email <span class="req" aria-hidden="true">*</span></label>
-				<input id="f-email" name="email" type="email" autocomplete="email" required>
-			</div>
-			<div class="field full">
-				<label for="f-website">Your current website</label>
-				<input id="f-website" name="website" type="url" inputmode="url" placeholder="https://" aria-describedby="f-website-hint">
-				<span class="hint" id="f-website-hint">Leave it blank if you don't have one yet.</span>
-			</div>
-			<div class="field">
-				<label for="f-platform">Current platform <span class="req" aria-hidden="true">*</span></label>
-				<select id="f-platform" name="platform" required>
-					<option value="">Choose one</option>
-					<option>WooCommerce / WordPress</option>
-					<option>Shopify</option>
-					<option>Wix</option>
-					<option>Squarespace</option>
-					<option>eBay or Amazon only</option>
-					<option>Built for us by an agency</option>
-					<option>No website yet</option>
-					<option>Something else</option>
-				</select>
-			</div>
-			<div class="field">
-				<label for="f-orders">Plate orders a month <span class="req" aria-hidden="true">*</span></label>
-				<select id="f-orders" name="orders" required>
-					<option value="">Choose one</option>
-					<option>Under 50</option>
-					<option>50 to 200</option>
-					<option>200 to 500</option>
-					<option>500 to 1,000</option>
-					<option>Over 1,000</option>
-				</select>
-			</div>
-			<div class="field full">
-				<label for="f-plan">Plan you're interested in</label>
-				<select id="f-plan" name="plan">
-					<option value="">Not sure yet</option>
-					<option value="starter">Starter</option>
-					<option value="pro">Pro</option>
-					<option value="complete">Complete</option>
-					<option value="outright">Buy outright</option>
-					<option value="builder-only">Builder only, on my own WooCommerce site</option>
-				</select>
-			</div>
-			<div class="field full">
-				<label for="f-message">Message</label>
-				<textarea id="f-message" name="message" rows="5" placeholder="What you sell, how you sell it, and anything you'd like to see in the demo."></textarea>
-			</div>
-			<div class="hp" aria-hidden="true">
-				<label for="f-company-url">Leave this empty</label>
-				<input id="f-company-url" name="company_url" type="text" tabindex="-1" autocomplete="off">
-			</div>
-			<div class="field full">
-				<p class="small muted">Fields marked * are required. We'll use your details to reply and set up your demo. See our <a href="privacy.html">privacy notice</a>.</p>
-			</div>
-			<div class="field full">
-				<button type="submit" class="btn btn-primary">Send demo request</button>
-				<p class="form-status" data-form-status role="status" aria-live="polite"></p>
-			</div>
-		</form>
-
-		<aside class="contact-card" aria-labelledby="direct-title">
-			<h2 id="direct-title" style="font-size:var(--step-2)">Or email us</h2>
-			<dl>
-				<div><dt>Email</dt><dd><a href="mailto:[EMAIL]">[EMAIL]</a></dd></div>
-								<div><dt>Replies</dt><dd>Within [RESPONSE TIME]</dd></div>
-			</dl>
-			<p class="small muted">We don't do phone calls. Everything is handled by email, so you've always got it in writing. If the form doesn't send, it opens your email app with your answers filled in.</p>
-		</aside>
-	</div>
-</section>
-<script>
-	// Pre-select the plan from pricing links (contact.html?plan=pro).
-	(() => {{
-		const p = new URLSearchParams(location.search).get('plan');
-		const s = document.getElementById('f-plan');
-		if (p && s && [...s.options].some((o) => o.value === p)) s.value = p;
-	}})();
-</script>
-'''
+from pages_signup import start, contact  # noqa: E402,F401
 
 
 BANNER = '''<div class="template-banner" role="note">
@@ -221,7 +118,7 @@ def privacy():
 
 <h2>What we collect</h2>
 <ul>
-	<li><strong>Demo requests:</strong> your name, business name, email, website, current platform, how many plate orders you take a month, the plan you're interested in and your message.</li>
+	<li><strong>Sign-ups:</strong> your name, email, business name, the supplier name and postcode on your RNPS registration, your current website and domain, your brand colour, the plan you chose and your message. <strong>Questions:</strong> your name, email, business name and question.</li>
 	<li><strong>Customers:</strong> contact, billing and account details needed to provide your plan. [ADD ANY OTHERS]</li>
 	<li><strong>Technical data:</strong> your IP address and browser details, which reach the services that deliver this site (see "Who we share it with").</li>
 </ul>
@@ -231,7 +128,7 @@ def privacy():
 <table>
 	<thead><tr><th>Purpose</th><th>Lawful basis</th></tr></thead>
 	<tbody>
-		<tr><td>Replying to demo requests and setting up demos</td><td>Steps at your request before a contract; legitimate interests [CONFIRM]</td></tr>
+		<tr><td>Replying to sign-ups and questions, and setting up your shop</td><td>Steps at your request before a contract; legitimate interests [CONFIRM]</td></tr>
 		<tr><td>Providing your plan, billing and support</td><td>Contract</td></tr>
 		<tr><td>Keeping business records</td><td>Legal obligation</td></tr>
 		<tr><td>Occasional product news to business contacts</td><td>Legitimate interests, with an opt-out in every email [CONFIRM UNDER PECR]</td></tr>
@@ -253,7 +150,7 @@ def privacy():
 <p>When we host a shop for a plate maker, that plate maker is the controller for its own customers' data, including proof of ID and entitlement documents uploaded at checkout. We act as their processor under our data processing agreement [DPA REFERENCE]. Questions about a particular shop's orders should go to that shop.</p>
 
 <h2>How long we keep it</h2>
-<p>Demo requests: [RETENTION PERIOD]. Customer records: [RETENTION PERIOD]. Accounting records: as long as the law requires.</p>
+<p>Sign-ups and questions that don't lead to an order: [RETENTION PERIOD]. Customer records: [RETENTION PERIOD]. Accounting records: as long as the law requires.</p>
 
 <h2>Your rights</h2>
 <p>You can ask to see, correct or delete your information, object to or restrict how we use it, or ask for a copy to take elsewhere. Email [PRIVACY EMAIL]. You can also complain to the Information Commissioner's Office at ico.org.uk.</p>
@@ -276,9 +173,6 @@ def terms():
 
 <h2>5. Buying outright</h2>
 <p>A one-off fee for your website and a licence to use the builder for one shop on one domain. The licence is not transferable and does not allow resale, sharing or copying of the builder. Hosting, updates and support are billed yearly at [£ OUTRIGHT HOSTING YEARLY]. [WHAT HAPPENS IF YEARLY FEE IS NOT RENEWED] [SELF-HOSTING TERMS]</p>
-
-<h2>5a. Builder only</h2>
-<p>A licence to use the builder on your own WordPress and WooCommerce site, for one shop on one domain, installed and set up by us. You are responsible for your hosting, backups, security and WordPress, WooCommerce and theme updates. We keep the builder updated while your plan (or yearly fee) is paid. We'll check your site before installing, but we can't guarantee the builder works with every theme, plugin or hosting set-up. [BUILDER-ONLY TERMS]</p>
 
 <h2>5b. Website work included in plans</h2>
 <p>Page counts, product counts, design level, launch articles and monthly change hours are as listed for your plan on our pricing page when you order. Unused monthly hours don't carry over. [WEBSITE SCOPE TERMS]</p>

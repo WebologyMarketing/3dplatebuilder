@@ -18,26 +18,23 @@ if (toggle && nav) {
 	});
 }
 
-/* Request a demo form: posts to the endpoint in the form's action. Until https://3dplatebuilder.com/contact.php
-   is filled in, or if the post fails, it opens the visitor's email app instead (mailto fallback). */
+/* Sign-up and question forms: post to the endpoint in the form's action. If the post fails,
+   open the visitor's email app with their answers filled in instead (mailto fallback). */
 const form = document.querySelector('[data-demo-form]');
 if (form) {
 	const status = form.querySelector('[data-form-status]');
 	const button = form.querySelector('button[type="submit"]');
 	const email = form.dataset.email;
+	const skip = new Set(['company_url', 'type']);
+	const label = (el) => (el?.closest('.field, .check')?.querySelector('label')?.textContent || el?.name || '').replace('*', '').trim();
 
 	const mailto = (data) => {
-		const lines = [
-			`Name: ${data.get('name')}`,
-			`Business: ${data.get('business')}`,
-			`Website: ${data.get('website') || '-'}`,
-			`Current platform: ${data.get('platform')}`,
-			`Plate orders a month: ${data.get('orders')}`,
-			`Email: ${data.get('email')}`,
-			'',
-			data.get('message') || '',
-		];
-		const subject = `Demo request: ${data.get('business')}`;
+		const lines = [];
+		for (const [k, v] of data.entries()) {
+			if (skip.has(k) || v === '') continue;
+			lines.push(`${label(form.elements[k]?.length ? form.elements[k][0] : form.elements[k]) || k}: ${v}`);
+		}
+		const subject = `${form.dataset.subject || 'Message'}: ${data.get('business') || data.get('name') || ''}`;
 		return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
 	};
 
@@ -53,8 +50,7 @@ if (form) {
 		if (data.get('company_url')) return; // honeypot: bots fill the hidden field
 
 		const endpoint = form.getAttribute('action') || '';
-		const configured = /^https?:\/\//.test(endpoint);
-		if (!configured) {
+		if (!/^https?:\/\//.test(endpoint)) {
 			say(`Opening your email app. If nothing happens, email us at ${email}.`, 'info');
 			window.location.href = mailto(data);
 			return;
@@ -66,7 +62,7 @@ if (form) {
 			const res = await fetch(endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
 			if (!res.ok) throw new Error(String(res.status));
 			form.reset();
-			say("Thanks, we've got your request. We'll email you within one working day with your demo.", 'ok');
+			say(form.dataset.success || "Thanks, we've got it. We'll reply by email.", 'ok');
 		} catch (err) {
 			say(`We couldn't send the form. Opening your email app instead; or email us at ${email}.`, 'error');
 			window.location.href = mailto(data);
