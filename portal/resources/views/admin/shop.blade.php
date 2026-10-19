@@ -26,7 +26,7 @@
       @csrf
       <h2>Stage and links</h2>
       <div class="grid-2">
-        <label class="field">Stage <small>Moving to "Their review" or "Live" emails them</small>
+        <label class="field">Stage <small>"Their review" or "Live" emails them. "Live" also starts their monthly billing.</small>
           <select name="stage">@foreach (\App\Models\Shop::STAGES as $k => $label)<option value="{{ $k }}" @selected($shop->stage === $k)>{{ $label }}</option>@endforeach</select>
         </label>
         <label class="field">Preview link<input type="url" name="preview_url" value="{{ old('preview_url', $shop->preview_url) }}" placeholder="https://"></label>
@@ -117,7 +117,7 @@
         <dt>Monthly</dt><dd>{{ money($shop->monthlyPence()) }}</dd>
         <dt>Set-up paid</dt><dd>{{ $shop->setup_paid_at?->format('j M Y') ?? 'Not yet' }}</dd>
         <dt>Subscription</dt><dd>{{ $shop->subscription_status ?? '—' }}</dd>
-        @if ($shop->current_period_end)<dt>Next payment</dt><dd>{{ $shop->current_period_end->format('j M Y') }}</dd>@endif
+        <dt>Monthly billing</dt><dd>@if ($shop->billingStarted())Started {{ $shop->live_at?->format('j M Y') }}{{ $shop->current_period_end ? ', next '.$shop->current_period_end->format('j M Y') : '' }}@else Starts when you set them to Live @endif</dd>
         @if ($shop->setup_paid_at)<dt>Minimum term ends</dt><dd>{{ $shop->setup_paid_at->copy()->addMonths(config('portal.minimum_term_months'))->format('j M Y') }}</dd>@endif
       </dl>
     </section>

@@ -39,6 +39,6 @@ class PaymentController extends Controller
 
         $addon->update(['status' => 'invoiced', 'stripe_invoice_item_id' => $id]);
 
-        return back()->with('status', $addon->name().' added to '.$addon->shop->name.'\'s next invoice.');
+        return back()->with('status', $addon->name().' billed to '.$addon->shop->name.'\'s card.');
     }
 }

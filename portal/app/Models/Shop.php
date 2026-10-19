@@ -26,6 +26,7 @@ class Shop extends Model
             'font_files' => 'array',
             'current_period_end' => 'datetime',
             'setup_paid_at' => 'datetime',
+            'live_at' => 'datetime',
             'cancelled_at' => 'datetime',
         ];
     }
@@ -65,10 +66,11 @@ class Shop extends Model
         return $this->planConfig()['name'];
     }
 
-    /** Recurring income from this shop, in pence a month (outright hosting spread over 12 months). */
+    /** Recurring income from this shop, in pence a month (outright hosting spread over 12 months).
+     * Monthly billing starts when the shop goes live, so a shop counts from then. */
     public function monthlyPence(): int
     {
-        if (! $this->isPaying()) {
+        if (! $this->isPaying() || ! $this->live_at) {
             return 0;
         }
         if ($this->plan === 'outright') {
@@ -76,6 +78,18 @@ class Shop extends Model
         }
 
         return (int) ($this->planConfig()['monthly'] ?? 0);
+    }
+
+    /** Pence of the plan's monthly fee, whether or not billing has started. */
+    public function planMonthlyPence(): int
+    {
+        return $this->plan === 'outright' ? intdiv(config('portal.outright.yearly'), 12) : (int) ($this->planConfig()['monthly'] ?? 0);
+    }
+
+    /** True once the monthly subscription has been started (at go-live). */
+    public function billingStarted(): bool
+    {
+        return (bool) $this->stripe_subscription_id;
     }
 
     public function isPaying(): bool

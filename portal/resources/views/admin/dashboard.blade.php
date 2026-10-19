@@ -19,7 +19,7 @@
 </header>
 
 <section class="kpis" aria-label="Key numbers">
-  <div class="card kpi"><div class="l">Monthly recurring</div><div class="v">{{ money($mrr) }}</div><div class="s">{{ money($mrr * 12) }} a year</div></div>
+  <div class="card kpi"><div class="l">Monthly recurring</div><div class="v">{{ money($mrr) }}</div><div class="s">{{ money($mrr * 12) }} a year @if ($waitingCount)· +{{ money($waitingPence) }} when {{ $waitingCount }} {{ \Illuminate\Support\Str::plural('shop', $waitingCount) }} {{ $waitingCount === 1 ? 'goes' : 'go' }} live @endif</div></div>
   <div class="card kpi"><div class="l">Paying shops</div><div class="v">{{ $payingCount }}</div><div class="s">{{ $byPlanText }}</div></div>
   <div class="card kpi"><div class="l">Set-up fees this month</div><div class="v">{{ money($setupPence) }}</div><div class="s">{{ $setupCount }} new {{ \Illuminate\Support\Str::plural('shop', $setupCount) }} · {{ $signupsThisMonth }} sign-ups</div></div>
   <div class="card kpi {{ $overduePence ? 'bad' : '' }}"><div class="l">Overdue</div><div class="v">{{ money($overduePence) }}</div><div class="s">@if ($overdue->isEmpty()) Nothing overdue @else {{ $overdue->count() }} {{ \Illuminate\Support\Str::plural('invoice', $overdue->count()) }}, oldest {{ $overdue->first()->due_at->diffInDays(now(), true) >= 1 ? (int) $overdue->first()->due_at->diffInDays(now(), true).' days' : 'today' }} @endif</div></div>

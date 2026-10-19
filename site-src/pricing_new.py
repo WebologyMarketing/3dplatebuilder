@@ -164,7 +164,7 @@ def pricing():
 		<div class="pricing-head">
 			<h2 id="monthly-title">Monthly plans</h2>
 		</div>
-		<p class="pricing-note muted">A new plate shop with the builder built in. We design it, build it, host it and keep it up to date. Pick a plan, sign up online and we start building.</p>
+		<p class="pricing-note muted">A new plate shop with the builder built in. We design it, build it, host it and keep it up to date. Pick a plan, sign up online and we start building. You pay the set-up fee and your first month when you sign up; your monthly payments then start when your shop goes live.</p>
 		<div class="plans">
 			{cards}
 		</div>

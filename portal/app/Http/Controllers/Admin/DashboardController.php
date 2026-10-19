@@ -16,6 +16,7 @@ class DashboardController extends Controller
         $shops = Shop::all();
         $paying = $shops->filter->isPaying();
         $mrr = $paying->sum->monthlyPence();
+        $waiting = $paying->filter(fn ($s) => ! $s->live_at);
 
         $monthStart = now()->startOfMonth();
         $setupThisMonth = $shops->filter(fn ($s) => $s->setup_paid_at && $s->setup_paid_at->gte($monthStart));
@@ -28,7 +29,7 @@ class DashboardController extends Controller
         $history = collect(range(11, 0))->map(function ($ago) use ($shops) {
             $end = now()->subMonthsNoOverflow($ago)->endOfMonth();
             $end = $end->isFuture() ? now() : $end;
-            $pence = $shops->filter(fn ($s) => $s->setup_paid_at && $s->setup_paid_at->lte($end)
+            $pence = $shops->filter(fn ($s) => $s->live_at && $s->live_at->lte($end)
                 && (! $s->cancelled_at || $s->cancelled_at->gt($end)))
                 ->sum(fn ($s) => $s->plan === 'outright' ? intdiv(config('portal.outright.yearly'), 12) : ($s->planConfig()['monthly'] ?? 0));
 
@@ -39,6 +40,8 @@ class DashboardController extends Controller
 
         return view('admin.dashboard', [
             'mrr' => $mrr,
+            'waitingPence' => $waiting->sum->planMonthlyPence(),
+            'waitingCount' => $waiting->count(),
             'payingCount' => $paying->count(),
             'byPlan' => $paying->groupBy('plan')->map->count(),
             'setupPence' => $setupThisMonth->sum(fn ($s) => $s->planConfig()['setup'] ?? 0),

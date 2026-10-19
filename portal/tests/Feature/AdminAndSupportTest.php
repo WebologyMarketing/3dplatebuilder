@@ -37,17 +37,18 @@ class AdminAndSupportTest extends TestCase
 
     public function test_dashboard_numbers(): void
     {
-        $this->customer(['name' => 'A', 'plan' => 'starter', 'stage' => 'live']);
-        $this->customer(['name' => 'B', 'plan' => 'pro', 'stage' => 'live']);
-        $this->customer(['name' => 'C', 'plan' => 'complete', 'stage' => 'in_build']);
+        $this->customer(['name' => 'A', 'plan' => 'starter', 'stage' => 'live', 'live_at' => now()->subMonths(2)]);
+        $this->customer(['name' => 'B', 'plan' => 'pro', 'stage' => 'live', 'live_at' => now()->subMonth()]);
+        $this->customer(['name' => 'C', 'plan' => 'complete', 'stage' => 'in_build']);   // paid, not live yet
         $this->customer(['name' => 'D', 'plan' => 'pro'], paid: false);
         $this->customer(['name' => 'E', 'plan' => 'pro', 'stage' => 'cancelled', 'cancelled_at' => now()->subMonth()]);
 
         $this->actingAs($this->admin())->get(route('admin.dashboard'))
             ->assertOk()
-            ->assertSee('£697')          // 99 + 199 + 399
-            ->assertSee('£8,364 a year')
-            ->assertSee('Churn 25%');    // 1 cancelled of 4
+            ->assertSee('£298')             // 99 + 199: only live shops pay monthly
+            ->assertSee('£3,576 a year')
+            ->assertSee('+£399 when 1 shop goes live')
+            ->assertSee('Churn 25%');       // 1 cancelled of 4
         $this->actingAs($this->admin())->get(route('admin.shops', ['show' => 'setup']))->assertSee('C')->assertSee('D')->assertDontSee('>A<', false);
     }
 

@@ -61,7 +61,7 @@ class SignupAndPaymentTest extends TestCase
         Mail::fake();
         $user = $this->customer(paid: false);
         $event = ['id' => 'evt_1', 'type' => 'checkout.session.completed', 'data' => ['object' => [
-            'id' => 'cs_1', 'customer' => 'cus_new', 'subscription' => 'sub_1', 'payment_status' => 'paid',
+            'id' => 'cs_1', 'mode' => 'payment', 'customer' => 'cus_new', 'payment_intent' => 'pi_1', 'payment_status' => 'paid',
             'metadata' => ['shop_id' => (string) $user->shop_id],
         ]]];
 
@@ -72,6 +72,9 @@ class SignupAndPaymentTest extends TestCase
         $this->assertNotNull($shop->setup_paid_at);
         $this->assertSame('onboarding', $shop->stage);
         $this->assertSame('cus_new', $shop->stripe_customer_id);
+        $this->assertSame('pm_from_pi_1', $shop->stripe_payment_method_id); // card kept for the monthly payments
+        $this->assertNull($shop->stripe_subscription_id);                   // monthly billing waits for go-live
+        $this->assertSame(0, $shop->monthlyPence());
         $this->assertMatchesRegularExpression('/^[A-Z0-9]{5}(-[A-Z0-9]{5}){3}$/', $shop->licence_key);
         Mail::assertSent(PortalNotice::class, 2); // you, and them; not again for the repeat
 
@@ -118,5 +121,41 @@ class SignupAndPaymentTest extends TestCase
         $shop = Shop::find($user->shop_id);
         $this->assertSame($end, $shop->current_period_end->timestamp);
         $this->assertSame('sub_9', $shop->stripe_subscription_id);
+    }
+
+    public function test_going_live_starts_monthly_billing_a_month_later(): void
+    {
+        Mail::fake();
+        $user = $this->customer(['stripe_payment_method_id' => 'pm_saved']);
+        $admin = $this->admin();
+
+        $this->actingAs($admin)->post(route('admin.shops.update', $user->shop), ['stage' => 'live', 'live_url' => 'https://yourplates.test'])
+            ->assertSessionHas('status');
+
+        $shop = $user->shop->fresh();
+        $this->assertSame('live', $shop->stage);
+        $this->assertNotNull($shop->live_at);
+        $this->assertSame('sub_test_'.$shop->id, $shop->stripe_subscription_id);
+        $this->assertSame([[$shop->id, now()->addMonthNoOverflow()->toDateString(), 'pm_saved']], $this->billing->subscriptions);
+        $this->assertSame(19900, $shop->monthlyPence());
+        Mail::assertSent(PortalNotice::class, fn ($m) => $m->hasTo($user->email) && str_contains(implode(' ', $m->lines), now()->addMonthNoOverflow()->format('j F Y')));
+
+        // Saving again doesn't start a second subscription.
+        $this->actingAs($admin)->post(route('admin.shops.update', $shop), ['stage' => 'live', 'admin_notes' => 'x']);
+        $this->assertCount(1, $this->billing->subscriptions);
+    }
+
+    public function test_going_live_is_refused_if_stripe_fails_or_they_have_not_paid(): void
+    {
+        $admin = $this->admin();
+        $unpaid = $this->customer(['name' => 'Unpaid'], paid: false);
+        $this->actingAs($admin)->post(route('admin.shops.update', $unpaid->shop), ['stage' => 'live'])->assertSessionHas('error');
+        $this->assertSame('not_paid', $unpaid->shop->fresh()->stage);
+
+        $this->billing->failSubscription = true;
+        $paid = $this->customer(['name' => 'Paid', 'stage' => 'review']);
+        $this->actingAs($admin)->post(route('admin.shops.update', $paid->shop), ['stage' => 'live'])->assertSessionHas('error');
+        $this->assertSame('review', $paid->shop->fresh()->stage);
+        $this->assertNull($paid->shop->fresh()->live_at);
     }
 }

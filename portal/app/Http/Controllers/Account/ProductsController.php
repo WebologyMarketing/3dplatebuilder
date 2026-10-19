@@ -74,10 +74,10 @@ class ProductsController extends Controller
                 "Add-ons requested: {$shop->name}",
                 ["{$shop->name} has asked for: {$names}."],
                 route('admin.payments'),
-                'Add them to their invoice',
+                'Bill them',
             ));
         }
 
-        return back()->with('status', $new ? 'Thanks. We\'ll confirm and add that to your next invoice.' : 'You\'ve already asked for those.');
+        return back()->with('status', $new ? 'Thanks. We\'ll confirm it, then bill it to your card.' : 'You\'ve already asked for those.');
     }
 }

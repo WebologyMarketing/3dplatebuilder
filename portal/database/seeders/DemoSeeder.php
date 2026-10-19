@@ -44,6 +44,8 @@ class DemoSeeder extends Seeder
             $shop = Shop::create([
                 'name' => $name, 'plan' => $plan, 'stage' => $stage,
                 'setup_paid_at' => $paid ? now()->subMonths($monthsAgo)->subDays(3) : null,
+                'live_at' => $stage === 'live' ? now()->subMonths($monthsAgo)->addDays(10) : null,
+                'stripe_subscription_id' => $stage === 'live' ? 'sub_demo'.$i : null,
                 'subscription_status' => $paid ? 'active' : null,
                 'current_period_end' => $paid ? now()->addDays(3 + $i * 2) : null,
                 'stripe_customer_id' => $paid ? 'cus_demo'.$i : null,

@@ -26,7 +26,7 @@
 @if (! $shop->setup_paid_at)
   <section class="card dark" aria-labelledby="pay">
     <h2 id="pay" style="font-size:22px">Pay your set-up fee to begin</h2>
-    <p class="muted" style="margin:6px 0 18px">{{ $shop->planName() }} plan: {{ money($shop->planConfig()['setup']) }} set-up, then {{ money($shop->planConfig()['monthly']) }} a month. No VAT to add. Once it's paid, you can add your details and products.</p>
+    <p class="muted" style="margin:6px 0 18px">{{ $shop->planName() }} plan: today you pay the {{ money($shop->planConfig()['setup']) }} set-up fee and your first month, {{ money($shop->planConfig()['monthly']) }}. Your monthly payments then start when your shop goes live. No VAT to add.</p>
     <a class="btn yellow" href="{{ route('pay') }}">Go to secure payment →</a>
   </section>
 @elseif ($shop->stage === 'onboarding')
@@ -89,7 +89,7 @@
       <dl class="facts" style="margin-bottom:16px">
         <dt>Plan</dt><dd>{{ $shop->planName() }}, {{ money($shop->planConfig()['monthly']) }} a month</dd>
         <dt>Set-up fee</dt><dd>{{ money($shop->planConfig()['setup']) }}, {{ $shop->setup_paid_at ? 'paid' : 'not paid yet' }}</dd>
-        @if ($nextPayment)<dt>Next payment</dt><dd>{{ $nextPayment->format('j F Y') }}</dd>@endif
+        <dt>Monthly payments</dt><dd>@if ($shop->billingStarted()){{ $nextPayment ? 'Next on '.$nextPayment->format('j F Y') : 'Started' }}@else Start when your shop goes live @endif</dd>
       </dl>
       <a class="btn ghost block" href="{{ route('billing') }}">Invoices and card</a>
     </section>
