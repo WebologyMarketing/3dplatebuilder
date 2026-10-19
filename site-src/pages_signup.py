@@ -130,7 +130,7 @@ def contact():
 	<div class="wrap">
 		<div class="intro">
 			<h1 id="c-title">Ask a question</h1>
-			<p>Something not covered on <a href="website.html">What you get</a> or <a href="pricing.html">Pricing</a>? Ask here and we'll reply by email within [RESPONSE TIME]. Ready to go? <a href="start.html">Start your shop</a>.</p>
+			<p>Something not covered on <a href="website.html">What you get</a> or <a href="pricing.html">Pricing</a>? Ask here and we'll reply by email within [RESPONSE TIME]. Ready to go? <a href="https://app.3dplatebuilder.com/signup">Start your shop</a>.</p>
 		</div>
 	</div>
 </section>

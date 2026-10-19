@@ -17,7 +17,7 @@ def plan_summary():
 		<p class="for">{who}</p>
 		<p class="price"><strong>{price} a month</strong><span>+ {setup} set-up {DN(note)}</span></p>
 		<ul>{lis}</ul>
-		<a class="btn {btn}" href="start.html?plan={pid}">Start with {name}</a>
+		<a class="btn {btn}" href="https://app.3dplatebuilder.com/signup?plan={pid}">Start with {name}</a>
 		<a class="plan-more" href="pricing.html#{pid}">Everything in {name}</a>
 	</article>"""
     starter = card('Starter', 'For workshops that want the 3D builder and a proper shop, without the extras.', '[£ STARTER MONTHLY]', '[£ STARTER SET-UP]', 'Suggested: £79–£99 a month, £395–£595 set-up',
@@ -39,7 +39,7 @@ def plan_summary():
 	<div class="stack">
 		<p class="price"><strong>[£ OUTRIGHT PRICE] one-off</strong></p>
 		<p class="muted">then [£ OUTRIGHT HOSTING YEARLY] a year</p>
-		<div class="actions"><a class="btn btn-ghost" href="start.html?plan=outright">Start your shop</a><a class="btn btn-ghost" href="pricing.html#outright">How buying outright works</a></div>
+		<div class="actions"><a class="btn btn-ghost" href="contact.html">Start your shop</a><a class="btn btn-ghost" href="pricing.html#outright">How buying outright works</a></div>
 	</div>
 </div>"""
 
@@ -52,7 +52,7 @@ def cta_band(heading='Start your plate shop', text='Pick a plan and sign up onli
 			<p>{text}</p>
 		</div>
 		<div class="actions">
-			<a class="btn btn-dark" href="start.html">Start your shop</a>
+			<a class="btn btn-dark" href="https://app.3dplatebuilder.com/signup">Start your shop</a>
 			<a class="btn btn-dark-ghost" href="demo.html">Try the 3D builder</a>
 		</div>
 	</div>

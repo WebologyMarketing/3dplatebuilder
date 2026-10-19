@@ -3,6 +3,7 @@ five reasons as a bento grid, the rendering panel, the live builder to try, the 
 plans and questions. Copy in UK English; nothing here may promise what isn't built."""
 from partials import phone_preview, laptop_preview
 from blocks import USPS, process_strip
+from plan_switcher import plan_switcher
 from pages_main import plan_summary, cta_band, shops_strip, faq_items
 
 # The styles the demo phone and the rendering panel cycle through:
@@ -150,7 +151,7 @@ def home(font):
 					<li>{tick(1.1)}Hosted, updated and looked after</li>
 				</ul>
 				<div class="actions hero-rise" style="--d:.24s">
-					<a class="btn btn-primary btn-lg" href="start.html">Start your shop <span class="arr" aria-hidden="true">→</span></a>
+					<a class="btn btn-primary btn-lg" href="https://app.3dplatebuilder.com/signup">Start your shop <span class="arr" aria-hidden="true">→</span></a>
 					<a class="tlink" href="#try">Try the 3D builder <span class="arr" aria-hidden="true">→</span></a>
 				</div>
 				<p class="price-anchor hero-rise" style="--d:.3s">From <b>[£ STARTER MONTHLY] a month</b> + [£ STARTER SET-UP] set-up. No VAT to add: we're not VAT registered.</p>
@@ -197,7 +198,7 @@ def home(font):
 			<div class="next-card">
 				<p><b>Like it?</b> It comes with a complete website built around it.</p>
 				<div class="actions">
-					<a class="btn btn-primary" href="start.html">Start your shop <span class="arr" aria-hidden="true">→</span></a>
+					<a class="btn btn-primary" href="https://app.3dplatebuilder.com/signup">Start your shop <span class="arr" aria-hidden="true">→</span></a>
 					<a class="btn btn-ghost" href="website.html">See what you get</a>
 				</div>
 			</div>
@@ -243,6 +244,7 @@ def home(font):
 			<h2 id="plans-title">Pick a plan and start</h2>
 			<p class="lede" style="margin:14px auto 0;color:var(--muted)">Every plan is a website with the 3D builder built in, hosted and updated, plus a one-off set-up fee. No VAT to add: we're not VAT registered.</p>
 		</div>
+		<div style="margin:36px 0 48px">{plan_switcher()}</div>
 		{plan_summary()}
 	</div>
 </section>

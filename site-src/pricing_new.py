@@ -1,5 +1,6 @@
 """Pricing page: website packages, each with the 3D builder built in. No builder-only (plugin) sales."""
 from pages_main import DN, cta_band
+from plan_switcher import plan_switcher
 
 Y = '<span class="yes" aria-label="Included">✓</span>'
 N = '<span class="no" aria-label="Not included">–</span>'
@@ -79,7 +80,7 @@ def plan_card(pid, inherit, featured):
 		<ul>{builder}</ul>
 		<p class="plan-sub">Your website</p>
 		<ul>{website}</ul>
-		<a class="{btn}" href="start.html?plan={pid}">Start with {t['name']}</a>
+		<a class="{btn}" href="https://app.3dplatebuilder.com/signup?plan={pid}">Start with {t['name']}</a>
 	</article>'''
 
 
@@ -148,6 +149,16 @@ def pricing():
 	</div>
 </section>
 
+<section class="section-tight" aria-labelledby="ps-title">
+	<div class="wrap">
+		<div style="text-align:center;max-width:680px;margin:0 auto 28px">
+			<h2 id="ps-title">See your shop on each plan</h2>
+			<p class="lede" style="margin:12px auto 0;color:var(--muted)">Pick a plan and watch the same shop grow. Each plan includes everything before it.</p>
+		</div>
+		{plan_switcher()}
+	</div>
+</section>
+
 <section class="section-tight pricing" aria-labelledby="monthly-title">
 	<div class="wrap">
 		<div class="pricing-head">
@@ -171,7 +182,7 @@ def pricing():
 				<p class="price"><strong>[£ OUTRIGHT PRICE] one-off</strong></p>
 				<p class="muted">then [£ OUTRIGHT HOSTING YEARLY] a year</p>
 				<p>{DN('Suggested: £4,950–£7,950 one-off, then £795–£1,195 a year, starting from go-live')}</p>
-				<a class="btn btn-primary" href="start.html?plan=outright">Start your shop</a>
+				<a class="btn btn-primary" href="contact.html">Start your shop</a>
 			</div>
 		</div>
 		</div>

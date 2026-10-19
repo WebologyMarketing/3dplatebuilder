@@ -292,3 +292,25 @@ document.addEventListener('transitionend', (e) => {
 		t.classList.remove('reveal', 'is-in');
 	}
 });
+
+/* Plan switcher (site-src/plan_switcher.py): the toggle sets data-plan; CSS shows what each plan adds. */
+(function () {
+  document.querySelectorAll('[data-plan-switcher]').forEach(function (root) {
+    var names = { starter: 'Starter', pro: 'Pro', complete: 'Complete' };
+    var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function set(plan) {
+      root.dataset.plan = plan;
+      root.querySelectorAll('[data-plan-pick]').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.planPick === plan ? 'true' : 'false'); });
+      var link = root.querySelector('[data-plan-link]');
+      if (link) link.href = 'https://app.3dplatebuilder.com/signup?plan=' + plan;
+      var nm = root.querySelector('[data-plan-name]');
+      if (nm) nm.textContent = names[plan];
+      var cur = root.querySelector('[data-page-count] [data-only="' + plan + '"]');
+      var n = cur ? parseInt(cur.textContent, 10) || 1 : 1;
+      root.querySelectorAll('[data-sq]').forEach(function (q) { q.classList.toggle('on', +q.dataset.sq <= n); });
+      if (!calm) root.querySelectorAll('.ps-screen, .ps-phone-screen').forEach(function (el) { el.classList.remove('ps-swap'); void el.offsetWidth; el.classList.add('ps-swap'); });
+    }
+    root.querySelectorAll('[data-plan-pick]').forEach(function (b) { b.addEventListener('click', function () { set(b.dataset.planPick); }); });
+    set(root.dataset.plan || 'pro');
+  });
+})();
