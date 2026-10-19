@@ -3,6 +3,7 @@ five reasons as a bento grid, the rendering panel, the live builder to try, the 
 plans and questions. Copy in UK English; nothing here may promise what isn't built."""
 from partials import phone_preview, laptop_preview
 from blocks import USPS, process_strip
+from plan_switcher import plan_switcher
 from pages_main import plan_summary, cta_band, shops_strip, faq_items
 
 # The styles the demo phone and the rendering panel cycle through:
@@ -243,6 +244,7 @@ def home(font):
 			<h2 id="plans-title">Pick a plan and start</h2>
 			<p class="lede" style="margin:14px auto 0;color:var(--muted)">Every plan is a website with the 3D builder built in, hosted and updated, plus a one-off set-up fee. No VAT to add: we're not VAT registered.</p>
 		</div>
+		<div style="margin:36px 0 48px">{plan_switcher()}</div>
 		{plan_summary()}
 	</div>
 </section>
