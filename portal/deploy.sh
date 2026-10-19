@@ -1,12 +1,31 @@
 #!/bin/sh
 # Run by Plesk after each deploy of app.3dplatebuilder.com:  sh portal/deploy.sh
-# PHP and COMPOSER can be set by the caller, for Plesk's own PHP 8.3 binary.
+# Finds Plesk's own PHP (8.3 or newer) and Composer, so the deploy action needs nothing else.
+# Override with PHP_BIN=/path/to/php if needed.
 set -e
 cd "$(dirname "$0")"
-PHP="${PHP:-php}"
-COMPOSER="${COMPOSER:-composer}"
 
-$COMPOSER install --no-dev --optimize-autoloader --no-interaction --no-progress
+PHP="${PHP_BIN:-}"
+if [ -z "$PHP" ]; then
+  for v in 8.5 8.4 8.3; do
+    if [ -x "/opt/plesk/php/$v/bin/php" ]; then PHP="/opt/plesk/php/$v/bin/php"; break; fi
+  done
+fi
+PHP="${PHP:-php}"
+echo "Using PHP: $PHP ($($PHP -r 'echo PHP_VERSION;'))"
+
+# Composer: Plesk's copy if there is one, else a copy kept in portal/ (not in Git).
+COMPOSER_PHAR=""
+for c in /usr/lib/plesk-9.0/composer.phar /usr/lib64/plesk-9.0/composer.phar /usr/local/psa/var/modules/composer/composer.phar ./composer.phar; do
+  if [ -f "$c" ]; then COMPOSER_PHAR="$c"; break; fi
+done
+if [ -z "$COMPOSER_PHAR" ]; then
+  echo "Fetching Composer..."
+  $PHP -r "copy('https://getcomposer.org/download/latest-stable/composer.phar', 'composer.phar');"
+  COMPOSER_PHAR=./composer.phar
+fi
+
+$PHP "$COMPOSER_PHAR" install --no-dev --optimize-autoloader --no-interaction --no-progress
 
 if [ ! -f .env ]; then
   echo "portal/.env is missing: copy .env.example to .env on the server and fill it in, then deploy again."
