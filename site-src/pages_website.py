@@ -125,7 +125,7 @@ def website():
 				<a class="btn btn-primary btn-lg" href="start.html">Start your shop</a>
 				<a class="btn btn-ghost btn-lg" href="pricing.html">See prices</a>
 			</div>
-			<p class="price-anchor">From <b>[£ STARTER MONTHLY] a month</b> + [£ STARTER SET-UP] set-up. Prices exclude VAT.</p>
+			<p class="price-anchor">From <b>[£ STARTER MONTHLY] a month</b> + [£ STARTER SET-UP] set-up. No VAT to add: we're not VAT registered.</p>
 		</div>
 		<figure class="hero-web-art">
 			<div class="browser">

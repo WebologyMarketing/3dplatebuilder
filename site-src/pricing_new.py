@@ -142,7 +142,7 @@ def pricing():
 		<div class="intro">
 			<p class="eyebrow">Plans</p>
 			<h1 id="p-title">Pricing</h1>
-			<p>Every plan is a complete plate shop website with the 3D builder built in, designed, hosted and looked after by us. Each plan adds more builder and more website. All prices exclude VAT.</p>
+			<p>Every plan is a complete plate shop website with the 3D builder built in, designed, hosted and looked after by us. Each plan adds more builder and more website. No VAT is added: we're not VAT registered.</p>
 		</div>
 		<p style="margin-top:16px">{DN('Draft notes like this one show suggested prices and limits. tools/fill-placeholders.py removes them when you fill in your own.')}</p>
 	</div>
@@ -203,7 +203,7 @@ def pricing():
 		</div>
 		<ul class="feature-list">
 			<li><b>Set-up fee</b><span>Paid once, when you sign up. It covers designing and building your site, copying your products and prices, adding your supplier details and logo, connecting Stripe and testing orders with you.</span></li>
-			<li><b>Monthly plans</b><span>Billed monthly in advance. Minimum term [MINIMUM TERM], then [NOTICE PERIOD] notice. {DN('Suggested: 12 months, then 1 month')}</span></li>
+			<li><b>Monthly plans</b><span>Billed monthly in advance. Minimum term [MINIMUM TERM], then [NOTICE PERIOD] notice by email to cancel.</span></li>
 			<li><b>Hosting</b><span>Your shop runs on [HOSTING PROVIDER], with an SSL certificate and backups [BACKUP FREQUENCY].</span></li>
 			<li><b>Updates and support</b><span>We keep WordPress, WooCommerce and the builder up to date on every plan. Support by email, [SUPPORT HOURS]. No phone lines: everything is in writing. Support tickets from your shop's admin are coming soon.</span></li>
 			<li><b>Changes after launch</b><span>No plan includes free design hours. Changes to your site after launch are charged at [£ ADDON DESIGN HOURLY] an hour, and we tell you the cost before we start.</span></li>

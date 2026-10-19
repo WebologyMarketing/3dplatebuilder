@@ -153,7 +153,7 @@ def home(font):
 					<a class="btn btn-primary btn-lg" href="start.html">Start your shop <span class="arr" aria-hidden="true">→</span></a>
 					<a class="tlink" href="#try">Try the 3D builder <span class="arr" aria-hidden="true">→</span></a>
 				</div>
-				<p class="price-anchor hero-rise" style="--d:.3s">From <b>[£ STARTER MONTHLY] a month</b> + [£ STARTER SET-UP] set-up. Prices exclude VAT.</p>
+				<p class="price-anchor hero-rise" style="--d:.3s">From <b>[£ STARTER MONTHLY] a month</b> + [£ STARTER SET-UP] set-up. No VAT to add: we're not VAT registered.</p>
 			</div>
 			<div class="hero-stage">
 				<img class="hero-plate hero-plate-rear" src="assets/img/hero-rear.webp" width="881" height="500" alt="" aria-hidden="true">
@@ -241,7 +241,7 @@ def home(font):
 	<div class="wrap">
 		<div class="reveal" style="text-align:center;max-width:680px;margin:0 auto">
 			<h2 id="plans-title">Pick a plan and start</h2>
-			<p class="lede" style="margin:14px auto 0;color:var(--muted)">Every plan is a website with the 3D builder built in, hosted and updated, plus a one-off set-up fee. Prices exclude VAT.</p>
+			<p class="lede" style="margin:14px auto 0;color:var(--muted)">Every plan is a website with the 3D builder built in, hosted and updated, plus a one-off set-up fee. No VAT to add: we're not VAT registered.</p>
 		</div>
 		{plan_summary()}
 	</div>

@@ -126,7 +126,7 @@ def faq_items(pick=None):
         ("How do I get help once I'm live?",
          "<p>By email, at [EMAIL]. We don't run phone lines: everything is handled in writing, so there's always a record of what was asked and done. Support tickets from your shop's admin are coming soon.</p>"),
         ("How long is the contract?",
-         "<p>Monthly plans have a minimum term of [MINIMUM TERM], then [NOTICE PERIOD] notice. Your domain, products, customers and orders stay yours.</p>"),
+         "<p>Monthly plans have a minimum term of [MINIMUM TERM]. After that, cancel any time with [NOTICE PERIOD] notice by email. Your domain, products, customers and orders stay yours.</p>"),
     ]
     if pick is not None:
         items = [items[i] for i in pick]
