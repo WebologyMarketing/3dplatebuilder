@@ -6,7 +6,7 @@
  * The browser shows a live price, but the cart price is always recalculated here
  * from these rules, so a tampered request can't change what the customer pays.
  *
- * @package PlateBoss
+ * @package PlateBuilder
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -97,40 +97,14 @@ function pbb_catalog() {
 
 /**
  * Shop products that use the builder, and what each one starts on (product ID => preset).
- * IDs are plateboss.co.uk's; the staging copy shares them. Filter `pbb_product_presets` to change.
+ * Set per shop in the shop config's `products` (includes/shop.php); filter `pbb_product_presets` runs on top.
  *
  * The list also works the other way: a finished design goes into the basket as the product
  * that matches it best (see pbb_product_for_config()), so reports and Google show what sold.
  * Order matters there: more specific entries (EV, short, hex) come before general ones.
  */
 function pbb_product_presets() {
-	return apply_filters(
-		'pbb_product_presets',
-		array(
-			// EV: the EV badge comes with the plate.
-			33353 => array( 'style' => 'printed', 'badge' => 'ev' ),
-			33354 => array( 'style' => 'acrylic-4d-3', 'badge' => 'ev' ),
-			33355 => array( 'style' => 'gel-4d-3', 'badge' => 'ev' ),
-			33356 => array( 'style' => 'gel-3d', 'badge' => 'ev' ),
-			33357 => array( 'style' => 'retro', 'badge' => 'ev' ),
-			// Sizes.
-			18327 => array( 'style' => 'printed', 'size' => 'motorbike' ),
-			33283 => array( 'style' => 'printed', 'size' => 'trailer' ),
-			33224 => array( 'style' => 'printed', 'size' => 'trailer-commercial' ),
-			32114 => array( 'style' => 'acrylic-4d-3', 'size' => 'short' ),
-			28133 => array( 'style' => 'printed', 'size' => 'short' ),
-			17722 => array( 'style' => 'printed', 'size' => 'hex' ),
-			// Styles.
-			17642 => array( 'style' => 'printed' ),
-			17667 => array( 'style' => 'gel-3d' ),
-			17666 => array( 'style' => 'acrylic-4d-3' ),
-			17724 => array( 'style' => 'acrylic-4d-6' ),
-			17578 => array( 'style' => 'gel-4d-3' ),
-			17725 => array( 'style' => 'gel-4d-6' ),
-			30893 => array( 'style' => 'retro' ),
-			32040 => array( 'style' => 'retro', 'match' => false ), // 4D Retro: starts on Retro, never matched to.
-		)
-	);
+	return pbb_int_keys( apply_filters( 'pbb_product_presets', pbb_int_keys( pbb_shop( 'products' ) ) ) );
 }
 
 /** Rear plate size; baskets from before 1.9 had one size for both. */
@@ -181,7 +155,7 @@ function pbb_catalog_labels() {
 }
 
 /**
- * Default prices (GBP), matching plateboss.co.uk's product pages (October 2026).
+ * Default prices (GBP): typical UK prices, October 2026. Each shop sets its own.
  * Edit them in WooCommerce → Plate Builder.
  *
  *   style_pair / style_single  front & rear / one plate, standard size, no extras
@@ -318,7 +292,7 @@ function pbb_format_registration( $raw ) {
 function pbb_sanitize_config( $raw ) {
 	$c = pbb_catalog();
 	if ( ! is_array( $raw ) ) {
-		return new WP_Error( 'pbb_invalid', __( 'Something went wrong. Please refresh and try again.', 'plateboss-builder' ) );
+		return new WP_Error( 'pbb_invalid', __( 'Something went wrong. Please refresh and try again.', '3d-plate-builder' ) );
 	}
 
 	$pick = function ( $key, $allowed, $default ) use ( $raw ) {
@@ -328,7 +302,7 @@ function pbb_sanitize_config( $raw ) {
 
 	$registration = pbb_format_registration( isset( $raw['registration'] ) ? $raw['registration'] : '' );
 	if ( '' === $registration ) {
-		return new WP_Error( 'pbb_registration', __( 'Please enter your registration.', 'plateboss-builder' ) );
+		return new WP_Error( 'pbb_registration', __( 'Please enter your registration.', '3d-plate-builder' ) );
 	}
 
 	$size      = $pick( 'size', $c['sizes'], 'standard' );
@@ -345,16 +319,16 @@ function pbb_sanitize_config( $raw ) {
 		$rear_size = $size;
 		$plates    = 'rear';
 	} elseif ( $c['sizes'][ $size ]['rear_only'] ) {
-		return new WP_Error( 'pbb_size', __( 'That size is for rear plates only. Please choose another front plate size.', 'plateboss-builder' ) );
+		return new WP_Error( 'pbb_size', __( 'That size is for rear plates only. Please choose another front plate size.', '3d-plate-builder' ) );
 	}
 	$in_use = array_unique( 'pair' === $plates ? array( $size, $rear_size ) : array( 'rear' === $plates ? $rear_size : $size ) );
 
 	foreach ( $in_use as $s ) {
 		if ( null !== $c['badges'][ $badge ]['sizes'] && ! in_array( $s, $c['badges'][ $badge ]['sizes'], true ) ) {
-			return new WP_Error( 'pbb_badge', __( 'That badge isn\'t available on this plate size.', 'plateboss-builder' ) );
+			return new WP_Error( 'pbb_badge', __( 'That badge isn\'t available on this plate size.', '3d-plate-builder' ) );
 		}
 		if ( isset( $c['sizes'][ $s ]['styles'] ) && ! in_array( $style, $c['sizes'][ $s ]['styles'], true ) ) {
-			return new WP_Error( 'pbb_style', __( 'That character style isn\'t available on this plate size yet.', 'plateboss-builder' ) );
+			return new WP_Error( 'pbb_style', __( 'That character style isn\'t available on this plate size yet.', '3d-plate-builder' ) );
 		}
 	}
 
@@ -499,27 +473,27 @@ function pbb_describe_config( array $config ) {
 	}
 
 	$lines = array(
-		__( 'Registration', 'plateboss-builder' ) => $config['registration'],
-		__( 'Plates', 'plateboss-builder' )       => $c['plates'][ $config['plates'] ],
-		__( 'Size', 'plateboss-builder' )         => $size_text,
-		__( 'Style', 'plateboss-builder' )        => $style,
+		__( 'Registration', '3d-plate-builder' ) => $config['registration'],
+		__( 'Plates', '3d-plate-builder' )       => $c['plates'][ $config['plates'] ],
+		__( 'Size', '3d-plate-builder' )         => $size_text,
+		__( 'Style', '3d-plate-builder' )        => $style,
 	);
 	if ( 'none' !== $config['badge'] ) {
-		$lines[ __( 'Badge', 'plateboss-builder' ) ] = $c['badges'][ $config['badge'] ]['label'];
+		$lines[ __( 'Badge', '3d-plate-builder' ) ] = $c['badges'][ $config['badge'] ]['label'];
 	}
 	if ( 'none' !== $config['border'] ) {
-		$lines[ __( 'Border', 'plateboss-builder' ) ] = $c['borders'][ $config['border'] ]['label'];
+		$lines[ __( 'Border', '3d-plate-builder' ) ] = $c['borders'][ $config['border'] ]['label'];
 	}
 	if ( $config['accessories'] ) {
 		$names = array();
 		foreach ( $config['accessories'] as $a ) {
 			$names[] = $c['accessories'][ $a ];
 		}
-		$lines[ __( 'Extras', 'plateboss-builder' ) ] = implode( ', ', $names );
+		$lines[ __( 'Extras', '3d-plate-builder' ) ] = implode( ', ', $names );
 	}
-	$lines[ __( 'Use', 'plateboss-builder' ) ] = $config['road_legal']
-		? __( 'Road legal', 'plateboss-builder' )
-		: __( 'Show plate (not for road use)', 'plateboss-builder' );
+	$lines[ __( 'Use', '3d-plate-builder' ) ] = $config['road_legal']
+		? __( 'Road legal', '3d-plate-builder' )
+		: __( 'Show plate (not for road use)', '3d-plate-builder' );
 
 	return $lines;
 }

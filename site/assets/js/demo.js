@@ -1,16 +1,17 @@
 /**
  * Live demo wrapper for the plate builder.
  *
- * White-labels the builder through its config only (the core files in plateboss-builder/ are untouched):
- *  - neutral demo supplier "Your Plates Ltd", postcode "AB1 2CD", no PlateBoss logo;
- *  - the car badge comes from demo-assets/ (assetsUrl);
+ * White-labels the builder through its config only (builder/ is a copy of plugin/assets,
+ * synced by tools/sync-demo-builder.sh):
+ *  - neutral demo supplier "Your Plates Ltd", postcode "AB1 2CD", no logo;
+ *  - the car badge comes from demo-assets/ (carBadge); plain plate backs (backing: null);
  *  - URL options ?reg= ?style= ?size= ?rear= ?badge= ?border= ?side= ?view=car ?mobile=
  *    pre-set the builder, so the Features page can link straight into a view.
  * It loads the builder only when it scrolls into view, and replaces "Continue to checkout"
  * with a panel showing what the plate maker's shop would receive.
  */
 
-const BUILDER = new URL('../../plateboss-builder/assets/', import.meta.url).href;
+const BUILDER = new URL('../../builder/assets/', import.meta.url).href;
 const DEMO_ASSETS = new URL('../../demo-assets/', import.meta.url).href;
 
 /* Example prices (a typical UK price list). A real shop sets its own in WooCommerce → Plate Builder. */
@@ -52,7 +53,9 @@ export const DEMO_CONFIG = {
 	assetsUrl: DEMO_ASSETS,
 	pricing: PRICING,
 	accessories: ACCESSORIES,
-	fittingNote: 'Collect from the shop',
+	fittingNote: 'Collect from the shop and we fit them on the spot.',
+	carBadge: `${DEMO_ASSETS}img/pb-car-badge.svg`,
+	backing: null, // plain sheeting on the back of the plate
 	accessoryGroups: [['sticky_pads', 'xl_pads'], ['frameless_holders']],
 	currency: 'GBP',
 	labels: LABELS,
@@ -113,35 +116,9 @@ async function boot(builders) {
 	builders.forEach(afterBoot);
 }
 
-async function neutralBacking(root) {
-	// The core prints the PlateBoss sheeting maker's brand on the back of each plate (plate-model.js),
-	// which shows when the plate is turned round. Swap it for plain sheeting on the demo.
-	const viewport = root.pbbViewport;
-	const m = viewport?.plate?.backMaterial;
-	if (!m) return;
-	const THREE = await import('three');
-	const c = document.createElement('canvas');
-	c.width = c.height = 4;
-	const g = c.getContext('2d');
-	g.fillStyle = '#ECEBE6';
-	g.fillRect(0, 0, 4, 4);
-	const tex = new THREE.CanvasTexture(c);
-	tex.colorSpace = THREE.SRGBColorSpace;
-	const old = m.map;
-	m.map = tex;
-	m.emissiveMap = tex;
-	m.needsUpdate = true;
-	old?.dispose();
-	viewport.requestRender();
-}
-
 function afterBoot(root) {
 	const frame = root.closest('[data-demo-frame]');
 	frame?.classList.add('is-loaded');
-	neutralBacking(root).catch((e) => console.warn('[demo] backing', e));
-
-	// The fitting add-on's note is fixed text in basket.js; give the demo shop a neutral one.
-	root.querySelectorAll('.pbb-fitting small').forEach((s) => (s.textContent = 'Collect from the shop and we fit them on the spot.'));
 
 	// ?view=car opens the "On a car" view once the plate is ready.
 	if (new URLSearchParams(location.search).get('view') === 'car' && root.hasAttribute('data-demo-url')) {

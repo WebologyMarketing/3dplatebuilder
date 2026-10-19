@@ -1,7 +1,7 @@
 """
 Convert a plate font (TTF/OTF) into compact glyph outlines in millimetres.
 
-    python3 tools/build-font.py CharlesWright-Bold.ttf plateboss-builder/assets/fonts/charles-wright-bold.json --cap-height 79
+    python3 tools/build-font.py CharlesWright-Bold.ttf plugin/assets/fonts/charles-wright-bold.json --cap-height 79
 
 Only A-Z and 0-9 are exported: that is all a registration needs, it keeps the
 payload tiny (no runtime font parser), and the original font file is never

@@ -1,7 +1,7 @@
 # 3D Plate Builder
 
 Shops with a real-time 3D number plate builder, for UK registered number plate suppliers.
-Built by, and running at, PlateBoss.co.uk. Private repository.
+An independent business at 3dplatebuilder.com, with no ties to any one plate shop. Private repository.
 
 The build plan (customer journey, portal, provisioning, phases) is in the "3D Plate Builder: Build Plan" doc.
 
@@ -11,11 +11,9 @@ The build plan (customer journey, portal, provisioning, phases) is in the "3D Pl
 |---|---|---|
 | `site/` | Marketing site for 3dplatebuilder.com (static HTML, plus `contact.php` for the demo form) | Built, not yet live |
 | `site-src/` | Python scripts that generate the pages in `site/` | Working |
-| `plugin/` | The builder WordPress/WooCommerce plugin (from kit 1.9.19, unchanged) | To be white-labelled in Phase 1 |
+| `plugin/` | The builder WordPress/WooCommerce plugin, `3d-plate-builder` (1.10: white-labelled; each shop's details in its own config) | Working |
 | `plugin-dev/` | Local test pages for the builder without WordPress | Working |
-| `extras/` | Small checkout plugins used at PlateBoss (notices, express pay) | As in the kit |
-| `tools/` | Local test server and the font-to-JSON tool | As in the kit |
-| `docs/` | The kit's brief | Reference |
+| `tools/` | Local test server, the font-to-JSON tool, and `sync-demo-builder.sh` | Working |
 
 Coming in later phases: `shop-template/` (theme, must-use plugins, provisioning scripts) and `portal/` (Laravel customer portal and admin).
 
@@ -32,10 +30,11 @@ python3 site-src/build.py                      # regenerates site/*.html with [P
 python3 site/tools/fill-placeholders.py --final # fills them from site/placeholders.json
 ```
 
-`site/plateboss-builder/` is the demo copy of the builder's assets. Once the plugin is white-labelled, it will be copied from `plugin/assets/` by a build step instead of kept by hand.
+`site/builder/` is the demo copy of the builder's assets. After changing `plugin/assets/`, run `tools/sync-demo-builder.sh` to copy them in.
 
 ## Rules
 
 - `main` is what's live. Work on a branch and open a pull request.
 - No passwords, API keys or customer data in the repository. Secrets go in GitHub's encrypted secrets.
-- Before launch, see `site/LAUNCH-NOTES.md` for open licence checks (Charles Wright font data, Nikkalite backing print).
+- No other business's branding, settings or customer data in the repository. Each shop's config is created by provisioning, not committed here.
+- Before launch, see `site/LAUNCH-NOTES.md` for open licence checks (Charles Wright font data, badge artwork).

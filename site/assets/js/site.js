@@ -18,26 +18,23 @@ if (toggle && nav) {
 	});
 }
 
-/* Request a demo form: posts to the endpoint in the form's action. Until https://3dplatebuilder.com/contact.php
-   is filled in, or if the post fails, it opens the visitor's email app instead (mailto fallback). */
+/* Sign-up and question forms: post to the endpoint in the form's action. If the post fails,
+   open the visitor's email app with their answers filled in instead (mailto fallback). */
 const form = document.querySelector('[data-demo-form]');
 if (form) {
 	const status = form.querySelector('[data-form-status]');
 	const button = form.querySelector('button[type="submit"]');
 	const email = form.dataset.email;
+	const skip = new Set(['company_url', 'type']);
+	const label = (el) => (el?.closest('.field, .check')?.querySelector('label')?.textContent || el?.name || '').replace('*', '').trim();
 
 	const mailto = (data) => {
-		const lines = [
-			`Name: ${data.get('name')}`,
-			`Business: ${data.get('business')}`,
-			`Website: ${data.get('website') || '-'}`,
-			`Current platform: ${data.get('platform')}`,
-			`Plate orders a month: ${data.get('orders')}`,
-			`Email: ${data.get('email')}`,
-			'',
-			data.get('message') || '',
-		];
-		const subject = `Demo request: ${data.get('business')}`;
+		const lines = [];
+		for (const [k, v] of data.entries()) {
+			if (skip.has(k) || v === '') continue;
+			lines.push(`${label(form.elements[k]?.length ? form.elements[k][0] : form.elements[k]) || k}: ${v}`);
+		}
+		const subject = `${form.dataset.subject || 'Message'}: ${data.get('business') || data.get('name') || ''}`;
 		return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
 	};
 
@@ -53,8 +50,7 @@ if (form) {
 		if (data.get('company_url')) return; // honeypot: bots fill the hidden field
 
 		const endpoint = form.getAttribute('action') || '';
-		const configured = /^https?:\/\//.test(endpoint);
-		if (!configured) {
+		if (!/^https?:\/\//.test(endpoint)) {
 			say(`Opening your email app. If nothing happens, email us at ${email}.`, 'info');
 			window.location.href = mailto(data);
 			return;
@@ -66,7 +62,7 @@ if (form) {
 			const res = await fetch(endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
 			if (!res.ok) throw new Error(String(res.status));
 			form.reset();
-			say("Thanks, we've got your request. We'll email you within one working day with your demo.", 'ok');
+			say(form.dataset.success || "Thanks, we've got it. We'll reply by email.", 'ok');
 		} catch (err) {
 			say(`We couldn't send the form. Opening your email app instead; or email us at ${email}.`, 'error');
 			window.location.href = mailto(data);
@@ -94,7 +90,7 @@ function fitDevice(fit) {
 function deviceSrc(frame, query) {
 	const base = frame.dataset.src;
 	const q = query ?? (frame.hasAttribute('data-phone-inherit') ? location.search.slice(1) : '');
-	return q ? `${base}?${q}` : base;
+	return q ? `${base}${base.includes('?') ? '&' : '?'}${q}` : base;
 }
 
 function loadDevice(fit, query) {
@@ -174,3 +170,125 @@ if (pricing) {
 	modeButtons.forEach((b) => b.addEventListener('click', () => setMode(b.dataset.pricingMode)));
 	if (location.hash === '#builder-only' || location.hash === '#outright-builder') setMode('builder');
 }
+
+/* Phones: show the bottom action bar once the first screen has scrolled away, and hide it
+   while the yellow call-to-action band (which has the same buttons) is on screen. */
+const sticky = document.querySelector('[data-sticky-cta]');
+if (sticky && 'IntersectionObserver' in window) {
+	const hero = document.querySelector('main > section');
+	const band = document.querySelector('.plate-band');
+	let pastHero = false;
+	let bandShowing = false;
+	const update = () => { sticky.hidden = !pastHero || bandShowing; };
+	if (hero) new IntersectionObserver(([en]) => { pastHero = !en.isIntersecting; update(); }).observe(hero);
+	if (band) new IntersectionObserver(([en]) => { bandShowing = en.isIntersecting; update(); }).observe(band);
+}
+
+/* ------------------------------------------------------------------ 2026-10 home page motion */
+
+const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* Scroll reveal: .reveal elements fade up once, as they come into view. */
+const reveals = document.querySelectorAll('.reveal');
+if (reveals.length) {
+	if (calm || !('IntersectionObserver' in window)) {
+		reveals.forEach((el) => el.classList.add('is-in'));
+	} else {
+		const io = new IntersectionObserver((entries) => {
+			entries.forEach((e) => {
+				if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+			});
+		}, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+		reveals.forEach((el) => io.observe(el));
+	}
+}
+
+/* The demo iPhone in the hero: types the reg, then steps through the styles with their prices.
+   Pauses while it's off screen or the tab is hidden. */
+const dp = document.querySelector('[data-demo-phone]');
+if (dp) {
+	const REG = '3D BLDR';
+	const regEl = dp.querySelector('[data-dp-reg]');
+	const priceEl = dp.querySelector('[data-dp-price]');
+	const imgs = dp.querySelectorAll('[data-dp-img]');
+	const chips = dp.querySelectorAll('[data-dp-chip]');
+	const prices = (dp.dataset.prices || '').split('|');
+	let n = 0, s = 0, hold = 0, visible = true;
+	const show = () => {
+		regEl.textContent = REG.slice(0, n);
+		dp.classList.toggle('is-typing', n < REG.length);
+		imgs.forEach((im, i) => im.classList.toggle('is-on', i === s));
+		chips.forEach((c, i) => c.classList.toggle('is-on', i === s && n >= REG.length));
+	};
+	const setPrice = () => {
+		priceEl.textContent = prices[s] || '';
+		priceEl.classList.remove('is-new');
+		void priceEl.offsetWidth;
+		priceEl.classList.add('is-new');
+	};
+	if (calm) {
+		n = REG.length; s = 2; show(); setPrice();
+	} else {
+		show();
+		setInterval(() => {
+			if (!visible || document.hidden) return;
+			if (n < REG.length) { n += 1; show(); return; }
+			if (hold < 16) { hold += 1; return; }
+			hold = 0;
+			s = (s + 1) % imgs.length;
+			if (s === 0) n = 0;
+			show();
+			setPrice();
+		}, 140);
+		if ('IntersectionObserver' in window) {
+			new IntersectionObserver((e) => { visible = e[0].isIntersecting; }).observe(dp);
+		}
+	}
+}
+
+/* Rendering panel: style buttons swap the render and its note. */
+const sp = document.querySelector('[data-style-panel]');
+if (sp) {
+	const tabs = sp.querySelectorAll('[data-style-tab]');
+	const imgs = sp.querySelectorAll('[data-style-img]');
+	const notes = (sp.dataset.notes || '').split('|').map((x) => x.split('~'));
+	const nameEl = sp.querySelector('[data-style-name]');
+	const textEl = sp.querySelector('[data-style-text]');
+	const note = nameEl.parentElement;
+	tabs.forEach((t) => t.addEventListener('click', () => {
+		const i = Number(t.dataset.styleTab);
+		tabs.forEach((x) => x.setAttribute('aria-pressed', String(x === t)));
+		imgs.forEach((im, k) => im.classList.toggle('is-on', k === i));
+		nameEl.textContent = notes[i][0];
+		textEl.textContent = notes[i][1];
+		note.classList.remove('is-new');
+		void note.offsetWidth;
+		note.classList.add('is-new');
+	}));
+}
+
+/* Fade up the common blocks on every page too, staggered within each group (JS only, so the
+   page reads normally without it). Blocks already in view on load fade in straight away. */
+if (!calm && 'IntersectionObserver' in window) {
+	const groups = ['.feature-group', '.plans > *', '.levels > li', '.funcs > *', '.usps > li', '.web-list > li', '.process > li', '.steps > li', '.render-details > li', '.render-details-row > li', '.style-grid > li', '.page-list > li', '.faq details', '.start-step', '.shop-feature > *', '.outright', '.demo-notes > div'];
+	const io2 = new IntersectionObserver((entries) => {
+		entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io2.unobserve(e.target); } });
+	}, { rootMargin: '0px 0px -6% 0px', threshold: 0.06 });
+	groups.forEach((sel) => {
+		document.querySelectorAll(sel).forEach((el) => {
+			if (el.classList.contains('reveal')) return;
+			const i = [...el.parentElement.children].indexOf(el);
+			el.classList.add('reveal');
+			el.style.setProperty('--d', `${Math.min(i, 6) * 0.06}s`);
+			io2.observe(el);
+		});
+	});
+}
+
+/* Once a block has faded in, drop the reveal class so its own hover transitions run at full speed. */
+document.addEventListener('transitionend', (e) => {
+	const t = e.target;
+	if (t.classList && t.classList.contains('reveal') && t.classList.contains('is-in') && e.propertyName === 'opacity') {
+		t.classList.remove('reveal', 'is-in');
+	}
+});

@@ -100,6 +100,7 @@ export class PlateViewport extends EventTarget {
 			side: fixedSide(size) ?? (rearSize.id !== size.id && config.size === rearSize.id ? 'rear' : config.side),
 			footer: { supplier: config.supplier, postcode: config.postcode, standard: config.standard, logo: config.logo },
 			flagArtwork: config.flagArtwork ?? {},
+			backing: config.backing ?? null,
 			onChange: () => this.requestRender(),
 		});
 		this.plate.setAnisotropy(this.renderer.capabilities.getMaxAnisotropy());
@@ -117,6 +118,7 @@ export class PlateViewport extends EventTarget {
 		this.carId = getCar(config.car).id;
 		this.paintId = getPaint(config.paint).id;
 		this.assetsUrl = config.assetsUrl ?? '';
+		this.carBadge = config.carBadge ?? '';
 
 		this.registration = config.registration ?? '';
 		// `chosenStyle` is the customer's pick; sizes that only offer some styles override it without forgetting it.
@@ -134,7 +136,7 @@ export class PlateViewport extends EventTarget {
 				this.#apply();
 			})
 			.catch((err) => {
-				console.error('[PlateBoss] Could not load plate font', err);
+				console.error('[Plate Builder] Could not load plate font', err);
 				this.dispatchEvent(new CustomEvent('error', { detail: err }));
 			});
 	}
@@ -809,9 +811,9 @@ export class PlateViewport extends EventTarget {
 			this.dispatchEvent(new CustomEvent('carloading', { detail: { loading: true } }));
 			let car;
 			try {
-				car = await createCar(this.carId, { assetsUrl: this.assetsUrl, onChange: () => this.requestRender() });
+				car = await createCar(this.carId, { assetsUrl: this.assetsUrl, badgeUrl: this.carBadge, onChange: () => this.requestRender() });
 			} catch (e) {
-				console.error('[PlateBoss] Could not load car', e);
+				console.error('[Plate Builder] Could not load car', e);
 				this.dispatchEvent(new CustomEvent('carloading', { detail: { loading: false } }));
 				if (token === this.carToken) this.setView('plate');
 				return;

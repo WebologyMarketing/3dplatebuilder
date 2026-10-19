@@ -1,10 +1,10 @@
 """Shared page chrome for the [BRAND NAME] site generator."""
 import json
 
-FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..100,400..900&amp;display=swap">'
+FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400..800&amp;family=Geist+Mono:wght@500&amp;family=Archivo:wght@600..800&amp;display=swap">'
 
 IMPORTMAP = '''<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<!-- Three.js r170, pinned exactly as the builder kit uses it (see plateboss-builder/README.md). -->
+<!-- Three.js r170, pinned exactly as the builder kit uses it (see plugin/README.md). -->
 <script type="importmap">
 {
 	"imports": {
@@ -18,10 +18,11 @@ IMPORTMAP = '''<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigi
 </script>'''
 
 NAV = [
-    ('features.html', 'Features'),
+    ('website.html', 'What you get'),
+    ('features.html', 'The 3D builder'),
+    ('demo.html', 'Try it'),
     ('pricing.html', 'Pricing'),
-    ('setup.html', 'How we set you up'),
-    ('demo.html', 'Live demo'),
+    ('setup.html', 'How it works'),
 ]
 
 BRAND_MARK = '''<svg class="brand-mark" width="40" height="26" viewBox="0 0 40 26" aria-hidden="true"><rect x="1" y="1" width="38" height="24" rx="4" fill="#F7D333" stroke="#fff" stroke-width="1.5"/><path d="M8 18V8m5 10V8m5 10V8m7 10V8m5 10V8" stroke="#111418" stroke-width="3" stroke-linecap="square"/></svg>'''
@@ -32,16 +33,17 @@ def header(current):
     for href, label in NAV:
         cur = ' aria-current="page"' if href == current else ''
         links.append(f'<li><a href="{href}"{cur}>{label}</a></li>')
-    cur = ' aria-current="page"' if current == 'contact.html' else ''
+    cur = ' aria-current="page"' if current == 'start.html' else ''
+    promo = '' if current == 'start.html' else '<div class="promo"><p>Sign up online in about five minutes. No calls, no demos to book. <a href="start.html">Start your shop <span aria-hidden="true">→</span></a></p></div>\n'
     return f'''<a class="skip" href="#main">Skip to content</a>
-<header class="site-header">
+{promo}<header class="site-header">
 	<div class="wrap">
 		<a class="brand" href="index.html">{BRAND_MARK}<span>[BRAND NAME]</span></a>
 		<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav">Menu</button>
 		<nav id="site-nav" class="site-nav" aria-label="Main">
 			<ul>
 				{''.join(links)}
-				<li><a class="btn btn-primary" href="contact.html"{cur}>Request a demo</a></li>
+				<li><a class="btn btn-primary" href="start.html"{cur}>Start your shop <span class="arr" aria-hidden="true">→</span></a></li>
 			</ul>
 		</nav>
 	</div>
@@ -53,21 +55,23 @@ FOOTER = '''<footer class="site-footer">
 		<div class="footer-grid">
 			<div>
 				<a class="brand" href="index.html">''' + BRAND_MARK + '''<span>[BRAND NAME]</span></a>
-				<p style="margin-top:14px">Number plate shops with a 3D plate builder built in, for UK registered number plate suppliers. Built by, and running at, <a href="https://plateboss.co.uk" rel="noopener">PlateBoss.co.uk</a>.</p>
+				<p style="margin-top:14px">Number plate shops with a 3D plate builder built in, for UK registered number plate suppliers.</p>
 			</div>
 			<div>
 				<h2>Product</h2>
 				<ul>
-					<li><a href="features.html">Features</a></li>
+					<li><a href="website.html">What you get</a></li>
+					<li><a href="features.html">The 3D builder</a></li>
+					<li><a href="demo.html">Try the builder</a></li>
 					<li><a href="pricing.html">Pricing</a></li>
-					<li><a href="demo.html">Live demo</a></li>
-					<li><a href="setup.html">How we set you up</a></li>
+					<li><a href="setup.html">How it works</a></li>
 				</ul>
 			</div>
 			<div>
 				<h2>Talk to us</h2>
 				<ul>
-					<li><a href="contact.html">Request a demo</a></li>
+					<li><a href="start.html">Start your shop</a></li>
+					<li><a href="contact.html">Ask a question</a></li>
 					<li><a href="mailto:[EMAIL]">[EMAIL]</a></li>
 				</ul>
 			</div>
@@ -81,11 +85,21 @@ FOOTER = '''<footer class="site-footer">
 			</div>
 		</div>
 		<div class="footer-legal">
-			<p>[COMPANY LEGAL NAME] trading as [BRAND NAME]. Registered in England and Wales, company number [COMPANY NUMBER]. Registered office: [REGISTERED ADDRESS].</p>
+			<p>[COMPANY LEGAL NAME] trading as [TRADING NAME]. Registered in England and Wales, company number [COMPANY NUMBER]. Registered office: [REGISTERED ADDRESS].</p>
 			<p>The builder helps with BS AU 145e character layout and legal spacing. It is not approved or certified by the DVLA. Each plate maker stays responsible for the plates they make, their RNPS registration and checking customers' documents.</p>
 		</div>
 	</div>
 </footer>'''
+
+
+def sticky_cta(filename):
+    """Phones: a slim bar with the main action, shown once the visitor scrolls past the first screen."""
+    if filename in ('start.html', 'contact.html', 'phone.html', 'desktop.html'):
+        return ''
+    return '''<div class="sticky-cta" data-sticky-cta hidden>
+	<a class="btn btn-primary" href="start.html">Start your shop</a>
+	<a class="btn btn-ghost" href="demo.html">Try the builder</a>
+</div>'''
 
 
 def page(filename, title, description, body, builder=False, extra_head=''):
@@ -101,7 +115,8 @@ def page(filename, title, description, body, builder=False, extra_head=''):
 <title>{title}</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="{description}">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#ffffff">
+<script>document.documentElement.classList.add('js')</script>
 <link rel="canonical" href="https://[DOMAIN]/{'' if filename == 'index.html' else filename}">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{description}">
@@ -119,6 +134,7 @@ def page(filename, title, description, body, builder=False, extra_head=''):
 <main id="main">
 {body}
 </main>
+{sticky_cta(filename)}
 {FOOTER}
 {scripts}
 </body>
@@ -246,7 +262,7 @@ def builder_markup(mobile='launch', url_options=False, reg='', poster='assets/im
 	</div>
 	<p class="pbb-cart-msg" data-pbb-cart-msg aria-live="polite"></p>
 		</div>
-		<p class="demo-failed">The 3D builder couldn't start here. It needs a recent browser with WebGL switched on. <a href="contact.html">Request a demo</a> and we'll email you a demo set up for your shop.</p>
+		<p class="demo-failed">The 3D builder couldn't start here. It needs a recent browser with WebGL switched on. Try it on another device, or <a href="website.html">see what you get</a> with pictures of the builder.</p>
 	</div>
 </div>'''
 
@@ -309,11 +325,11 @@ def spec_svg(font_path, reg='AB12 CDE', plate='#F7D333', title='Rear plate, 520 
 # ------------------------------------------------------------------ live phone preview
 
 PHONE_VIEWS = [
-    ('reg=AB12CDE&style=gel-4d-3&side=rear', '4D gel, rear'),
+    ('reg=3D%20BLDR&style=gel-4d-3&side=rear', '4D gel, rear'),
     ('reg=RETRO&style=retro', 'Retro'),
-    ('reg=AB12CDE&style=gel-3d&badge=uk-4d', 'UK 4D badge'),
-    ('reg=AB12CDE&size=motorbike', 'Motorbike'),
-    ('reg=AB12CDE&style=gel-4d-6&view=car', 'On a car'),
+    ('reg=3D%20BLDR&style=gel-3d&badge=uk-4d', 'UK 4D badge'),
+    ('reg=3D%20BLDR&size=motorbike', 'Motorbike'),
+    ('reg=3D%20BLDR&style=gel-4d-6&view=car', 'On a car'),
 ]
 
 
@@ -367,7 +383,7 @@ def phone_page(builder_html):
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Phone builder | [BRAND NAME]</title>
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="plateboss-builder/assets/css/builder.css" data-pbb-css>
+<link rel="stylesheet" href="builder/assets/css/builder.css?v=1.10.2" data-pbb-css>
 {IMPORTMAP}
 <style>
 	html, body {{ margin: 0; height: 100%; background: #f4f5f6; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }}

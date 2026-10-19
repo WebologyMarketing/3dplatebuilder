@@ -8,7 +8,7 @@
  * It's the shop's own checkout, so delivery choices, in-store fitting, documents, every payment
  * method (Apple Pay and Google Pay included) and all the checks work exactly as on the full page.
  *
- * @package PlateBoss
+ * @package PlateBuilder
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -50,13 +50,13 @@ add_action(
 			body.pbb-embed > *:not(.pbb-embed-root):not(script):not(style):not(link) { display: none !important; }
 			.pbb-embed-root { padding: 14px 14px 28px; max-width: 980px; margin: 0 auto; box-sizing: border-box; }
 			.pbb-embed-root .checkout-page, .pbb-embed-root .rtsb-builder-content { padding-top: 0 !important; margin-top: 0 !important; }
-			/* Builder look: black and PlateBoss yellow. */
+			/* Builder look: the shop's brand colours. */
 			body.pbb-embed #place_order {
 				width: 100%; min-height: 56px; border-radius: 14px; border: 0;
-				background: #F7D333 !important; color: #0D0E10 !important;
+				background: <?php echo esc_html( pbb_shop_colour( 'accent' ) ); ?> !important; color: <?php echo esc_html( pbb_shop_colour( 'accent_ink' ) ); ?> !important;
 				font-weight: 800; font-size: 18px; letter-spacing: .04em; text-transform: uppercase;
 			}
-			body.pbb-embed .pbb-embed-klarna { display: block; margin: 10px 0 0; padding: 12px 14px; border-radius: 12px; background: #0D0E10; color: #fff; font-size: 14px; line-height: 1.45; }
+			body.pbb-embed .pbb-embed-klarna { display: block; margin: 10px 0 0; padding: 12px 14px; border-radius: 12px; background: <?php echo esc_html( pbb_shop_colour( 'dark' ) ); ?>; color: #fff; font-size: 14px; line-height: 1.45; }
 			body.pbb-embed .pbb-embed-klarna[hidden] { display: none; }
 		</style>
 		<?php

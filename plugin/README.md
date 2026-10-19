@@ -1,4 +1,4 @@
-# PlateBoss Plate Builder
+# 3D Plate Builder (WordPress plugin)
 
 Real-time 3D/4D number plate customiser for WordPress + WooCommerce.
 
@@ -6,20 +6,12 @@ Real-time 3D/4D number plate customiser for WordPress + WooCommerce.
 
 ## Install
 
-1. Zip the `plateboss-builder` folder and upload it in **Plugins → Add New → Upload Plugin**, or copy it into `wp-content/plugins/`.
-2. Activate **PlateBoss Plate Builder** (WooCommerce must be active).
+1. Zip the plugin folder (the folder is `3d-plate-builder`) and upload it in **Plugins → Add New → Upload Plugin**, or copy it into `wp-content/plugins/`.
+2. Activate **3D Plate Builder** (WooCommerce must be active).
 3. Go to **WooCommerce → Plate Builder** and set your prices. **The defaults are placeholders.** Opening this screen also creates the hidden "Custom Number Plate" product that builder orders are added as.
-4. Footer details default to PlateBoss.co.uk / TW4 6BX. To change them, BS AU 145e requires the registered supplier's name and postcode. Add this to your theme's `functions.php` or a small mu-plugin:
+4. In **WooCommerce → Plate Builder → Shop details**, set the supplier name and postcode exactly as registered with the DVLA (BS AU 145e prints them in every plate's footer), plus the footer logo, brand colours, fitting wording and car badge. Until the name and postcode are set, the admin shows a warning and plates print the site name and WooCommerce store postcode. See **Shop config** below.
 
-   ```php
-   add_filter( 'pbb_supplier_details', function ( $d ) {
-       $d['supplier'] = 'PlateBoss.co.uk';
-       $d['postcode'] = 'TW4 6BX'; // the defaults; change only if they move
-       return $d;
-   } );
-   ```
-
-5. Add the shortcode to any page: `[plateboss_builder]`. Options: `side="rear"`, `registration="AB12CDE"`, `style="acrylic-4d-3"`, `accent="blue"`, `size="motorbike"`, `badge="uk-gel"`, `border="black"`.
+5. Add the shortcode to any page: `[plate_builder]` (the older `[plate_builder]` still works). Options: `side="rear"`, `registration="AB12CDE"`, `style="acrylic-4d-3"`, `accent="blue"`, `size="motorbike"`, `badge="uk-gel"`, `border="black"`.
    A `?reg=AB12CDE` URL parameter pre-fills the builder, so a "search your reg" box or an ad can link straight in.
 
 Requires WordPress 6.5+ for native ES module and import map support.
@@ -32,11 +24,35 @@ If the builder shows only a spinner, the page builder is hiding the shortcode fr
 add_filter( 'pbb_should_enqueue', fn ( $on ) => $on || is_page( 'build-your-plate' ) );
 ```
 
+## Shop config
+
+Everything that makes the builder one shop's lives in one option, `pbb_shop` (`includes/shop.php`). A fresh install has neutral defaults: no supplier branding, no product or page mapping, plain plate backs and no car badge.
+
+| Key | What it does |
+|---|---|
+| `supplier`, `postcode`, `logo`, `standard` | The plate footer. |
+| `accent`, `accent_ink`, `dark` | Brand colours (hex) for buttons, the text on them, and dark panels. Used by the builder, the checkout, the promo blocks and the documents notice. |
+| `fitting_note`, `fitting_checkout_note` | The in-store fitting wording in the builder and at checkout. |
+| `car_badge` | Image URL for the badge on the car in the "on a car" view. Empty = no badge. |
+| `backing` | The sheeting print on the back of the plate: `{ "title", "mark", "tag", "subtitle", "maker" }`. Empty = plain sheeting. Only use a sheeting brand with the maker's permission. |
+| `products` | Product ID → the preset the builder starts on (`style`, `size`, `badge`, `match`). |
+| `landing_pages`, `feature_front_page` | Page ID → preset, for pages that feature the builder. The front page is included unless `feature_front_page` is false. |
+| `category_presets` | Product category slug → preset, for the category promo band. |
+| `menu_slugs` | Nav menus that get a "3D Plate Builder" item. |
+
+Shop owners edit the everyday keys on the settings screen; site admins also get the whole config as JSON there. Provisioning sets it in one go:
+
+```sh
+wp option update pbb_shop "$(cat shop.json)" --format=json
+```
+
+The older filters (`pbb_supplier_details`, `pbb_product_presets`, `pbb_landing_pages`, `pbb_featured_pages`, `pbb_category_presets`, `pbb_menu_slugs`) still run on top of the config. `pbb_documents_email_notice` (default true) turns off the documents box in order emails, for shops that add their own. `pbb_shop_editable` (default true) locks the Shop details form, for hosted shops awaiting verification.
+
 ## File map
 
 | File | Purpose |
 |---|---|
-| `plateboss-builder.php` | Registers Three.js and the app as ES modules, adds the shortcode |
+| `3d-plate-builder.php` | Registers Three.js and the app as ES modules, adds the shortcode |
 | `templates/builder.php` | Viewport markup and toolbar |
 | `assets/js/main.js` | Boots each builder on the page and wires the toolbar |
 | `assets/js/plate-viewport.js` | Renderer, studio lighting, camera framing, orbit controls, reset tween, on-demand render loop |
@@ -142,7 +158,7 @@ Sizes are data in `plate-sizes.js`, so changing a dimension is a one-line edit.
 
 ## Pricing and basket
 
-Prices match plateboss.co.uk's product pages (October 2026) and are edited in **WooCommerce → Plate Builder**:
+Default prices are typical UK prices and are edited in **WooCommerce → Plate Builder**:
 
 | | Front & rear | One plate |
 |---|---|---|
@@ -182,7 +198,7 @@ add_filter( 'pbb_product_presets', function ( $p ) { unset( $p[17642] ); return 
 ## Around the site
 
 - **Design Your Plates page:** `/design-your-plates/`, created with the shortcode the first time an admin opens the dashboard. Its ID is kept in `pbb_builder_page_id`.
-- **Home and Hounslow:** the full builder, in a "Design your plates in 3D" section after the page's first Elementor section (the top banner). Change the pages with the `pbb_featured_pages` filter (page IDs; default: the front page and 29573). Phones get the launch button.
+- **Home and landing pages:** the full builder, in a "Design your plates in 3D" section after the page's first Elementor section (the top banner). Change the pages with the `pbb_featured_pages` filter (page IDs; default: the front page and the config's `landing_pages`). Phones get the launch button.
 - **Main menu:** a "3D Plate Builder" item after Home, on the `main-menu-left` menu (`pbb_menu_slugs` filter).
 - **Floating "Design in 3D" button:** bottom left on every other page. Not shown on the basket, checkout, account, builder or featured pages, or on builder product pages.
 - **Product pages:** a "Design in 3D / Classic plate builder" switch above the builder. The registration carries across, and the choice is remembered on that device.
@@ -195,11 +211,11 @@ On screens up to 760 px wide, the builder fills the screen like an app:
 - the steps as swipeable cards with a progress bar, each card scrolling on its own;
 - the total and Next / Add to basket fixed at the bottom; "Added to basket" shows as a toast.
 
-The layout follows the visible screen, so the phone keyboard never covers the buy bar. To keep the builder inside the page on phones instead, use `[plateboss_builder mobile="inline"]`. Use `mobile="launch"` for a button that opens it, as on product pages.
+The layout follows the visible screen, so the phone keyboard never covers the buy bar. To keep the builder inside the page on phones instead, use `[plate_builder mobile="inline"]`. Use `mobile="launch"` for a button that opens it, as on product pages.
 
 ## Preview controls
 
-- **Turn:** one finger or the mouse. Limited to 65° left or right, 35° down and 25° up, so the plate never shows its back or goes edge-on. Car view turns freely.
+- **Turn:** one finger or the mouse. Turns right round, so the back of the plate (plain sheeting, or the `backing` print) can be seen. Car view turns freely.
 - **Zoom:** pinch, or scroll the mouse wheel. Zoom stays centred, from 0.25× to 1.25× of the framed view.
 - **Pan:** two fingers or a right-drag. The view always stays on the plate.
 - **Double-tap or double-click:** zooms in on that spot; doing it again returns to the whole plate.
@@ -214,11 +230,11 @@ A pop-up confirms "Added to basket" with the registration and price, and goes to
 
 ## DVLA document checks
 
-As a Registered Number Plate Supplier, PlateBoss must see one proof of ID and one proof of entitlement to the registration before dispatching or handing over road-legal plates. Show plates are exempt.
+As a Registered Number Plate Supplier, the shop must see one proof of ID and one proof of entitlement to the registration before dispatching or handing over road-legal plates. Show plates are exempt.
 
 **At checkout**
 - **When it appears:** a "Your documents" panel shows only when the basket holds a road-legal builder plate. On the classic checkout it sits under the customer details; on the block checkout it sits in the order summary (WooCommerce's order-meta slot).
-- **Upload now:** the customer picks the document type (the same lists as plateboss.co.uk/valid-documents) and uploads a photo or PDF for each: JPG, PNG, WebP, HEIC or PDF, up to 10 MB. The server checks the real file contents, not just the extension.
+- **Upload now:** the customer picks the document type (the same lists as the shop's /valid-documents/ page) and uploads a photo or PDF for each: JPG, PNG, WebP, HEIC or PDF, up to 10 MB. The server checks the real file contents, not just the extension.
 - **Send after ordering:** the customer is told to email, WhatsApp or post them, or bring them when collecting. Set these contact details in WooCommerce → Plate Builder → Documents (email defaults to the shop's "From" address).
 - **Checks before ordering:** the server checks the choice before the order is placed. Upload-now orders need both documents.
 - **Failed payments:** uploads survive a failed card payment, so the customer doesn't have to upload again.
@@ -233,8 +249,8 @@ As a Registered Number Plate Supplier, PlateBoss must see one proof of ID and on
 - **Who can download:** only staff with order access, through a signed admin link.
 - **Automatic cleanup:** a daily job deletes abandoned checkout uploads after 2 days, and order files 30 days after verification (`pbb_documents_retention_days` filter, 0 = keep). The verification record stays on the order. **Confirm the retention period with your own data-protection/RNPS record-keeping advice.**
 
-**Page-builder checkouts (tested on builder.plateboss.co.uk, 1.1.2)**
-- **Where the panel goes:** plateboss.co.uk's checkout and thank-you pages are built from ShopBuilder/Elementor widgets. These never run WooCommerce's `woocommerce_checkout_after_customer_details` or `woocommerce_thankyou` hooks. If no placeholder exists, the panel script places itself after the billing details. Without that fix, every road-legal order was rejected.
+**Page-builder checkouts (tested on a ShopBuilder/Elementor shop, 1.1.2)**
+- **Where the panel goes:** some shops' checkout and thank-you pages are built from ShopBuilder/Elementor widgets. These never run WooCommerce's `woocommerce_checkout_after_customer_details` or `woocommerce_thankyou` hooks. If no placeholder exists, the panel script places itself after the billing details. Without that fix, every road-legal order was rejected.
 - **When documents are cleared:** as soon as the order they went with is no longer pending or failed, not on the thank-you page. Otherwise a customer's next order (for a different registration) reused the previous order's documents.
 
 **Filters:** `pbb_document_types` (edit the accepted document lists), `pbb_documents_dir`, `pbb_documents_retention_days`.
@@ -253,10 +269,10 @@ The website never serves the `.ttf`. `tools/build-font.py` (outside the plugin f
 
 ```bash
 pip install fonttools
-python3 tools/build-font.py CharlesWright-Bold.ttf plateboss-builder/assets/fonts/charles-wright-bold.json --cap-height 79 --name "Charles Wright Bold"
+python3 tools/build-font.py CharlesWright-Bold.ttf builder/assets/fonts/charles-wright-bold.json --cap-height 79 --name "Charles Wright Bold"
 ```
 
-For the motorcycle font: `python3 tools/build-font.py CharlesWrightSingapore.otf plateboss-builder/assets/fonts/charles-wright-singapore.json --cap-height 64 --name "Charles Wright Singapore"`. Both TTF and OTF fonts work.
+For the motorcycle font: `python3 tools/build-font.py CharlesWrightSingapore.otf builder/assets/fonts/charles-wright-singapore.json --cap-height 64 --name "Charles Wright Singapore"`. Both TTF and OTF fonts work.
 
 **Licence:** check that your K-Type licence covers web or app embedding. Outlines served to the browser still count as using the font on the web.
 
@@ -265,4 +281,4 @@ For the motorcycle font: `python3 tools/build-font.py CharlesWrightSingapore.otf
 - **Units:** 1 scene unit = 1 mm, so later steps can position characters with legal measurements directly.
 - **Performance:** frames render only while the user drags, the view settles or an animation plays. An idle builder uses no GPU time.
 - **Production:** Three.js loads from jsDelivr, pinned to r170. Before launch, copy the three files into `assets/vendor/three/` and change the URLs in `pbb_register_assets()`.
-- **Local testing without WordPress:** from the folder that contains `plateboss-builder/` and `dev/`, run `python3 -m http.server 8765`, then open `http://localhost:8765/dev/`.
+- **Local testing without WordPress:** from the folder that contains `builder/` and `dev/`, run `python3 -m http.server 8765`, then open `http://localhost:8765/dev/`.

@@ -2,7 +2,7 @@
 /**
  * DVLA entitlement checks.
  *
- * As a Registered Number Plate Supplier, PlateBoss must see proof of ID and proof of
+ * As a Registered Number Plate Supplier, the shop must see proof of ID and proof of
  * entitlement to the registration before road-legal plates are dispatched or handed over.
  * Show plates don't need them.
  *
@@ -15,7 +15,7 @@
  *  3. Paid orders that need documents go to "Awaiting documents" instead of Processing,
  *     and stay there until staff mark the documents verified (see documents-admin.php).
  *
- * @package PlateBoss
+ * @package PlateBuilder
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -24,7 +24,7 @@ const PBB_DOC_MAX_BYTES = 10485760; // 10 MB
 const PBB_DOC_STATUS    = 'awaiting-docs';
 
 /* -------------------------------------------------------------------------- */
-/* Document types (from plateboss.co.uk/valid-documents)                      */
+/* Document types (the shop lists them on its /valid-documents/ page)        */
 /* -------------------------------------------------------------------------- */
 
 function pbb_document_types() {
@@ -32,31 +32,31 @@ function pbb_document_types() {
 		'pbb_document_types',
 		array(
 			'id'          => array(
-				'label'   => __( 'Proof of ID', 'plateboss-builder' ),
+				'label'   => __( 'Proof of ID', '3d-plate-builder' ),
 				'options' => array(
-					'driving_licence' => __( 'Driving licence (photocard or paper counterpart)', 'plateboss-builder' ),
-					'utility_bill'    => __( 'Utility, Council Tax or rates bill (last 6 months)', 'plateboss-builder' ),
-					'bank_statement'  => __( 'Bank or building society statement (last 6 months)', 'plateboss-builder' ),
-					'national_id'     => __( 'National Identity Card', 'plateboss-builder' ),
-					'passport'        => __( 'Passport (name only)', 'plateboss-builder' ),
-					'bank_card'       => __( 'Bank or building society debit/credit card (name only)', 'plateboss-builder' ),
-					'police_warrant'  => __( 'Police warrant card (name only)', 'plateboss-builder' ),
-					'armed_forces'    => __( 'Armed forces identity card (name only)', 'plateboss-builder' ),
+					'driving_licence' => __( 'Driving licence (photocard or paper counterpart)', '3d-plate-builder' ),
+					'utility_bill'    => __( 'Utility, Council Tax or rates bill (last 6 months)', '3d-plate-builder' ),
+					'bank_statement'  => __( 'Bank or building society statement (last 6 months)', '3d-plate-builder' ),
+					'national_id'     => __( 'National Identity Card', '3d-plate-builder' ),
+					'passport'        => __( 'Passport (name only)', '3d-plate-builder' ),
+					'bank_card'       => __( 'Bank or building society debit/credit card (name only)', '3d-plate-builder' ),
+					'police_warrant'  => __( 'Police warrant card (name only)', '3d-plate-builder' ),
+					'armed_forces'    => __( 'Armed forces identity card (name only)', '3d-plate-builder' ),
 				),
 			),
 			'entitlement' => array(
-				'label'   => __( 'Proof of entitlement to the registration', 'plateboss-builder' ),
+				'label'   => __( 'Proof of entitlement to the registration', '3d-plate-builder' ),
 				'options' => array(
-					'v5c'          => __( 'Vehicle registration certificate (V5C or V5CNI)', 'plateboss-builder' ),
-					'v5c2'         => __( 'New keeper supplement (V5C/2 or V5C/2NI)', 'plateboss-builder' ),
-					'v750'         => __( 'Certificate of entitlement (V750 or V750NI)', 'plateboss-builder' ),
-					'v778'         => __( 'Retention document (V778)', 'plateboss-builder' ),
-					'v11'          => __( 'Vehicle tax or SORN renewal reminder (V11 or V11NI)', 'plateboss-builder' ),
-					'v379'         => __( 'Temporary registration certificate (V379 or V379NI)', 'plateboss-builder' ),
-					'v948'         => __( 'Number plate authorisation certificate (V948), DVLA/DVSA stamped', 'plateboss-builder' ),
-					'ev948'        => __( 'Electronic number plate authorisation certificate (eV948)', 'plateboss-builder' ),
-					'fleet_letter' => __( 'Fleet, lease or hire company authorisation letter', 'plateboss-builder' ),
-					'v5c_demand'   => __( 'V5C on demand: PDF from the view vehicle record service', 'plateboss-builder' ),
+					'v5c'          => __( 'Vehicle registration certificate (V5C or V5CNI)', '3d-plate-builder' ),
+					'v5c2'         => __( 'New keeper supplement (V5C/2 or V5C/2NI)', '3d-plate-builder' ),
+					'v750'         => __( 'Certificate of entitlement (V750 or V750NI)', '3d-plate-builder' ),
+					'v778'         => __( 'Retention document (V778)', '3d-plate-builder' ),
+					'v11'          => __( 'Vehicle tax or SORN renewal reminder (V11 or V11NI)', '3d-plate-builder' ),
+					'v379'         => __( 'Temporary registration certificate (V379 or V379NI)', '3d-plate-builder' ),
+					'v948'         => __( 'Number plate authorisation certificate (V948), DVLA/DVSA stamped', '3d-plate-builder' ),
+					'ev948'        => __( 'Electronic number plate authorisation certificate (eV948)', '3d-plate-builder' ),
+					'fleet_letter' => __( 'Fleet, lease or hire company authorisation letter', '3d-plate-builder' ),
+					'v5c_demand'   => __( 'V5C on demand: PDF from the view vehicle record service', '3d-plate-builder' ),
 				),
 			),
 		)
@@ -79,7 +79,7 @@ function pbb_document_contact() {
 	$saved = get_option( 'pbb_documents_contact', array() );
 	return array(
 		'email'    => ! empty( $saved['email'] ) ? $saved['email'] : get_option( 'woocommerce_email_from_address', get_option( 'admin_email' ) ),
-		'whatsapp' => ! empty( $saved['whatsapp'] ) ? $saved['whatsapp'] : '0203 733 2494',
+		'whatsapp' => ! empty( $saved['whatsapp'] ) ? $saved['whatsapp'] : '',
 		'address'  => isset( $saved['address'] ) ? $saved['address'] : '',
 	);
 }
@@ -198,7 +198,7 @@ function pbb_documents_public_state() {
 
 function pbb_documents_verify_request() {
 	if ( ! check_ajax_referer( 'pbb_documents', 'nonce', false ) ) {
-		wp_send_json_error( array( 'message' => __( 'Your session has expired. Please refresh the page.', 'plateboss-builder' ) ), 403 );
+		wp_send_json_error( array( 'message' => __( 'Your session has expired. Please refresh the page.', '3d-plate-builder' ) ), 403 );
 	}
 }
 
@@ -234,29 +234,29 @@ function pbb_documents_handle_upload() {
 	// phpcs:enable
 
 	if ( ! pbb_cart_needs_documents() ) {
-		wp_send_json_error( array( 'message' => __( 'Your basket doesn\'t need documents.', 'plateboss-builder' ) ), 400 );
+		wp_send_json_error( array( 'message' => __( 'Your basket doesn\'t need documents.', '3d-plate-builder' ) ), 400 );
 	}
 	if ( ! isset( $types[ $kind ] ) || ! isset( $types[ $kind ]['options'][ $type ] ) ) {
-		wp_send_json_error( array( 'message' => __( 'Please choose which document this is.', 'plateboss-builder' ) ), 400 );
+		wp_send_json_error( array( 'message' => __( 'Please choose which document this is.', '3d-plate-builder' ) ), 400 );
 	}
 	if ( ! $file || UPLOAD_ERR_OK !== $file['error'] || ! is_uploaded_file( $file['tmp_name'] ) ) {
-		wp_send_json_error( array( 'message' => __( 'The upload failed. Please try again.', 'plateboss-builder' ) ), 400 );
+		wp_send_json_error( array( 'message' => __( 'The upload failed. Please try again.', '3d-plate-builder' ) ), 400 );
 	}
 	if ( $file['size'] > PBB_DOC_MAX_BYTES ) {
-		wp_send_json_error( array( 'message' => __( 'That file is over 10 MB. Please upload a smaller photo or PDF.', 'plateboss-builder' ) ), 400 );
+		wp_send_json_error( array( 'message' => __( 'That file is over 10 MB. Please upload a smaller photo or PDF.', '3d-plate-builder' ) ), 400 );
 	}
 
 	// Check the real file contents, not just the extension.
 	$check = wp_check_filetype_and_ext( $file['tmp_name'], $file['name'], pbb_document_mimes() );
 	if ( empty( $check['ext'] ) || empty( $check['type'] ) ) {
-		wp_send_json_error( array( 'message' => __( 'Please upload a photo (JPG, PNG, HEIC) or a PDF.', 'plateboss-builder' ) ), 400 );
+		wp_send_json_error( array( 'message' => __( 'Please upload a photo (JPG, PNG, HEIC) or a PDF.', '3d-plate-builder' ) ), 400 );
 	}
 
 	$dir = pbb_documents_dir() . '/pending';
 	wp_mkdir_p( $dir );
 	$stored = 'pending/' . wp_generate_password( 40, false ) . '.' . $check['ext'];
 	if ( ! move_uploaded_file( $file['tmp_name'], pbb_documents_dir() . '/' . $stored ) ) {
-		wp_send_json_error( array( 'message' => __( 'We couldn\'t save that file. Please try again or send it later.', 'plateboss-builder' ) ), 500 );
+		wp_send_json_error( array( 'message' => __( 'We couldn\'t save that file. Please try again or send it later.', '3d-plate-builder' ) ), 500 );
 	}
 
 	$state = pbb_documents_session();
@@ -304,13 +304,13 @@ function pbb_documents_validate() {
 		return true;
 	}
 	if ( 'upload' !== $state['method'] ) {
-		return new WP_Error( 'pbb_documents', __( 'Road-legal plates need proof of ID and entitlement. Please upload them or choose to send them later.', 'plateboss-builder' ) );
+		return new WP_Error( 'pbb_documents', __( 'Road-legal plates need proof of ID and entitlement. Please upload them or choose to send them later.', '3d-plate-builder' ) );
 	}
 	foreach ( pbb_document_types() as $kind => $group ) {
 		$f = isset( $state['files'][ $kind ] ) ? $state['files'][ $kind ] : null;
 		if ( ! $f || ! file_exists( pbb_document_path( $f['file'] ) ) ) {
 			/* translators: %s: document group, e.g. "Proof of ID" */
-			return new WP_Error( 'pbb_documents', sprintf( __( 'Please upload your %s, or choose to send your documents later.', 'plateboss-builder' ), strtolower( $group['label'] ) ) );
+			return new WP_Error( 'pbb_documents', sprintf( __( 'Please upload your %s, or choose to send your documents later.', '3d-plate-builder' ), strtolower( $group['label'] ) ) );
 		}
 	}
 	return true;
@@ -428,13 +428,13 @@ add_action(
 		register_post_status(
 			'wc-' . PBB_DOC_STATUS,
 			array(
-				'label'                     => _x( 'Awaiting documents', 'Order status', 'plateboss-builder' ),
+				'label'                     => _x( 'Awaiting documents', 'Order status', '3d-plate-builder' ),
 				'public'                    => false,
 				'exclude_from_search'       => false,
 				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
 				/* translators: %s: number of orders */
-				'label_count'               => _n_noop( 'Awaiting documents <span class="count">(%s)</span>', 'Awaiting documents <span class="count">(%s)</span>', 'plateboss-builder' ),
+				'label_count'               => _n_noop( 'Awaiting documents <span class="count">(%s)</span>', 'Awaiting documents <span class="count">(%s)</span>', '3d-plate-builder' ),
 			)
 		);
 	}
@@ -447,7 +447,7 @@ add_filter(
 		foreach ( $statuses as $key => $label ) {
 			$out[ $key ] = $label;
 			if ( 'wc-processing' === $key ) {
-				$out[ 'wc-' . PBB_DOC_STATUS ] = _x( 'Awaiting documents', 'Order status', 'plateboss-builder' );
+				$out[ 'wc-' . PBB_DOC_STATUS ] = _x( 'Awaiting documents', 'Order status', '3d-plate-builder' );
 			}
 		}
 		return $out;
@@ -480,7 +480,7 @@ add_action(
 	'woocommerce_order_status_processing',
 	function ( $order_id, $order ) {
 		if ( pbb_order_needs_documents( $order ) ) {
-			$order->update_status( PBB_DOC_STATUS, __( 'Held until proof of ID and entitlement are verified.', 'plateboss-builder' ) );
+			$order->update_status( PBB_DOC_STATUS, __( 'Held until proof of ID and entitlement are verified.', '3d-plate-builder' ) );
 		}
 	},
 	20,
@@ -497,6 +497,19 @@ function pbb_contact_page_url() {
 	return $page ? get_permalink( $page ) : home_url( '/contact-us/' );
 }
 
+/** The supplier name and the shop's postal address from WooCommerce → Settings → General, on one line ('' if no address is set). */
+function pbb_store_address() {
+	$parts = array(
+		pbb_shop_supplier()['supplier'],
+		get_option( 'woocommerce_store_address', '' ),
+		get_option( 'woocommerce_store_address_2', '' ),
+		get_option( 'woocommerce_store_city', '' ),
+		get_option( 'woocommerce_store_postcode', '' ),
+	);
+	$parts = array_filter( array_map( 'trim', array_map( 'strval', $parts ) ) );
+	return count( $parts ) > 1 ? wp_specialchars_decode( implode( ', ', $parts ), ENT_QUOTES ) : '';
+}
+
 /** The list of documents we accept. */
 function pbb_valid_documents_url() {
 	$page = get_page_by_path( 'valid-documents' );
@@ -504,38 +517,42 @@ function pbb_valid_documents_url() {
 }
 
 /**
- * "Documents required before dispatch": the same black and yellow box as the order emails
- * (WPCode snippet "PlateBoss - Documents Required Notice"), so the thank-you page matches.
+ * "Documents required before dispatch": a box in the shop's brand colours, used on the
+ * thank-you page and in the order emails so they match.
  */
 function pbb_documents_instructions_html( WC_Order $order, $plain = false ) {
 	$contact = pbb_document_contact();
 	$ref     = $order->get_order_number();
-	$address = $contact['address'] ? $contact['address'] : 'Plate Boss, Suite 1, Unit 5, The Freehold Centre, Amberley Way, Hounslow TW4 6BX';
-	$yellow  = '#F7D333';
+	$address = $contact['address'] ? $contact['address'] : pbb_store_address();
+	$yellow  = pbb_shop_colour( 'accent' );
+	$ink     = pbb_shop_colour( 'accent_ink' );
+	$dark    = pbb_shop_colour( 'dark' );
 	$link    = 'color:' . $yellow . ';text-decoration:underline';
 
 	// Each way: label, plain-text value, HTML value.
 	$ways   = array();
-	$ways[] = array( __( 'Email', 'plateboss-builder' ), $contact['email'], '<a style="' . $link . '" href="mailto:' . esc_attr( $contact['email'] ) . '?subject=' . rawurlencode( 'Documents for order #' . $ref ) . '">' . esc_html( $contact['email'] ) . '</a>' );
+	$ways[] = array( __( 'Email', '3d-plate-builder' ), $contact['email'], '<a style="' . $link . '" href="mailto:' . esc_attr( $contact['email'] ) . '?subject=' . rawurlencode( 'Documents for order #' . $ref ) . '">' . esc_html( $contact['email'] ) . '</a>' );
 	if ( $contact['whatsapp'] ) {
 		$wa     = preg_replace( '/^0/', '44', preg_replace( '/\D/', '', $contact['whatsapp'] ) );
-		$ways[] = array( __( 'WhatsApp', 'plateboss-builder' ), $contact['whatsapp'], '<a style="' . $link . '" href="https://wa.me/' . esc_attr( $wa ) . '">' . esc_html( $contact['whatsapp'] ) . '</a>' );
+		$ways[] = array( __( 'WhatsApp', '3d-plate-builder' ), $contact['whatsapp'], '<a style="' . $link . '" href="https://wa.me/' . esc_attr( $wa ) . '">' . esc_html( $contact['whatsapp'] ) . '</a>' );
 	}
-	$ways[] = array(
-		__( 'Post (Royal Mail Tracked or Signed For)', 'plateboss-builder' ),
-		$address,
-		esc_html( $address ) . ' (<a style="' . $link . '" href="' . esc_url( pbb_contact_page_url() ) . '">' . esc_html__( 'contact page', 'plateboss-builder' ) . '</a>)',
-	);
+	if ( '' !== $address ) {
+		$ways[] = array(
+			__( 'Post (Royal Mail Tracked or Signed For)', '3d-plate-builder' ),
+			$address,
+			esc_html( $address ) . ' (<a style="' . $link . '" href="' . esc_url( pbb_contact_page_url() ) . '">' . esc_html__( 'contact page', '3d-plate-builder' ) . '</a>)',
+		);
+	}
 	if ( $order->has_shipping_method( 'local_pickup' ) || $order->has_shipping_method( 'pickup_location' ) ) {
-		$ways[] = array( __( 'In person', 'plateboss-builder' ), __( 'bring them with you when you collect', 'plateboss-builder' ), esc_html__( 'bring them with you when you collect', 'plateboss-builder' ) );
+		$ways[] = array( __( 'In person', '3d-plate-builder' ), __( 'bring them with you when you collect', '3d-plate-builder' ), esc_html__( 'bring them with you when you collect', '3d-plate-builder' ) );
 	}
 
-	$heading = __( 'Documents required before dispatch', 'plateboss-builder' );
-	$intro   = __( 'By law, we need to see two documents before we can produce your plates: proof of ID and proof of entitlement to this registration.', 'plateboss-builder' );
+	$heading = __( 'Documents required before dispatch', '3d-plate-builder' );
+	$intro   = __( 'By law, we need to see two documents before we can produce your plates: proof of ID and proof of entitlement to this registration.', '3d-plate-builder' );
 	/* translators: %s: order number */
-	$ask     = sprintf( __( 'Please send these to us as soon as possible, quoting order #%s, via:', 'plateboss-builder' ), $ref );
-	$button  = __( 'View full list of accepted documents', 'plateboss-builder' );
-	$foot    = __( 'We\'re unable to dispatch your plates until these documents have been received and verified. Any documents you post to us are sent back with your order.', 'plateboss-builder' );
+	$ask     = sprintf( __( 'Please send these to us as soon as possible, quoting order #%s, via:', '3d-plate-builder' ), $ref );
+	$button  = __( 'View full list of accepted documents', '3d-plate-builder' );
+	$foot    = __( 'We\'re unable to dispatch your plates until these documents have been received and verified. Any documents you post to us are sent back with your order.', '3d-plate-builder' );
 
 	if ( $plain ) {
 		$lines = array_map( fn ( $w ) => '- ' . $w[0] . ': ' . $w[1], $ways );
@@ -545,12 +562,12 @@ function pbb_documents_instructions_html( WC_Order $order, $plain = false ) {
 	foreach ( $ways as $w ) {
 		$items .= '<p style="margin:0 0 10px;color:#fff">&bull; ' . esc_html( $w[0] ) . ': ' . $w[2] . '</p>';
 	}
-	return '<section class="pbb-docs-notice" style="margin:1.5em 0;padding:28px 32px;background:#000;border:3px solid ' . $yellow . ';color:#fff;line-height:1.6">'
+	return '<section class="pbb-docs-notice" style="margin:1.5em 0;padding:28px 32px;background:' . $dark . ';border:3px solid ' . $yellow . ';color:#fff;line-height:1.6">'
 		. '<h2 style="margin:0 0 14px;color:' . $yellow . ';font-size:22px;font-weight:800;letter-spacing:.04em;text-transform:uppercase">' . esc_html( $heading ) . '</h2>'
 		. '<p style="margin:0 0 14px;color:#fff">' . esc_html( $intro ) . '</p>'
 		. '<p style="margin:0 0 12px;color:#fff">' . esc_html( $ask ) . '</p>'
 		. $items
-		. '<p style="margin:20px 0"><a href="' . esc_url( pbb_valid_documents_url() ) . '" style="display:inline-block;padding:14px 26px;background:' . $yellow . ';color:#000;font-weight:800;text-transform:uppercase;text-decoration:none;letter-spacing:.02em">' . esc_html( $button ) . '</a></p>'
+		. '<p style="margin:20px 0"><a href="' . esc_url( pbb_valid_documents_url() ) . '" style="display:inline-block;padding:14px 26px;background:' . $yellow . ';color:' . $ink . ';font-weight:800;text-transform:uppercase;text-decoration:none;letter-spacing:.02em">' . esc_html( $button ) . '</a></p>'
 		. '<p style="margin:0;color:#cfcfcf;font-size:14px">' . esc_html( $foot ) . '</p>'
 		. '</section>';
 }
@@ -562,7 +579,7 @@ add_action(
 		if ( $order && pbb_order_needs_documents( $order ) && 'later' === $order->get_meta( '_pbb_docs_method' ) ) {
 			echo pbb_documents_instructions_html( $order ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside.
 		} elseif ( $order && pbb_order_needs_documents( $order ) ) {
-			echo '<p class="pbb-docs-notice">' . esc_html__( 'Thanks, we\'ve received your documents. We\'ll check them and dispatch your plates once verified.', 'plateboss-builder' ) . '</p>';
+			echo '<p class="pbb-docs-notice">' . esc_html__( 'Thanks, we\'ve received your documents. We\'ll check them and dispatch your plates once verified.', '3d-plate-builder' ) . '</p>';
 		}
 	},
 	5
@@ -574,8 +591,8 @@ add_action(
 		if ( $sent_to_admin || ! pbb_order_needs_documents( $order ) || 'later' !== $order->get_meta( '_pbb_docs_method' ) ) {
 			return;
 		}
-		// The site's own "Documents Required Notice" snippet already puts this box in order emails.
-		if ( function_exists( 'plateboss_documents_required_notice' ) ) {
+		// A shop that already adds its own documents box to order emails can turn this one off.
+		if ( ! apply_filters( 'pbb_documents_email_notice', true, $order ) ) {
 			return;
 		}
 		echo pbb_documents_instructions_html( $order, $plain_text ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside.
@@ -687,7 +704,7 @@ add_action(
 				}
 			}
 			$order->update_meta_data( '_pbb_docs_purged', time() );
-			$order->add_order_note( __( 'Document files deleted after the retention period. The verification record is kept.', 'plateboss-builder' ) );
+			$order->add_order_note( __( 'Document files deleted after the retention period. The verification record is kept.', '3d-plate-builder' ) );
 			$order->save();
 		}
 	}

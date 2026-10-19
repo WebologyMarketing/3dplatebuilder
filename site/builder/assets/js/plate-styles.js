@@ -13,7 +13,7 @@
  *
  * Every style keeps the character outline at legal size. Under BS AU 145e (2021) characters
  * must be a single solid black; raised 3D/4D is allowed. The engine still supports coloured
- * 'accent' layers (with the ACCENTS below), but PlateBoss offers no coloured styles.
+ * 'accent' layers (with the ACCENTS below), but the builder offers no coloured styles yet.
  */
 
 export const STYLES = [

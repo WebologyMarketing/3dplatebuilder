@@ -1,18 +1,19 @@
 <?php
 /**
- * Plugin Name:       PlateBoss Plate Builder
- * Description:       Real-time 3D/4D number plate customiser for WooCommerce. Use the [plateboss_builder] shortcode.
+ * Plugin Name:       3D Plate Builder
+ * Description:       Real-time 3D/4D number plate customiser for WooCommerce. Use the [plate_builder] shortcode.
  * Requires Plugins:  woocommerce
- * Version:           1.9.19
+ * Version:           1.10.2
  * Requires at least: 6.5
  * Requires PHP:      7.4
- * Author:            PlateBoss
- * Text Domain:       plateboss-builder
+ * Author:            3D Plate Builder
+ * Author URI:        https://3dplatebuilder.com
+ * Text Domain:       3d-plate-builder
  */
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PBB_VERSION', '1.9.19' );
+define( 'PBB_VERSION', '1.10.2' );
 define( 'PBB_URL', plugin_dir_url( __FILE__ ) );
 define( 'PBB_PATH', plugin_dir_path( __FILE__ ) );
 
@@ -22,6 +23,7 @@ define( 'PBB_PATH', plugin_dir_path( __FILE__ ) );
  */
 define( 'PBB_THREE_VERSION', '0.170.0' );
 
+require_once PBB_PATH . 'includes/shop.php';
 require_once PBB_PATH . 'includes/catalog.php';
 require_once PBB_PATH . 'includes/placement.php';
 require_once PBB_PATH . 'includes/rocket.php';
@@ -72,9 +74,10 @@ function pbb_register_assets() {
 		$deps[] = $url;
 	}
 
-	wp_register_script_module( 'plateboss-builder', PBB_URL . 'assets/js/main.js', $deps, PBB_VERSION );
+	wp_register_script_module( '3d-plate-builder', PBB_URL . 'assets/js/main.js', $deps, PBB_VERSION );
 
-	wp_register_style( 'plateboss-builder', PBB_URL . 'assets/css/builder.css', array(), PBB_VERSION );
+	wp_register_style( '3d-plate-builder', PBB_URL . 'assets/css/builder.css', array(), PBB_VERSION );
+	wp_add_inline_style( '3d-plate-builder', pbb_shop_css_vars() );
 }
 add_action( 'init', 'pbb_register_assets' );
 
@@ -84,41 +87,42 @@ add_action( 'init', 'pbb_register_assets' );
  */
 function pbb_maybe_enqueue() {
 	$post    = get_post();
-	$enqueue = $post && has_shortcode( $post->post_content, 'plateboss_builder' );
+	$enqueue = $post && has_shortcode( $post->post_content, 'plate_builder' );
 
 	// Shop products that use the builder (see pbb_product_presets()).
 	if ( ! $enqueue && function_exists( 'is_product' ) && is_product() ) {
 		$enqueue = (bool) pbb_product_preset( get_queried_object_id() );
 	}
-	// Home and Hounslow show it after their opening section (includes/placement.php).
+	// Featured landing pages show it after their opening section (includes/placement.php).
 	$enqueue = $enqueue || pbb_page_has_builder();
 
 	/** Force-load on pages built with page builders that hide shortcodes from post_content. */
 	if ( apply_filters( 'pbb_should_enqueue', $enqueue ) ) {
-		wp_enqueue_script_module( 'plateboss-builder' );
-		wp_enqueue_style( 'plateboss-builder' );
+		wp_enqueue_script_module( '3d-plate-builder' );
+		wp_enqueue_style( '3d-plate-builder' );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'pbb_maybe_enqueue' );
 
 /**
  * Legal footer details (BS AU 145e requires the supplier's name and postcode on every plate).
- * Filter `pbb_supplier_details` to change them without editing the plugin.
+ * Set in the shop config (includes/shop.php); filter `pbb_supplier_details` still runs on top.
  */
 function pbb_supplier_details() {
+	$s = pbb_shop_supplier();
 	return apply_filters(
 		'pbb_supplier_details',
 		array(
-			'supplier' => 'PlateBoss.co.uk',
-			'postcode' => 'TW4 6BX',
-			'standard' => 'BS AU 145e',
-			'logo'     => PBB_URL . 'assets/img/plateboss-logo.webp',
+			'supplier' => $s['supplier'],
+			'postcode' => $s['postcode'],
+			'standard' => (string) pbb_shop( 'standard' ),
+			'logo'     => esc_url_raw( (string) pbb_shop( 'logo' ) ),
 		)
 	);
 }
 
 /**
- * [plateboss_builder side="front"]
+ * [plate_builder side="front"]
  */
 function pbb_shortcode( $atts ) {
 	static $count = 0;
@@ -138,16 +142,16 @@ function pbb_shortcode( $atts ) {
 			'mobile'       => 'app',
 			// Product pages: a "Design in 3D / Classic plate builder" switch drives this builder.
 			'product_mode' => false,
-			// Phones, with mobile="launch": show the 3D plate and reg box in the page as a teaser (home, Hounslow).
+			// Phones, with mobile="launch": show the 3D plate and reg box in the page as a teaser (landing pages).
 			'teaser'       => false,
 		),
 		$atts,
-		'plateboss_builder'
+		'plate_builder'
 	);
 
 	// Fallback in case pbb_maybe_enqueue() could not see the shortcode.
-	wp_enqueue_script_module( 'plateboss-builder' );
-	wp_enqueue_style( 'plateboss-builder' );
+	wp_enqueue_script_module( '3d-plate-builder' );
+	wp_enqueue_style( '3d-plate-builder' );
 
 	// Allow ?reg=AB12CDE so "search a reg" forms and ads can deep-link into the builder.
 	$registration = $atts['registration'];
@@ -191,6 +195,10 @@ function pbb_shortcode( $atts ) {
 			'productMode'  => (bool) $atts['product_mode'],
 			'teaser'       => (bool) $atts['teaser'],
 			'homeUrl'      => home_url( '/' ),
+			// White-label wording and artwork (shop config).
+			'fittingNote'  => (string) pbb_shop( 'fitting_note' ),
+			'carBadge'     => esc_url_raw( (string) pbb_shop( 'car_badge' ) ),
+			'backing'      => pbb_shop_backing(),
 		)
 	);
 
@@ -208,7 +216,7 @@ function pbb_shortcode( $atts ) {
 	include PBB_PATH . 'templates/builder.php';
 	return ob_get_clean();
 }
-add_shortcode( 'plateboss_builder', 'pbb_shortcode' );
+add_shortcode( 'plate_builder', 'pbb_shortcode' );
 
 /**
  * Shop products: the builder takes the place of the Product Add-Ons form, starting on the
@@ -229,12 +237,12 @@ add_action(
 		}
 		$done = true;
 		?>
-		<div class="pbb-modes" role="group" aria-label="<?php esc_attr_e( 'How would you like to order?', 'plateboss-builder' ); ?>" data-pbb-modes>
+		<div class="pbb-modes" role="group" aria-label="<?php esc_attr_e( 'How would you like to order?', '3d-plate-builder' ); ?>" data-pbb-modes>
 			<button type="button" data-pbb-mode="3d" aria-pressed="true">
 				<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 2.5l8.5 4.75v9.5L12 21.5l-8.5-4.75v-9.5zM12 12l8.5-4.75M12 12v9.5M12 12L3.5 7.25"/></svg>
-				<?php esc_html_e( 'Design in 3D', 'plateboss-builder' ); ?>
+				<?php esc_html_e( 'Design in 3D', '3d-plate-builder' ); ?>
 			</button>
-			<button type="button" data-pbb-mode="classic" aria-pressed="false"><?php esc_html_e( 'Classic plate builder', 'plateboss-builder' ); ?></button>
+			<button type="button" data-pbb-mode="classic" aria-pressed="false"><?php esc_html_e( 'Classic plate builder', '3d-plate-builder' ); ?></button>
 		</div>
 		<?php
 		echo pbb_shortcode( array_merge( $preset, array( 'mobile' => 'launch', 'product_mode' => true ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the template.

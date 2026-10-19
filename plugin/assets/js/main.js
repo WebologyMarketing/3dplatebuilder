@@ -7,8 +7,8 @@ import { mountProductMode } from './product-mode.js';
 import { fixedSide } from './plate-sizes.js';
 
 /**
- * Boots every [plateboss_builder] on the page and wires the controls.
- * Instances are exposed on window.PlateBoss for the later steps (styles, cart).
+ * Boots every [plate_builder] on the page and wires the controls.
+ * Instances are exposed on window.PlateBuilder for the later steps (styles, cart).
  */
 
 const instances = [];
@@ -20,14 +20,14 @@ function init(root) {
 	try {
 		config = JSON.parse(root.dataset.pbbConfig || '{}');
 	} catch (e) {
-		console.warn('[PlateBoss] Invalid builder config', e);
+		console.warn('[Plate Builder] Invalid builder config', e);
 	}
 
 	let viewport;
 	try {
 		viewport = new PlateViewport(root.querySelector('[data-pbb-viewport]'), config);
 	} catch (e) {
-		console.error('[PlateBoss] WebGL unavailable', e);
+		console.error('[Plate Builder] WebGL unavailable', e);
 		root.classList.add('pbb-builder--no-webgl');
 		return;
 	}
@@ -169,4 +169,4 @@ function trackStickyHeader() {
 }
 trackStickyHeader();
 
-window.PlateBoss = Object.assign(window.PlateBoss || {}, { instances, init });
+window.PlateBuilder = Object.assign(window.PlateBuilder || {}, { instances, init });

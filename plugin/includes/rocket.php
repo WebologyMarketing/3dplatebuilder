@@ -7,12 +7,12 @@
  * them until the visitor interacts) leaves visitors on the loading screen. Logged-in admins never
  * see this, because WP Rocket doesn't optimise their pages.
  *
- * @package PlateBoss
+ * @package PlateBuilder
  */
 
 defined( 'ABSPATH' ) || exit;
 
-/** URL path of the plugin folder, e.g. /wp-content/plugins/plateboss-builder/ */
+/** URL path of the plugin folder, e.g. /wp-content/plugins/3d-plate-builder/ */
 function pbb_rocket_path() {
 	return (string) wp_parse_url( PBB_URL, PHP_URL_PATH );
 }
@@ -32,7 +32,7 @@ add_filter(
 	'rocket_delay_js_exclusions',
 	function ( $exclusions ) {
 		$exclusions   = (array) $exclusions;
-		$exclusions[] = 'plateboss-builder';
+		$exclusions[] = '3d-plate-builder';
 		$exclusions[] = 'wp-importmap';
 		return $exclusions;
 	}

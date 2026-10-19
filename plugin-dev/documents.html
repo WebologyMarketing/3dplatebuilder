@@ -39,7 +39,7 @@
 			server.files[get('kind')] = { name: f.name, type: get('type') };
 		}
 		if (ep === 'pbb_documents_remove') delete server.files[get('kind')];
-		const data = { needed: true, method: server.method, files: server.files, types, contact: { email: 'sales@plateboss.co.uk', whatsapp: '07000 000000', address: '' }, maxBytes: 10485760, accept: '.jpg,.jpeg,.png,.webp,.heic,.pdf,image/*,application/pdf' };
+		const data = { needed: true, method: server.method, files: server.files, types, contact: { email: 'orders@yourplates.example', whatsapp: '', address: '' }, maxBytes: 10485760, accept: '.jpg,.jpeg,.png,.webp,.heic,.pdf,image/*,application/pdf' };
 		return new Response(JSON.stringify({ success: true, data }), { status: 200 });
 	};
 </script>

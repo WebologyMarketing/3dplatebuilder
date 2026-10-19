@@ -1,4 +1,4 @@
-/* PlateBoss Plate Builder — Step 1: viewport */
+/* 3D Plate Builder — Step 1: viewport */
 
 .pbb-builder {
 	--pbb-ink: #111418;
@@ -718,8 +718,8 @@
 
 /* In-store fitting: last in the add-ons list, with a line saying it means collecting. */
 .pbb-check.pbb-fitting {
-	box-shadow: inset 0 0 0 1px rgba(245, 196, 0, 0.9);
-	background: #fffbea;
+	box-shadow: inset 0 0 0 1px var(--pbb-brand, #f5c400);
+	background: color-mix(in srgb, var(--pbb-brand, #f5c400) 10%, #fff);
 }
 
 .pbb-check.pbb-fitting small {
@@ -1386,8 +1386,8 @@ html.pbb-app-open body {
 		height: 18px;
 		padding: 0 5px;
 		border-radius: 999px;
-		background: #f5c400;
-		color: #111418;
+		background: var(--pbb-brand, #f5c400);
+		color: var(--pbb-brand-ink, #111418);
 		font-size: 11px;
 		font-weight: 800;
 		line-height: 18px;
@@ -1509,8 +1509,8 @@ html.pbb-app-open body {
 		flex: 1;
 		max-width: 240px;
 		height: 52px;
-		background: #f5c400;
-		color: #111418;
+		background: var(--pbb-brand, #f5c400);
+		color: var(--pbb-brand-ink, #111418);
 	}
 
 	/* "Added to basket" floats above the buy bar like a toast. */
@@ -1546,7 +1546,7 @@ html.pbb-app-open body {
 	}
 
 	.pbb-builder.is-app .pbb-cart-msg a {
-		color: #f5c400;
+		color: var(--pbb-brand, #f5c400);
 	}
 
 	/* Buttons press in slightly, like native controls. */
@@ -1615,8 +1615,8 @@ html.pbb-app-open body {
 	margin-top: 8px;
 	padding: 16px;
 	border-radius: 999px;
-	background: #f5c400;
-	color: #111418;
+	background: var(--pbb-brand, #f5c400);
+	color: var(--pbb-brand-ink, #111418);
 	font-size: 17px;
 	font-weight: 800;
 	text-decoration: none;
@@ -1684,7 +1684,7 @@ html.pbb-app-open body {
 	}
 }
 
-/* Featured pages (home, Hounslow): the builder in its own section after the opening banner. */
+/* Featured pages (home, landing pages): the builder in its own section after the opening banner. */
 .pbb-feature {
 	max-width: 1100px;
 	margin: 40px auto;
@@ -1712,8 +1712,8 @@ html.pbb-app-open body {
 	margin-bottom: 8px;
 	padding: 4px 10px;
 	border-radius: 999px;
-	background: #f7d333;
-	color: #0d0e10;
+	background: var(--pbb-brand, #f7d333);
+	color: var(--pbb-brand-ink, #0d0e10);
 	font-size: 12px;
 	font-weight: 800;
 	letter-spacing: 0.1em;
@@ -1749,7 +1749,7 @@ html.pbb-app-open body {
 	width: 10px;
 	height: 6px;
 	margin-top: -5px;
-	border: solid #f7d333;
+	border: solid var(--pbb-brand, #f7d333);
 	border-width: 0 0 2.5px 2.5px;
 	transform: rotate(-45deg);
 }
@@ -1848,7 +1848,7 @@ html.pbb-app-open body {
 
 	.pbb-builder .pbb-launch svg {
 		flex: none;
-		color: #f5c400;
+		color: var(--pbb-brand, #f5c400);
 	}
 
 	.pbb-launch span {
@@ -2007,7 +2007,7 @@ html.pbb-app-open body {
 	align-items: center;
 	gap: 6px;
 	margin: 0;
-	color: #7a6000;
+	color: color-mix(in srgb, var(--pbb-brand, #f5c400) 45%, #000);
 	font-size: 12px;
 	font-weight: 800;
 	letter-spacing: 0.14em;

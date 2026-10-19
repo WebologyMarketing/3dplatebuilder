@@ -2,11 +2,11 @@
 /**
  * Where the builder shows up around the site, beyond shop product pages:
  *   - a "Design Your Plates" page, created on first admin visit;
- *   - the full builder on featured pages (home and Hounslow), after their opening section;
+ *   - the full builder on featured pages (home and other landing pages), after their opening section;
  *   - a "3D Plate Builder" item in the main menu;
  *   - a floating "Design in 3D" button on other pages.
  *
- * @package PlateBoss
+ * @package PlateBuilder
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -28,9 +28,9 @@ add_action(
 			array(
 				'post_type'    => 'page',
 				'post_status'  => 'publish',
-				'post_title'   => __( 'Design Your Plates', 'plateboss-builder' ),
+				'post_title'   => __( 'Design Your Plates', '3d-plate-builder' ),
 				'post_name'    => 'design-your-plates',
-				'post_content' => '[plateboss_builder]',
+				'post_content' => '[plate_builder]',
 			)
 		);
 		if ( $id && ! is_wp_error( $id ) ) {
@@ -48,25 +48,15 @@ function pbb_builder_url( $registration = '' ) {
 
 /**
  * Landing pages that show the full builder after their opening section, each starting on its own
- * style or size, with the words for its heading. Filter `pbb_landing_pages`.
+ * style or size, with the words for its heading. Set in the shop config's `landing_pages`;
+ * the front page is included unless `feature_front_page` is false. Filter `pbb_landing_pages`.
  */
 function pbb_landing_pages() {
-	$pages = array(
-		(int) get_option( 'page_on_front' ) => array(),
-		// Location pages.
-		29573 => array(), // Hounslow
-		34376 => array(), // London
-		34392 => array(), // Manchester
-		34414 => array(), // Birmingham
-		// Style pages.
-		32138 => array( 'style' => 'gel-3d', 'name' => '3D gel' ),
-		32194 => array( 'style' => 'acrylic-4d-3', 'name' => '4D' ),
-		32207 => array( 'style' => 'retro', 'name' => 'retro' ),
-		32244 => array( 'style' => 'printed', 'name' => 'replacement' ),
-		32258 => array( 'size' => 'short', 'style' => 'acrylic-4d-3', 'name' => 'short' ),
-		32382 => array( 'badge' => 'ev', 'style' => 'acrylic-4d-3', 'name' => 'EV' ),
-		32491 => array( 'size' => 'hex', 'style' => 'acrylic-4d-3', 'name' => 'hex' ),
-	);
+	$pages = pbb_int_keys( pbb_shop( 'landing_pages' ) );
+	$front = (int) get_option( 'page_on_front' );
+	if ( $front && pbb_shop( 'feature_front_page' ) && ! isset( $pages[ $front ] ) ) {
+		$pages = array( $front => array() ) + $pages;
+	}
 	return array_filter( (array) apply_filters( 'pbb_landing_pages', $pages ), 'is_array' );
 }
 
@@ -118,20 +108,20 @@ add_filter(
 
 		$preset = pbb_landing_pages()[ get_queried_object_id() ] ?? array();
 		/* translators: %s: plate style, e.g. "4D" */
-		$title = ! empty( $preset['name'] ) ? sprintf( __( 'Design your %s plates in 3D', 'plateboss-builder' ), $preset['name'] ) : __( 'Design your plates in 3D', 'plateboss-builder' );
+		$title = ! empty( $preset['name'] ) ? sprintf( __( 'Design your %s plates in 3D', '3d-plate-builder' ), $preset['name'] ) : __( 'Design your plates in 3D', '3d-plate-builder' );
 		$atts  = array_merge( array( 'mobile' => 'launch', 'teaser' => true ), array_intersect_key( $preset, array_flip( array( 'style', 'size', 'badge' ) ) ) );
 
 		ob_start();
 		?>
 		<section class="pbb-feature" id="design-your-plates">
 			<div class="pbb-feature-head">
-				<span class="pbb-new"><?php esc_html_e( 'New', 'plateboss-builder' ); ?></span>
+				<span class="pbb-new"><?php esc_html_e( 'New', '3d-plate-builder' ); ?></span>
 				<h2><?php echo esc_html( $title ); ?></h2>
-				<p><?php esc_html_e( 'Enter your reg, choose your style and see exactly what you\'re getting, then order and pay right here.', 'plateboss-builder' ); ?></p>
+				<p><?php esc_html_e( 'Enter your reg, choose your style and see exactly what you\'re getting, then order and pay right here.', '3d-plate-builder' ); ?></p>
 				<ul class="pbb-feature-points">
-					<li><?php esc_html_e( 'See it in 3D, front and rear', 'plateboss-builder' ); ?></li>
-					<li><?php esc_html_e( 'Legal spacing checked as you type', 'plateboss-builder' ); ?></li>
-					<li><?php esc_html_e( 'Live price, Apple Pay & Google Pay', 'plateboss-builder' ); ?></li>
+					<li><?php esc_html_e( 'See it in 3D, front and rear', '3d-plate-builder' ); ?></li>
+					<li><?php esc_html_e( 'Legal spacing checked as you type', '3d-plate-builder' ); ?></li>
+					<li><?php esc_html_e( 'Live price, Apple Pay & Google Pay', '3d-plate-builder' ); ?></li>
 				</ul>
 			</div>
 			<?php echo pbb_shortcode( $atts ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the template. ?>
@@ -149,12 +139,12 @@ add_filter(
 	999
 );
 
-/** Main menu: "3D Plate Builder" after the first item (Home). Filter `pbb_menu_slugs` for other menus. */
+/** Main menu: "3D Plate Builder" after the first item (Home), on the menus in the shop config's `menu_slugs`. */
 add_filter(
 	'wp_nav_menu_objects',
 	function ( $items, $args ) {
 		$menu = isset( $args->menu ) ? wp_get_nav_menu_object( $args->menu ) : false;
-		if ( ! $menu || ! in_array( $menu->slug, (array) apply_filters( 'pbb_menu_slugs', array( 'main-menu-left' ) ), true ) ) {
+		if ( ! $menu || ! in_array( $menu->slug, (array) apply_filters( 'pbb_menu_slugs', (array) pbb_shop( 'menu_slugs' ) ), true ) ) {
 			return $items;
 		}
 		$item                   = new stdClass();
@@ -164,7 +154,7 @@ add_filter(
 		$item->object_id        = pbb_builder_page_id();
 		$item->object           = 'page';
 		$item->type             = 'custom';
-		$item->title            = __( '3D Plate Builder', 'plateboss-builder' );
+		$item->title            = __( '3D Plate Builder', '3d-plate-builder' );
 		$item->url              = pbb_builder_url();
 		$item->target           = '';
 		$item->attr_title       = '';
@@ -211,11 +201,12 @@ add_action(
 		?>
 		<a class="pbb-fab" href="<?php echo esc_url( pbb_builder_url() ); ?>">
 			<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 2.5l8.5 4.75v9.5L12 21.5l-8.5-4.75v-9.5zM12 12l8.5-4.75M12 12v9.5M12 12L3.5 7.25"/></svg>
-			<span><?php esc_html_e( 'Design in 3D', 'plateboss-builder' ); ?></span>
+			<span><?php esc_html_e( 'Design in 3D', '3d-plate-builder' ); ?></span>
 		</a>
 		<style>
-			.pbb-fab{position:fixed;left:16px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:9990;display:inline-flex;align-items:center;gap:8px;padding:12px 18px 12px 14px;border-radius:999px;background:#111418;color:#fff!important;font-size:15px;font-weight:700;line-height:1;text-decoration:none!important;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .2s ease}
-			.pbb-fab svg{color:#f5c400}
+			<?php echo pbb_shop_css_vars(); // phpcs:ignore WordPress.Security.EscapeOutput -- built from sanitised hex colours. ?>
+			.pbb-fab{position:fixed;left:16px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:9990;display:inline-flex;align-items:center;gap:8px;padding:12px 18px 12px 14px;border-radius:999px;background:var(--pbb-brand-dark);color:#fff!important;font-size:15px;font-weight:700;line-height:1;text-decoration:none!important;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .2s ease}
+			.pbb-fab svg{color:var(--pbb-brand)}
 			.pbb-fab:hover{transform:translateY(-2px)}
 			@media (max-width:1024px){body.sticky-toolbar-on .pbb-fab{bottom:calc(72px + env(safe-area-inset-bottom))}}
 			@media (max-width:420px){.pbb-fab{padding:11px 15px 11px 12px;font-size:14px}}
@@ -236,22 +227,9 @@ function pbb_promo_hidden() {
 	return is_page( pbb_builder_page_id() ) || ! empty( $_GET['pbb_embed'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 }
 
-/** Category → where the builder should start. Filter `pbb_category_presets`. */
+/** Category slug → where the builder should start. Set in the shop config's `category_presets`. */
 function pbb_category_presets() {
-	return (array) apply_filters(
-		'pbb_category_presets',
-		array(
-			'3d-gel-number-plates'   => array( 'style' => 'gel-3d', 'name' => '3D gel' ),
-			'4d-gel-plates'          => array( 'style' => 'gel-4d-3', 'name' => '4D gel' ),
-			'4d-plates'              => array( 'style' => 'acrylic-4d-3', 'name' => '4D' ),
-			'ev-plates'              => array( 'badge' => 'ev', 'style' => 'acrylic-4d-3', 'name' => 'EV' ),
-			'hex-plates'             => array( 'size' => 'hex', 'style' => 'acrylic-4d-3', 'name' => 'hex' ),
-			'retro-number-plates'    => array( 'style' => 'retro', 'name' => 'retro' ),
-			'short-number-plates'    => array( 'size' => 'short', 'style' => 'acrylic-4d-3', 'name' => 'short' ),
-			'standard-number-plates' => array( 'style' => 'printed', 'name' => 'standard' ),
-			'oversized-plates'       => array( 'style' => 'acrylic-4d-3', 'name' => 'oversized' ),
-		)
-	);
+	return (array) apply_filters( 'pbb_category_presets', (array) pbb_shop( 'category_presets' ) );
 }
 
 // Strip across the top of every other page.
@@ -265,11 +243,11 @@ add_action(
 		?>
 		<div class="pbb-strip" data-pbb-strip hidden>
 			<a class="pbb-strip-link" href="<?php echo esc_url( $href ); ?>">
-				<span class="pbb-strip-new"><?php esc_html_e( 'New', 'plateboss-builder' ); ?></span>
-				<span class="pbb-strip-text"><?php esc_html_e( 'See your plates in 3D before you order', 'plateboss-builder' ); ?></span>
-				<span class="pbb-strip-cta"><?php esc_html_e( 'Try the 3D builder', 'plateboss-builder' ); ?> &rarr;</span>
+				<span class="pbb-strip-new"><?php esc_html_e( 'New', '3d-plate-builder' ); ?></span>
+				<span class="pbb-strip-text"><?php esc_html_e( 'See your plates in 3D before you order', '3d-plate-builder' ); ?></span>
+				<span class="pbb-strip-cta"><?php esc_html_e( 'Try the 3D builder', '3d-plate-builder' ); ?> &rarr;</span>
 			</a>
-			<button type="button" class="pbb-strip-close" data-pbb-strip-close aria-label="<?php esc_attr_e( 'Hide this message', 'plateboss-builder' ); ?>">&times;</button>
+			<button type="button" class="pbb-strip-close" data-pbb-strip-close aria-label="<?php esc_attr_e( 'Hide this message', '3d-plate-builder' ); ?>">&times;</button>
 		</div>
 		<script>
 		(function () {
@@ -301,16 +279,16 @@ add_action(
 			return;
 		}
 		/* translators: %s: plate style, e.g. "4D" */
-		$title = sprintf( __( 'Design your %s plates in 3D', 'plateboss-builder' ), $preset['name'] );
+		$title = sprintf( __( 'Design your %s plates in 3D', '3d-plate-builder' ), $preset['name'] );
 		?>
 		<a class="pbb-band" href="<?php echo esc_url( pbb_builder_link( $preset ) ); ?>">
 			<span class="pbb-band-plate" aria-hidden="true">YOUR REG</span>
 			<span class="pbb-band-copy">
-				<span class="pbb-strip-new"><?php esc_html_e( 'New', 'plateboss-builder' ); ?></span>
+				<span class="pbb-strip-new"><?php esc_html_e( 'New', '3d-plate-builder' ); ?></span>
 				<strong><?php echo esc_html( $title ); ?></strong>
-				<span><?php esc_html_e( 'Type your reg, turn it round, see every detail, then order and pay in the builder.', 'plateboss-builder' ); ?></span>
+				<span><?php esc_html_e( 'Type your reg, turn it round, see every detail, then order and pay in the builder.', '3d-plate-builder' ); ?></span>
 			</span>
-			<span class="pbb-band-cta"><?php esc_html_e( 'Start designing', 'plateboss-builder' ); ?> &rarr;</span>
+			<span class="pbb-band-cta"><?php esc_html_e( 'Start designing', '3d-plate-builder' ); ?> &rarr;</span>
 		</a>
 		<?php
 	},
@@ -325,27 +303,28 @@ add_action(
 		}
 		?>
 		<style id="pbb-promo-css">
-			.pbb-strip{position:relative;z-index:100;display:flex;align-items:center;background:#0D0E10;color:#fff;font-size:14px;line-height:1.3}
+			<?php echo pbb_shop_css_vars(); // phpcs:ignore WordPress.Security.EscapeOutput -- built from sanitised hex colours. ?>
+			.pbb-strip{position:relative;z-index:100;display:flex;align-items:center;background:var(--pbb-brand-dark);color:#fff;font-size:14px;line-height:1.3}
 			.pbb-strip[hidden]{display:none}
 			.pbb-strip-link{flex:1;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 12px;padding:9px 44px 9px 16px;color:#fff!important;text-decoration:none!important}
-			.pbb-strip-new{display:inline-block;padding:3px 8px;border-radius:999px;background:#F7D333;color:#0D0E10;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+			.pbb-strip-new{display:inline-block;padding:3px 8px;border-radius:999px;background:var(--pbb-brand);color:var(--pbb-brand-ink);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 			.pbb-strip-text{font-weight:500}
-			.pbb-strip-cta{font-weight:800;color:#F7D333;text-decoration:underline;text-underline-offset:3px}
+			.pbb-strip-cta{font-weight:800;color:var(--pbb-brand);text-decoration:underline;text-underline-offset:3px}
 			.pbb-strip-close{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;background:none;color:#cfcfcf;font-size:22px;line-height:1;cursor:pointer}
-			.pbb-hero-cta{width:100%;max-width:520px;margin:22px 0 4px;padding:18px 20px;border-radius:16px;background:rgba(13,14,16,.78);border:1px solid rgba(247,211,51,.45);color:#fff;text-align:left;box-shadow:0 18px 40px -20px rgba(0,0,0,.8);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+			.pbb-hero-cta{width:100%;max-width:520px;margin:22px 0 4px;padding:18px 20px;border-radius:16px;background:rgba(13,14,16,.78);border:1px solid color-mix(in srgb,var(--pbb-brand) 45%,transparent);color:#fff;text-align:left;box-shadow:0 18px 40px -20px rgba(0,0,0,.8);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 			.pbb-hero-cta.is-centred{margin-left:auto;margin-right:auto;text-align:center}
 			.pbb-hero-cta-title{margin:10px 0 0!important;color:#fff!important;font-size:24px!important;font-weight:800!important;line-height:1.15!important}
 			.pbb-hero-cta-text{margin:6px 0 0!important;color:#d9d7cf!important;font-size:15px!important;line-height:1.45!important}
-			.pbb-hero-cta-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;min-height:54px;padding:0 26px;border-radius:12px;background:#F7D333;color:#0D0E10!important;font-weight:800;font-size:17px;letter-spacing:.05em;text-transform:uppercase;text-decoration:none!important;box-shadow:0 8px 20px -8px rgba(247,211,51,.7);transition:transform .15s ease}
+			.pbb-hero-cta-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;min-height:54px;padding:0 26px;border-radius:12px;background:var(--pbb-brand);color:var(--pbb-brand-ink)!important;font-weight:800;font-size:17px;letter-spacing:.05em;text-transform:uppercase;text-decoration:none!important;box-shadow:0 8px 20px -8px color-mix(in srgb,var(--pbb-brand) 70%,transparent);transition:transform .15s ease}
 			.pbb-hero-cta-btn:hover{transform:translateY(-1px);background:#ffe066}
 			@media (max-width:640px){.pbb-hero-cta{padding:16px}.pbb-hero-cta-title{font-size:20px!important}.pbb-hero-cta-btn{width:100%}}
-			.pbb-band{display:flex;align-items:center;gap:18px;margin:0 0 24px;padding:16px 20px;border-radius:16px;background:#0D0E10;color:#fff!important;text-decoration:none!important;box-shadow:0 10px 30px -18px rgba(0,0,0,.6)}
+			.pbb-band{display:flex;align-items:center;gap:18px;margin:0 0 24px;padding:16px 20px;border-radius:16px;background:var(--pbb-brand-dark);color:#fff!important;text-decoration:none!important;box-shadow:0 10px 30px -18px rgba(0,0,0,.6)}
 			.pbb-band:hover .pbb-band-cta{background:#ffe066}
 			.pbb-band-plate{flex:none;padding:8px 14px;border-radius:6px;background:#F9D71C;color:#111;font-weight:900;font-size:22px;letter-spacing:2px;transform:perspective(400px) rotateY(-18deg) rotateX(8deg);box-shadow:-6px 10px 18px rgba(0,0,0,.5)}
 			.pbb-band-copy{flex:1;display:flex;flex-direction:column;gap:4px;font-size:14px;color:#d9d7cf}
 			.pbb-band-copy strong{font-size:20px;line-height:1.15;color:#fff}
 			.pbb-band-copy .pbb-strip-new{align-self:flex-start}
-			.pbb-band-cta{flex:none;padding:12px 18px;border-radius:12px;background:#F7D333;color:#0D0E10;font-weight:800;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+			.pbb-band-cta{flex:none;padding:12px 18px;border-radius:12px;background:var(--pbb-brand);color:var(--pbb-brand-ink);font-weight:800;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
 			@media (max-width:640px){
 				.pbb-strip{font-size:13px}
 				.pbb-strip-text{display:none}
@@ -372,16 +351,16 @@ add_action(
 		}
 		$preset = pbb_landing_pages()[ get_queried_object_id() ] ?? array();
 		/* translators: %s: plate style, e.g. "4D" */
-		$title = ! empty( $preset['name'] ) ? sprintf( __( 'See your %s plates in 3D before you order', 'plateboss-builder' ), $preset['name'] ) : __( 'See your plates in 3D before you order', 'plateboss-builder' );
+		$title = ! empty( $preset['name'] ) ? sprintf( __( 'See your %s plates in 3D before you order', '3d-plate-builder' ), $preset['name'] ) : __( 'See your plates in 3D before you order', '3d-plate-builder' );
 		?>
 		<template id="pbb-hero-cta">
 			<div class="pbb-hero-cta">
-				<span class="pbb-strip-new"><?php esc_html_e( 'New', 'plateboss-builder' ); ?></span>
+				<span class="pbb-strip-new"><?php esc_html_e( 'New', '3d-plate-builder' ); ?></span>
 				<p class="pbb-hero-cta-title"><?php echo esc_html( $title ); ?></p>
-				<p class="pbb-hero-cta-text"><?php esc_html_e( 'Type your reg, pick your style and turn it round. Then order and pay right there.', 'plateboss-builder' ); ?></p>
+				<p class="pbb-hero-cta-text"><?php esc_html_e( 'Type your reg, pick your style and turn it round. Then order and pay right there.', '3d-plate-builder' ); ?></p>
 				<a class="pbb-hero-cta-btn" href="<?php echo esc_url( pbb_landing_link() ); ?>">
 					<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" d="M12 2.5l8.5 4.75v9.5L12 21.5l-8.5-4.75v-9.5zM12 12l8.5-4.75M12 12v9.5M12 12L3.5 7.25"/></svg>
-					<?php esc_html_e( 'Design in 3D', 'plateboss-builder' ); ?> <span aria-hidden="true">&rarr;</span>
+					<?php esc_html_e( 'Design in 3D', '3d-plate-builder' ); ?> <span aria-hidden="true">&rarr;</span>
 				</a>
 			</div>
 		</template>

@@ -1,5 +1,6 @@
 """Home, demo, features. Copy in UK English."""
 from partials import builder_markup, spec_svg, phone_preview, laptop_preview
+from blocks import usp_grid, render_showcase, process_strip
 
 DN = lambda t: f'<span class="draft-note">{t}</span>'
 
@@ -16,7 +17,8 @@ def plan_summary():
 		<p class="for">{who}</p>
 		<p class="price"><strong>{price} a month</strong><span>+ {setup} set-up {DN(note)}</span></p>
 		<ul>{lis}</ul>
-		<a class="btn {btn}" href="pricing.html#{pid}">See what's in {name}</a>
+		<a class="btn {btn}" href="start.html?plan={pid}">Start with {name}</a>
+		<a class="plan-more" href="pricing.html#{pid}">Everything in {name}</a>
 	</article>"""
     starter = card('Starter', 'For workshops that want the 3D builder and a proper shop, without the extras.', '[£ STARTER MONTHLY]', '[£ STARTER SET-UP]', 'Suggested: £79–£99 a month, £395–£595 set-up',
                    ['3D builder with all seven character styles', 'Every plate size, with legal spacing as they type', 'A ready-made plate-shop website in your colours, hosted and updated'], pid='starter')
@@ -31,18 +33,18 @@ def plan_summary():
 </div>
 <div class="outright">
 	<div class="stack">
-		<h3>Already have a WooCommerce shop?</h3>
-		<p class="muted">Add the builder to the site you already have, at the same three levels. We check your site, install it, set your prices and test it with you. Or buy a Complete website outright and pay yearly for hosting and updates.</p>
+		<h3>Rather pay once?</h3>
+		<p class="muted">Buy a Complete shop outright, then pay yearly for hosting, updates and support.</p>
 	</div>
 	<div class="stack">
-		<p class="price"><strong>Builder only from [£ STARTER BUILDER-ONLY MONTHLY] a month</strong></p>
-		<p class="muted">{DN('Suggested: £39–£49 a month')}</p>
-		<div class="actions"><a class="btn btn-ghost" href="pricing.html#builder-only">See builder-only prices</a><a class="btn btn-ghost" href="pricing.html#outright">Buying outright</a></div>
+		<p class="price"><strong>[£ OUTRIGHT PRICE] one-off</strong></p>
+		<p class="muted">then [£ OUTRIGHT HOSTING YEARLY] a year</p>
+		<div class="actions"><a class="btn btn-ghost" href="start.html?plan=outright">Start your shop</a><a class="btn btn-ghost" href="pricing.html#outright">How buying outright works</a></div>
 	</div>
 </div>"""
 
 
-def cta_band(heading='See it with your own plates', text='Request a demo and we\'ll set the builder up with your styles, sizes and prices, then email you a private link to try it. No sales calls.'):
+def cta_band(heading='Start your plate shop', text='Pick a plan and sign up online in a few minutes. We build your shop and you go live in [TIMELINE TOTAL]. No sales calls.'):
     return f'''<section class="plate-band" aria-labelledby="cta-title">
 	<div class="wrap">
 		<div>
@@ -50,8 +52,8 @@ def cta_band(heading='See it with your own plates', text='Request a demo and we\
 			<p>{text}</p>
 		</div>
 		<div class="actions">
-			<a class="btn btn-dark" href="contact.html">Request a demo</a>
-			<a class="btn btn-dark" href="demo.html">Try the live demo</a>
+			<a class="btn btn-dark" href="start.html">Start your shop</a>
+			<a class="btn btn-dark-ghost" href="demo.html">Try the 3D builder</a>
 		</div>
 	</div>
 </section>'''
@@ -59,181 +61,61 @@ def cta_band(heading='See it with your own plates', text='Request a demo and we\
 
 # ------------------------------------------------------------------ home
 
-def home(font):
-    return f'''
-<section class="hero studio">
-	<div class="wrap hero-grid">
-		<div class="hero-copy">
-			<h1>Let your customers design their plates in 3D</h1>
-			<p class="lede">A complete number plate shop with a real-time 3D builder built in. Your customers type their reg, see it spaced legally, pick 4D, gel or retro, and check out with Apple Pay. On their phone, in a couple of minutes.</p>
-			<div class="actions">
-				<a class="btn btn-primary" href="#try">Try the live builder</a>
-				<a class="btn btn-ghost" href="contact.html">Request a demo</a>
-			</div>
-			<p class="hero-proof"><strong>Built by, and running at, PlateBoss.co.uk.</strong> A UK plate maker that built it for its own shop.</p>
-		</div>
-		<figure class="hero-art">
-			<img src="assets/img/hero-rear.webp" width="881" height="500" alt="A yellow rear plate, AB12 CDE, in 4D gel characters, rendered by the builder" fetchpriority="high">
-			<img class="plate-front" src="assets/img/hero-front.webp" width="1112" height="318" alt="The matching white front plate in printed characters" loading="lazy" decoding="async">
+# Real shops for the "Shops we've built" strip: (image in assets/img/shops/, shop name, web address, one line).
+# The section only appears once there's at least one. Screenshots must be the shop owner's, with permission.
+SHOPS = [
+    ('plateboss-builder.webp', 'PlateBoss.co.uk', 'plateboss.co.uk/design-your-plates',
+     'A plate maker in Hounslow, London, and the builder\'s first shop. It runs on every plate product page and its own Design Your Plates page, with checkout in the builder and document checks on every road-legal order.'),
+]
+
+WEBSITE_ITEMS = [
+    ('Designed in your colours', 'Your logo, colours and wording on every page. A ready-made plate-shop design on Starter, up to fully custom on Complete.'),
+    ('A page for every plate', 'Styles, sizes, motorbike, 4x4 and show plates, plus pages for the towns you serve, written so people find you on Google.'),
+    ('Checkout that keeps the sale', 'Card, Apple Pay and Google Pay through your own Stripe, inside the builder, so customers pay without losing their design.'),
+    ('DVLA documents built in', 'Proof of ID and entitlement at checkout or after. Road-legal orders wait as Awaiting documents until your staff check them.'),
+    ('Hosted and looked after', 'Fast hosting, a security certificate, daily backups, and WordPress and builder updates. Nothing for you to install.'),
+    ('Changes by email', 'Ask in writing and we make it. Monthly design hours are included on Complete, so your shop keeps up with your range.'),
+]
+
+
+def shops_strip():
+    if not SHOPS:
+        return ''
+    if len(SHOPS) == 1:
+        img, name, url, line = SHOPS[0]
+        return f"""<section class="section" aria-labelledby="shops-title">
+	<div class="wrap shop-feature">
+		<figure class="browser">
+			<div class="browser-bar" aria-hidden="true"><span class="dots"><i></i><i></i><i></i></span><span class="url">{url}</span></div>
+			<img class="browser-shot" src="assets/img/shops/{img}" width="1200" height="626" alt="The 3D builder on {name}, showing a yellow rear plate" loading="lazy" decoding="async">
 		</figure>
-	</div>
-</section>
-
-<section class="section studio" id="try" aria-labelledby="try-title">
-	<div class="wrap phone-split">
-		{phone_preview(views=True)}
-		<div class="stack phone-copy">
-			<h2 id="try-title">Have a go. This is the real builder</h2>
-			<p class="lede muted">The same builder that takes orders at PlateBoss.co.uk, set up for a demo supplier, Your Plates Ltd. It's running live at iPhone 18 Pro Max size, because the phone is where plenty of plate buyers design and pay. Type a reg, swipe through the steps, turn the plate.</p>
-			<ul class="feature-list">
-				<li><b>The plate stays in view</b><span>Pinned at the top while customers choose, so every change shows straight away.</span></li>
-				<li><b>One step at a time</b><span>Reg and style, plate size, badge, border, add-ons. Swipe or tap Next, with a progress bar along the top.</span></li>
-				<li><b>The total is always there</b><span>The price and the next button sit at the bottom, and the keyboard never covers them.</span></li>
-				<li><b>Back works like an app</b><span>The arrow and the phone's own back gesture both close the builder.</span></li>
-			</ul>
-			<div class="actions">
-				<button type="button" class="btn btn-ghost" data-reveal="desktop-view" aria-expanded="false" aria-controls="desktop-view">See it on a computer</button>
-				<a class="btn btn-ghost" href="demo.html">Open the full demo</a>
-			</div>
-			<p class="small muted">Example prices. Your shop uses your own price list.</p>
-		</div>
-	</div>
-	<div class="wrap desktop-reveal" id="desktop-view" hidden>
-		<div class="desktop-reveal-head">
-			<h3>On a computer</h3>
-			<button type="button" class="btn btn-ghost" data-reveal-close="desktop-view">Back to the phone</button>
-		</div>
-		{laptop_preview()}
-	</div>
-</section>
-
-<section class="section" aria-labelledby="why-title">
-	<div class="wrap">
-		<div class="intro">
-			<h2 id="why-title">What it does for your shop</h2>
-			<p>Most plate shops still sell from a flat picture and a list of drop-downs. Customers guess, ring up to check, or order the wrong thing. The builder shows them the plate they're buying.</p>
-		</div>
-		<ul class="benefits">
-			<li>
-				<h3>More people finish their order</h3>
-				<p>Customers turn the plate, zoom in on the 4D edge and see the badge before they pay, so they buy with confidence instead of messaging you first.</p>
-			</li>
-			<li>
-				<h3>Fewer wrong orders</h3>
-				<p>Every basket line spells it out: registration, front and rear sizes in mm, style, badge, border, extras and road legal or show plate. Your workshop makes exactly what the customer saw.</p>
-			</li>
-			<li>
-				<h3>Legal spacing done for them</h3>
-				<p>Type AB12CDE and it becomes AB12 CDE, in 79 mm Charles Wright characters with 11 mm and 33 mm gaps. If a reg won't fit a size, the builder says so before they order.</p>
-			</li>
-			<li>
-				<h3>Apple Pay and Google Pay</h3>
-				<p>Your own WooCommerce checkout opens inside the builder, with Apple Pay and Google Pay through Stripe. Customers pay without losing their design.</p>
-			</li>
-			<li>
-				<h3>Made for phones first</h3>
-				<p>On a phone the builder fills the screen: step cards, a progress bar and a buy bar that the keyboard never covers. Plenty of plates are bought on a phone, in a lunch break or a car park, so this is where it counts.</p>
-			</li>
-			<li>
-				<h3>Documents sorted at checkout</h3>
-				<p>Road-legal orders ask for proof of ID and entitlement at checkout, or later. Orders wait as Awaiting documents until your staff have checked them.</p>
-			</li>
-		</ul>
-	</div>
-</section>
-
-<section class="section studio" aria-labelledby="spec-h">
-	<div class="wrap">
-		<div class="spec-split">
-			<div class="stack">
-				<h2 id="spec-h">Legal spacing, in millimetres</h2>
-				<p class="lede muted">The builder places characters ink to ink, the way BS AU 145e measures them, and lays them out as the customer types. Current, prefix and suffix regs are spaced automatically; dateless and cherished regs stay exactly as typed.</p>
-			</div>
-			<div class="stack">
-				<ul class="spec-list">
-					<li><b>79 mm</b><span>Character height, Charles Wright 2001 typeface</span></li>
-					<li><b>50 mm</b><span>Character width (14 mm for 1 and I), 14 mm stroke</span></li>
-					<li><b>11 mm</b><span>Gap between characters, and the minimum margin</span></li>
-					<li><b>33 mm</b><span>Gap between the two groups</span></li>
-					<li><b>Footer</b><span>Your supplier name, postcode and the BS AU 145e mark on every plate</span></li>
-				</ul>
-				<p class="small muted">The builder helps with BS AU 145e layout. You stay responsible for the plates you make, your RNPS registration and checking your customers' documents.</p>
-			</div>
-		</div>
-		<figure class="spec-drawing spec-wide">
-			<div class="spec-scroll" tabindex="0" role="region" aria-label="Dimensioned plate drawing">{spec_svg(font)}</div>
-			<figcaption>A standard 520 × 111 mm rear plate, drawn from the builder's own character outlines.</figcaption>
-		</figure>
-	</div>
-</section>
-
-<section class="section" aria-labelledby="how-title">
-	<div class="wrap">
-		<div class="intro">
-			<h2 id="how-title">How it works</h2>
-			<p>You don't need to know WordPress. We build the shop, set up the builder with your products and prices, and look after it.</p>
-		</div>
-		<ol class="steps">
-			<li><h3>Request a demo</h3><p>We set the builder up with your kind of plates and email you a private link, so you can try it in your own time.</p></li>
-			<li><h3>We build your shop</h3><p>We copy your products and prices, and add your logo, supplier name and postcode to the plates.</p></li>
-			<li><h3>Connect Stripe</h3><p>Payments go straight to your own Stripe account, with Apple Pay and Google Pay switched on.</p></li>
-			<li><h3>Go live</h3><p>We test real orders end to end, point your domain at the new shop and you start taking orders.</p></li>
-		</ol>
-		<p style="margin-top:32px"><a class="try-link" href="setup.html">See the full set-up, step by step</a></p>
-	</div>
-</section>
-
-<section class="section" aria-labelledby="plans-title">
-	<div class="wrap">
-		<div class="intro">
-			<h2 id="plans-title">A website with the builder, or the builder on your site</h2>
-			<p>Three monthly plans with a one-off set-up fee. Each one adds more of the builder and more website: from a ready-made plate shop on Starter to a fully custom site with local pages and monthly changes on Complete.</p>
-		</div>
-		{plan_summary()}
-	</div>
-</section>
-
-<section class="section studio" aria-labelledby="proof-title">
-	<div class="wrap proof">
 		<div class="stack">
-			<h2 id="proof-title">Built by a plate maker. Running at PlateBoss.co.uk</h2>
-			<p class="lede muted">PlateBoss is a UK plate maker in Hounslow. We built the builder for our own shop, and it's live and taking orders there now. [BRAND NAME] is how other plate makers get the same thing.</p>
-			<p><a class="try-link" href="https://plateboss.co.uk" rel="noopener">See it working at PlateBoss.co.uk</a></p>
+			<p class="eyebrow">Live today</p>
+			<h2 id="shops-title">Already selling plates at {name}</h2>
+			<p class="lede muted">{line}</p>
+			<p><a class="try-link" href="https://{url}" rel="noopener">See it on {name}</a></p>
 		</div>
-		<div class="stack">
-			<h3 class="proof-sub">Live at PlateBoss.co.uk today</h3>
-			<ul class="feature-list">
-				<li><b>The 3D builder on every plate product page</b><span>With the Design in 3D / Classic switch, a Design Your Plates page and the phone app layout.</span></li>
-				<li><b>Checkout inside the builder</b><span>Delivery or collection, card, Apple Pay, Google Pay and Klarna, without leaving the design.</span></li>
-				<li><b>Proof of ID and entitlement checks</b><span>Upload at checkout or send later, Awaiting documents status and staff checks on every road-legal order.</span></li>
-				<li><b>All seven styles and every plate size</b><span>Printed to 4D gel 6 mm and retro, from standard to motorbike, trailer and import plates.</span></li>
-			</ul>
 	</div>
-</section>
-
-<section class="section" aria-labelledby="faq-title">
+</section>"""
+    cards = ''.join(f'<li><figure class="browser browser-sm"><div class="browser-bar" aria-hidden="true"><span class="dots"><i></i><i></i><i></i></span><span class="url">{url}</span></div><img src="assets/img/shops/{img}" alt="The {name} website" loading="lazy" decoding="async"></figure><p><b>{name}</b> {line}</p></li>' for img, name, url, line in SHOPS)
+    return f"""<section class="section" aria-labelledby="shops-title">
 	<div class="wrap">
-		<h2 id="faq-title">Questions plate makers ask</h2>
-		<div class="faq">
-			{faq_items()}
-		</div>
+		<div class="intro"><h2 id="shops-title">Shops we've built</h2><p>Real plate shops, running the same builder you can try above.</p></div>
+		<ul class="shops">{cards}</ul>
 	</div>
-</section>
-
-{cta_band()}
-'''
+</section>"""
 
 
-def faq_items():
+def faq_items(pick=None):
     items = [
         ("Is the builder DVLA approved?",
          "<p>No. The software has no DVLA approval or certification, and we don't claim it does. It lays characters out to BS AU 145e measurements and puts your supplier name, postcode and the BS AU 145e mark in the footer, which saves you checking every layout by hand.</p><p>You stay responsible for the plates you make, your registration as a Registered Number Plate Supplier and checking your customers' documents.</p>"),
         ("Do I need to know WordPress?",
          "<p>No. We build the shop, host it and keep it updated. You change prices on one screen (WooCommerce → Plate Builder) and handle orders like any WooCommerce shop.</p>"),
         ("I already have a website. Can you move it over?",
-         "<p>Yes. It's included in Complete and an add-on on Starter and Pro: we copy your products, prices and pages across, and keep your domain. Tell us what you're on now when you request a demo.</p>"),
+         "<p>Yes. It's included in Complete and an add-on on Starter and Pro: we copy your products, prices and pages across, and keep your domain. Tell us your current website when you sign up.</p>"),
         ("I already run WooCommerce. Can I just add the builder?",
-         "<p>Yes, that's Builder only. It's the same three plans without the website. We check your theme, checkout and hosting first, then install the builder, set your prices and test real orders with you. You keep your own hosting and look after WordPress updates; we keep the builder updated. It needs WordPress 6.5 or later.</p>"),
+         "<p>Not at the moment. The builder comes as part of a website we build, host and look after, so it always works with your checkout, documents and updates. If you already have a WooCommerce shop, we can move your products and pages across to your new site.</p>"),
         ("What's the difference between the plans' websites?",
          "<p>Starter is a ready-made plate-shop design in your logo and colours, with the core pages. Pro adds a home page designed around your shop, landing pages for each plate type, edited product photos and search basics. Complete is fully custom, with local pages for the towns you serve, your current site moved across, launch articles and hours of changes every month.</p>"),
         ("Does it work with Shopify, Wix or Squarespace?",
@@ -249,6 +131,8 @@ def faq_items():
         ("How long is the contract?",
          "<p>Monthly plans have a minimum term of [MINIMUM TERM], then [NOTICE PERIOD] notice. Your domain, products, customers and orders stay yours.</p>"),
     ]
+    if pick is not None:
+        items = [items[i] for i in pick]
     return '\n'.join(f'<details><summary>{q}</summary><div>{a}</div></details>' for q, a in items)
 
 
@@ -256,14 +140,14 @@ def faq_items():
 
 QUICK = [
     ('demo.html', 'Front plate, printed'),
-    ('demo.html?reg=AB12CDE&style=gel-4d-3&side=rear', '4D gel, rear'),
+    ('demo.html?reg=3D%20BLDR&style=gel-4d-3&side=rear', '4D gel, rear'),
     ('demo.html?reg=RETRO&style=retro', 'Retro pressed'),
-    ('demo.html?reg=AB12CDE&style=acrylic-4d-3&size=hex', 'Hex, cut to fit'),
-    ('demo.html?reg=AB12CDE&style=gel-3d&badge=uk-4d', 'UK 4D badge'),
-    ('demo.html?reg=AB12CDE&style=acrylic-4d-6&border=black-2mm&badge=ev-gel', 'EV badge and border'),
-    ('demo.html?reg=AB12CDE&size=standard&rear=oversized&side=rear', 'Oversized rear plate'),
-    ('demo.html?reg=AB12CDE&size=motorbike', 'Motorbike'),
-    ('demo.html?reg=AB12CDE&style=gel-4d-6&view=car', 'On a car'),
+    ('demo.html?reg=3D%20BLDR&style=acrylic-4d-3&size=hex', 'Hex, cut to fit'),
+    ('demo.html?reg=3D%20BLDR&style=gel-3d&badge=uk-4d', 'UK 4D badge'),
+    ('demo.html?reg=3D%20BLDR&style=acrylic-4d-6&border=black-2mm&badge=ev-gel', 'EV badge and border'),
+    ('demo.html?reg=3D%20BLDR&size=standard&rear=oversized&side=rear', 'Oversized rear plate'),
+    ('demo.html?reg=3D%20BLDR&size=motorbike', 'Motorbike'),
+    ('demo.html?reg=3D%20BLDR&style=gel-4d-6&view=car', 'On a car'),
 ]
 
 
@@ -289,7 +173,7 @@ def demo():
 			<div class="demo-notes demo-notes-stack">
 				<div>
 					<h3>What's real here</h3>
-					<p>Everything you can see and touch: the 3D plate, styles, sizes, badges, borders, the car view, extras, the live price and the phone layout. It's the same code that runs on PlateBoss.co.uk.</p>
+					<p>Everything you can see and touch: the 3D plate, styles, sizes, badges, borders, the car view, extras, the live price and the phone layout. It's the same code that runs in a live plate shop.</p>
 				</div>
 				<div>
 					<h3>What's different on your shop</h3>
@@ -315,7 +199,7 @@ def demo():
 	</div>
 </section>
 
-{cta_band('Like what you see?', "Request a demo and we'll set the builder up with your own styles and prices, so you can see exactly what your customers would get.")}
+{cta_band('Like what you see?', "Get this builder on a plate shop website of your own, in your colours with your prices. Sign up online in a few minutes.")}
 '''
 
 
@@ -338,12 +222,14 @@ def tier(name):
 
 def features():
     style_items = '\n'.join(
-        f'<li><a href="demo.html?reg=AB12CDE&amp;style={sid}&amp;side=rear"><img src="assets/img/style-{sid}.webp" width="640" height="480" alt="{label} characters on a rear plate" loading="lazy" decoding="async"><span>{label}</span></a><span class="small muted">{desc}</span></li>'
+        f'<li><a href="demo.html?reg=3D%20BLDR&amp;style={sid}&amp;side=rear"><img src="assets/img/style-{sid}.webp" width="640" height="480" alt="{label} characters on a rear plate" loading="lazy" decoding="async"><span>{label}</span></a><span class="small muted">{desc}</span></li>'
         for sid, label, desc in STYLES)
     return f'''
-<section class="page-head" aria-labelledby="f-title">
+<section class="page-head page-head-art" aria-labelledby="f-title">
 	<div class="wrap">
+		<img class="head-plate" src="assets/img/hero-rear.webp" width="881" height="500" alt="" aria-hidden="true">
 		<div class="intro">
+			<p class="eyebrow">The 3D builder</p>
 			<h1 id="f-title">Features</h1>
 			<p>Everything the builder does today, in plain English. Each feature is tagged with the plan it comes in. Anything we haven't built yet is listed at the bottom as coming soon.</p>
 		</div>
@@ -414,7 +300,7 @@ def features():
 					<li><b>Different front and rear sizes {tier('Pro')}</b><span>A short front with an oversized rear, for example. Each plate prices its own size, and the order shows both in mm.</span></li>
 				</ul>
 				<p class="small muted">Motorbike, trailer and import sizes are printed only for now.</p>
-				<a class="try-link" href="demo.html?reg=AB12CDE&amp;size=standard&amp;rear=oversized&amp;side=rear">Try a different rear size</a>
+				<a class="try-link" href="demo.html?reg=3D%20BLDR&amp;size=standard&amp;rear=oversized&amp;side=rear">Try a different rear size</a>
 			</div>
 			<figure class="shot">
 				<img src="assets/img/size-hex.webp" width="1280" height="720" alt="A hex plate with pointed ends, cut to fit the registration" loading="lazy" decoding="async">
@@ -432,7 +318,7 @@ def features():
 					<li><b>Borders</b><span>Black, 1, 2 or 3 mm, printed inside the plate edge.</span></li>
 					<li><b>Smart about sizes</b><span>The camera zooms onto the badge as it's picked, and a badge that doesn't suit a new size clears itself.</span></li>
 				</ul>
-				<a class="try-link" href="demo.html?reg=AB12CDE&amp;style=gel-3d&amp;badge=uk-4d">Try the 4D badge</a>
+				<a class="try-link" href="demo.html?reg=3D%20BLDR&amp;style=gel-3d&amp;badge=uk-4d">Try the 4D badge</a>
 			</div>
 			<figure class="shot">
 				<img src="assets/img/badge-uk-4d.webp" width="1280" height="720" alt="Close-up of a raised UK 4D badge on the left of a plate" loading="lazy" decoding="async">
@@ -446,7 +332,7 @@ def features():
 				<h2>See it on a car</h2>
 				<p>One tap puts both plates on a car, with six paint colours to choose from. Customers can turn the car right round.</p>
 				<p class="small muted">The demo uses the built-in sports saloon. More car models are coming.</p>
-				<a class="try-link" href="demo.html?reg=AB12CDE&amp;style=gel-4d-6&amp;view=car">Try the car view</a>
+				<a class="try-link" href="demo.html?reg=3D%20BLDR&amp;style=gel-4d-6&amp;view=car">Try the car view</a>
 			</div>
 			<figure class="shot">
 				<img src="assets/img/car.webp" width="1280" height="720" alt="A grey car with the customer's plates fitted, in the builder's car view" loading="lazy" decoding="async">
@@ -558,3 +444,7 @@ def features():
 
 {cta_band()}
 '''
+
+
+from pages_website import website  # noqa: E402,F401
+from pages_home import home  # noqa: E402,F401

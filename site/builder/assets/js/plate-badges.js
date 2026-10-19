@@ -1,5 +1,5 @@
 /**
- * Badges and borders, matching the PlateBoss range:
+ * Badges and borders, matching a typical UK plate range:
  *   Printed: UK badge (Union Flag over a blue "UK"), EV strip (green flash down the left edge)
  *   Gel:     42 x 98 mm domed stickers, in four designs:
  *              UK white  flag on its side, black divider, black "UK" on white
@@ -13,7 +13,7 @@
  *
  * On single-line plates the badge zone runs the full height of the left side.
  * On two-line plates (Motorbike) it sits beside the bottom line only, and the
- * badge is narrower, like the plates PlateBoss produces.
+ * badge is narrower, as UK plate makers produce them.
  */
 
 const UK_SIZES = ['standard', 'short', 'oversized', 'motorbike', 'trailer'];
@@ -38,7 +38,7 @@ export const BADGE = {
 	inset: 4, // gap from the plate's left edge
 	width: 44, // single-line plates
 	widthTwoLine: 30, // motorbike: beside the bottom line only
-	flagRatio: 0.58, // the flag as PlateBoss prints it, slightly cropped from 2:1
+	flagRatio: 0.58, // the flag as plate makers print it, slightly cropped from 2:1
 	identColour: '#1550A8', // blue "UK"
 	identOnGreen: '#FFFFFF',
 	evWidth: 18, // EV strip on its own
