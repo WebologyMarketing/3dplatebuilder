@@ -19,6 +19,9 @@ interface Billing
     /** A Stripe Checkout page for the set-up fee and the first month. Returns the page's URL. */
     public function checkoutUrl(Shop $shop, User $user, string $successUrl, string $cancelUrl): string;
 
+    /** A Checkout Session, read back from Stripe (used when the customer returns, in case the webhook is slow). */
+    public function checkoutSession(string $id): array;
+
     /** The card the customer paid with at sign-up, made their default for later charges. Returns its id. */
     public function saveCardFromPayment(string $customerId, string $paymentIntentId): ?string;
 

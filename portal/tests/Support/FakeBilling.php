@@ -24,6 +24,13 @@ class FakeBilling implements Billing
         return 'https://checkout.stripe.test/c/'.$shop->id;
     }
 
+    public array $sessions = [];
+
+    public function checkoutSession(string $id): array
+    {
+        return $this->sessions[$id] ?? throw new RuntimeException('no such session');
+    }
+
     public function saveCardFromPayment(string $customerId, string $paymentIntentId): ?string
     {
         return 'pm_from_'.$paymentIntentId;

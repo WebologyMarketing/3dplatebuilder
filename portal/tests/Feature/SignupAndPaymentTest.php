@@ -158,4 +158,20 @@ class SignupAndPaymentTest extends TestCase
         $this->assertSame('review', $paid->shop->fresh()->stage);
         $this->assertNull($paid->shop->fresh()->live_at);
     }
+
+    public function test_returning_from_stripe_confirms_payment_even_without_the_webhook(): void
+    {
+        Mail::fake();
+        $user = $this->customer(paid: false);
+        $this->billing->sessions['cs_ok'] = ['id' => 'cs_ok', 'payment_status' => 'paid', 'customer' => 'cus_r', 'payment_intent' => 'pi_r', 'metadata' => ['shop_id' => (string) $user->shop_id]];
+        $this->billing->sessions['cs_other'] = ['id' => 'cs_other', 'payment_status' => 'paid', 'customer' => 'cus_x', 'metadata' => ['shop_id' => '999']];
+
+        $this->actingAs($user)->get(route('paid', ['session_id' => 'cs_other']))->assertOk(); // someone else's session: ignored
+        $this->assertNull($user->shop->fresh()->setup_paid_at);
+
+        $this->actingAs($user)->get(route('paid', ['session_id' => 'cs_ok']))->assertRedirect(route('dashboard'));
+        $shop = $user->shop->fresh();
+        $this->assertNotNull($shop->setup_paid_at);
+        $this->assertSame('pm_from_pi_r', $shop->stripe_payment_method_id);
+    }
 }

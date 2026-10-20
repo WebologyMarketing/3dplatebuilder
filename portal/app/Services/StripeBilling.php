@@ -66,6 +66,11 @@ class StripeBilling implements Billing
         return $this->stripe()->checkout->sessions->create($params)->url;
     }
 
+    public function checkoutSession(string $id): array
+    {
+        return $this->stripe()->checkout->sessions->retrieve($id)->toArray();
+    }
+
     public function saveCardFromPayment(string $customerId, string $paymentIntentId): ?string
     {
         $pi = $this->stripe()->paymentIntents->retrieve($paymentIntentId);
