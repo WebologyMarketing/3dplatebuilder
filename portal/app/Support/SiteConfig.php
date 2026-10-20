@@ -45,6 +45,7 @@ class SiteConfig
                 'dark' => $shop->dark_colour ?: null,
                 'logo' => $shop->logo_path ?: null,
                 'address' => (string) $shop->collection_address,
+                'heading_font' => $shop->heading_font ?: null,
             ],
             // The builder product (every plan) and its options.
             'builder' => BuilderSettings::forSite($shop) + ['from_price' => BuilderSettings::fromPrice($shop)],

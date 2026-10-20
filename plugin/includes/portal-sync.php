@@ -221,10 +221,20 @@ function pbb_apply_shop( array $s ) {
 	$shop = get_option( 'pbb_shop', array() );
 	$shop = is_array( $shop ) ? $shop : array();
 
-	foreach ( array( 'supplier', 'postcode' ) as $key ) {
+	foreach ( array( 'supplier', 'postcode', 'name' ) as $key ) {
 		if ( ! empty( $s[ $key ] ) ) {
 			$shop[ $key ] = sanitize_text_field( $s[ $key ] );
 		}
+	}
+	// Shown by the 3dPlateBuilder Shop theme (contact details, Find us).
+	if ( ! empty( $s['email'] ) && is_email( $s['email'] ) ) {
+		$shop['email'] = sanitize_email( $s['email'] );
+	}
+	if ( isset( $s['address'] ) && '' !== trim( (string) $s['address'] ) ) {
+		$shop['address'] = sanitize_textarea_field( $s['address'] );
+	}
+	if ( ! empty( $s['heading_font'] ) && in_array( $s['heading_font'], array( 'Archivo', 'Barlow Condensed', 'Montserrat', 'Poppins', 'Geist' ), true ) ) {
+		$shop['heading_font'] = $s['heading_font'];
 	}
 	foreach ( array( 'accent', 'accent_ink', 'dark' ) as $key ) {
 		$hex = isset( $s[ $key ] ) ? sanitize_hex_color( $s[ $key ] ) : null;
