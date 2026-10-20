@@ -57,6 +57,8 @@ Route::middleware(['auth', 'customer'])->prefix('account')->group(function () {
         Route::get('/builder', [Account\BuilderController::class, 'edit'])->name('builder');
         Route::post('/builder', [Account\BuilderController::class, 'update']);
         Route::post('/publish', Account\PublishController::class)->middleware('throttle:20,1')->name('publish');
+        Route::get('/emails', [Account\EmailsController::class, 'edit'])->name('emails');
+        Route::post('/emails', [Account\EmailsController::class, 'update'])->middleware('throttle:20,1');
         Route::post('/extra-work', [Account\ProductsController::class, 'addons'])->name('products.addons');
 
         Route::get('/products', [Account\CatalogueController::class, 'index'])->name('products');

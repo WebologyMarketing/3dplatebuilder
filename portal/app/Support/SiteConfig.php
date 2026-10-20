@@ -44,10 +44,12 @@ class SiteConfig
                 'accent_ink' => $shop->accent_colour ? self::inkFor($shop->accent_colour) : null,
                 'dark' => $shop->dark_colour ?: null,
                 'logo' => $shop->logo_path ?: null,
+                'address' => (string) $shop->collection_address,
             ],
             // The builder product (every plan) and its options.
             'builder' => BuilderSettings::forSite($shop) + ['from_price' => BuilderSettings::fromPrice($shop)],
             'products' => $products,
+            'emails' => EmailSettings::forSite($shop),
             'labels' => [
                 'styles' => array_map(fn ($s) => $s['label'], $catalogue['styles']),
             ],

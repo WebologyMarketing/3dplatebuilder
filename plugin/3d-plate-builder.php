@@ -3,7 +3,7 @@
  * Plugin Name:       3D Plate Builder
  * Description:       Real-time 3D/4D number plate customiser for WooCommerce. Use the [plate_builder] shortcode.
  * Requires Plugins:  woocommerce
- * Version:           1.11.0
+ * Version:           1.12.0
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Author:            3D Plate Builder
@@ -13,7 +13,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PBB_VERSION', '1.11.0' );
+define( 'PBB_VERSION', '1.12.0' );
 define( 'PBB_URL', plugin_dir_url( __FILE__ ) );
 define( 'PBB_PATH', plugin_dir_path( __FILE__ ) );
 
@@ -29,6 +29,7 @@ require_once PBB_PATH . 'includes/placement.php';
 require_once PBB_PATH . 'includes/rocket.php';
 require_once PBB_PATH . 'includes/checkout-embed.php';
 require_once PBB_PATH . 'includes/portal-sync.php';
+require_once PBB_PATH . 'includes/emails.php';
 
 // Basket, checkout and the pricing screen need WooCommerce.
 add_action(

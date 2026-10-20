@@ -140,6 +140,7 @@ function pbb_portal_sync( $force = false ) {
 
 	pbb_apply_builder( isset( $data['builder'] ) && is_array( $data['builder'] ) ? $data['builder'] : array() );
 	pbb_apply_shop( isset( $data['shop'] ) && is_array( $data['shop'] ) ? $data['shop'] : array() );
+	pbb_apply_emails( array_key_exists( 'emails', $data ) ? $data['emails'] : null );
 	$errors = pbb_apply_products(
 		isset( $data['products'] ) && is_array( $data['products'] ) ? $data['products'] : array(),
 		isset( $data['labels']['styles'] ) && is_array( $data['labels']['styles'] ) ? $data['labels']['styles'] : array()
@@ -238,6 +239,36 @@ function pbb_apply_shop( array $s ) {
 		}
 	}
 	update_option( 'pbb_shop', $shop, true );
+	pbb_apply_email_branding( $shop );
+}
+
+/**
+ * The shop's own email wording (Pro and Complete), or null for WooCommerce's standard emails.
+ */
+function pbb_apply_emails( $emails ) {
+	if ( ! is_array( $emails ) ) {
+		update_option( 'pbb_emails', null, false );
+		return;
+	}
+	$text  = function ( $v, $max ) {
+		return mb_substr( sanitize_textarea_field( (string) $v ), 0, $max );
+	};
+	$clean = array( 'order' => null, 'review' => null );
+	if ( ! empty( $emails['order'] ) && is_array( $emails['order'] ) ) {
+		foreach ( array( 'order_heading' => 160, 'order_message' => 1500, 'order_needs' => 1500, 'order_next' => 1500 ) as $k => $max ) {
+			$clean['order'][ $k ] = $text( $emails['order'][ $k ] ?? '', $max );
+		}
+	}
+	$url = ! empty( $emails['review']['url'] ) ? esc_url_raw( (string) $emails['review']['url'], array( 'https' ) ) : '';
+	if ( '' !== $url ) {
+		$clean['review'] = array(
+			'heading' => $text( $emails['review']['heading'] ?? '', 160 ),
+			'message' => $text( $emails['review']['message'] ?? '', 1500 ),
+			'url'     => $url,
+			'days'    => max( 1, min( 30, (int) ( $emails['review']['days'] ?? 3 ) ) ),
+		);
+	}
+	update_option( 'pbb_emails', $clean, false );
 }
 
 /**
