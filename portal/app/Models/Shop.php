@@ -24,6 +24,7 @@ class Shop extends Model
         return [
             'products' => 'array',
             'builder' => 'array',
+            'emails' => 'array',
             'published_config' => 'array',
             'published_at' => 'datetime',
             'site_checked_at' => 'datetime',
@@ -68,6 +69,12 @@ class Shop extends Model
 
     /** Starter is one page with the builder as its one product; Pro and up can add products. */
     public function canAddProducts(): bool
+    {
+        return $this->hasFeature('pro');
+    }
+
+    /** Pro and up send their own order email and review request; Starter sends the standard ones. */
+    public function hasCustomerEmails(): bool
     {
         return $this->hasFeature('pro');
     }

@@ -63,6 +63,20 @@ products with images. They click **Publish**; this plugin pulls the published co
 
 Enter the licence key under WooCommerce → Plate Builder. Without one, everything works as before.
 
+## Customer emails
+
+Every shop sends WooCommerce's own order emails, coloured from the shop config on each sync
+(header colour, PNG logo, supplier footer). On Pro and Complete the portal also sends `emails`
+(`includes/emails.php`):
+
+- **Order email:** the "processing" and "on hold" emails use `templates/emails/customer-order.php`
+  with the shop's heading, message, "What we need from you" and "What happens next", then the order
+  table and the documents box as usual.
+- **Review request:** scheduled with Action Scheduler when an order is completed, sent once after
+  `days` (3) if the order is still complete. Marked with `_pbb_review_sent`.
+
+`{first_name}`, `{order_number}` and `{shop_name}` are filled in per order.
+
 ## File map
 
 | File | Purpose |

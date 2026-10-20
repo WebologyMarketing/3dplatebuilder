@@ -18,6 +18,7 @@
         <a href="{{ route('details') }}" aria-current="{{ $here('details') }}">Details and brand</a>
         <a href="{{ route('builder') }}" aria-current="{{ $here('builder') }}">Your builder</a>
         @if ($shop->canAddProducts())<a href="{{ route('products') }}" aria-current="{{ $here('products*') }}">Products</a>@endif
+        <a href="{{ route('emails') }}" aria-current="{{ $here('emails') }}">Customer emails</a>
       @endif
       <a href="{{ route('billing') }}" aria-current="{{ $here('billing') }}">Billing</a>
       <a href="{{ route('support') }}" aria-current="{{ $here('support*') }}">Support @if ($openTickets)<span class="n">{{ $openTickets }}</span>@endif</a>

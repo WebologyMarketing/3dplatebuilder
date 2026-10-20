@@ -114,7 +114,7 @@ class AdminAndSupportTest extends TestCase
     {
         $user = $this->customer(['builder' => ['styles' => ['printed' => ['on' => true, 'pair' => '30.00']]]]);
         $user->shop->shopProducts()->create(['type' => 'simple', 'name' => 'Keyring', 'price_pence' => 799]);
-        foreach (['dashboard', 'details', 'builder', 'products', 'products.create', 'billing', 'support'] as $r) {
+        foreach (['dashboard', 'details', 'builder', 'products', 'products.create', 'emails', 'billing', 'support'] as $r) {
             $this->actingAs($user)->get(route($r))->assertOk();
         }
         $admin = $this->admin();
