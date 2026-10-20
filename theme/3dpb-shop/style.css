@@ -1,0 +1,85 @@
+/*
+Theme Name: 3dPlateBuilder Shop
+Theme URI: https://3dplatebuilder.com
+Author: 3dPlateBuilder.com
+Description: The plate shop theme for 3dPlateBuilder.com customers. A child of Twenty Twenty-Five: the shop's logo, colours and heading font come from their 3dPlateBuilder account; layout and sections stay fixed.
+Template: twentytwentyfive
+Version: 1.0.0
+Requires at least: 6.6
+Requires PHP: 8.1
+License: GPL-2.0-or-later
+Text Domain: 3dpb-shop
+*/
+
+/* Brand colours come from theme.json presets (set from the account in inc/brand.php). */
+
+.pbb-head { background: var(--wp--preset--color--dark); }
+.pbb-head { color: #E7E8EA; }
+.pbb-head a, .pbb-head .wp-block-navigation-item__content { color: #E7E8EA !important; text-decoration: none; }
+.pbb-head a:hover, .pbb-head .wp-block-navigation-item__content:hover { color: #FFFFFF !important; }
+.pbb-head .wp-block-navigation__submenu-container { background: var(--wp--preset--color--dark) !important; border: 0 !important; border-radius: 12px; padding: 6px 0; }
+.pbb-head .wp-block-navigation__responsive-container-open, .pbb-head .wp-block-navigation__responsive-container-close { color: #FFFFFF; }
+.pbb-head .wp-block-navigation__responsive-container.is-menu-open { background: var(--wp--preset--color--dark); color: #FFFFFF; }
+.pbb-head .wp-block-woocommerce-mini-cart .wc-block-mini-cart__button { color: #FFFFFF; min-height: 44px; }
+
+.pbb-brand { display: inline-flex; align-items: center; gap: 10px; color: #FFFFFF !important; font-weight: 700; font-size: 1.1875rem; text-decoration: none; min-height: 44px; }
+.pbb-brand img { display: block; max-height: 44px; width: auto; }
+.pbb-brand__mark { display: inline-grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: var(--wp--preset--color--accent); color: var(--wp--preset--color--accent-ink); font-family: var(--wp--preset--font-family--heading); font-weight: 800; font-size: 15px; }
+
+.pbb-bar { background: var(--wp--preset--color--accent); color: var(--wp--preset--color--accent-ink); }
+.pbb-bar p { margin: 0; font-weight: 700; font-size: 0.9375rem; text-align: center; }
+
+/* Buttons: the main-colour button style. */
+.wp-block-button.is-style-accent .wp-block-button__link { background: var(--wp--preset--color--accent); color: var(--wp--preset--color--accent-ink); }
+.wp-block-button.is-style-accent .wp-block-button__link:hover { filter: brightness(0.95); }
+.wp-block-button.is-style-outline .wp-block-button__link { background: #FFFFFF; color: var(--wp--preset--color--contrast); border: 1.5px solid #CFD0D4; }
+.wp-block-button .wp-block-button__link { min-height: 48px; display: inline-flex; align-items: center; }
+
+/* Cards, numbered steps and the style grid. */
+.pbb-card { border: 1.5px solid var(--wp--preset--color--line); border-radius: 20px; background: #FFFFFF; padding: 1.5rem; }
+.pbb-card > :first-child { margin-top: 0; }
+.pbb-card p { color: var(--wp--preset--color--muted); }
+.pbb-num { display: inline-grid !important; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--wp--preset--color--accent); color: var(--wp--preset--color--accent-ink) !important; font-weight: 800; margin: 0 !important; }
+.pbb-muted { color: var(--wp--preset--color--muted); }
+.pbb-pill { display: inline-block; background: var(--wp--preset--color--accent); color: var(--wp--preset--color--accent-ink); font-weight: 800; font-size: 0.8125rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; }
+.pbb-media { border-radius: 24px; overflow: hidden; background: #2B2F34; }
+.pbb-media img { display: block; width: 100%; height: auto; }
+
+.pbb-style { position: relative; border: 1.5px solid var(--wp--preset--color--line); border-radius: 20px; background: #FFFFFF; padding: 1rem; }
+.pbb-style:hover { border-color: var(--wp--preset--color--dark); }
+.pbb-style a::after { content: ""; position: absolute; inset: 0; }
+.pbb-style h3 { margin: 0.75rem 0 0.25rem; font-size: 1.0625rem; }
+.pbb-style h3 a { text-decoration: none; }
+.pbb-style p { margin: 0; color: var(--wp--preset--color--muted); font-size: 0.875rem; }
+.pbb-plate { border: 2.5px solid #16191C; border-radius: 6px; text-align: center; font: 900 1.25rem/1 Arial, Helvetica, sans-serif; letter-spacing: 0.05em; padding: 0.8rem 0; color: #111; background: #F7D333; }
+.pbb-plate.is-white { background: #F2F1EC; }
+.pbb-plate.is-raised { text-shadow: 1px 1px 0 #9a9a9a; }
+.pbb-plate.is-gel { text-shadow: 0 1px 0 #777; }
+.pbb-plate.is-retro { background: #16191C; color: #E9E9E9; }
+.pbb-style.is-dark { background: var(--wp--preset--color--dark); border-color: var(--wp--preset--color--dark); color: #FFFFFF; }
+.pbb-style.is-dark h3, .pbb-style.is-dark h3 a { color: #FFFFFF; }
+.pbb-style.is-dark p { color: #D6D8DB; }
+
+.pbb-dark-band { color: #FFFFFF; }
+.pbb-dark-band h2, .pbb-dark-band a { color: #FFFFFF; }
+.pbb-dark-band p { color: #D6D8DB; }
+
+.pbb-placeholder { border-radius: 20px; background: repeating-linear-gradient(135deg, #F0F0F1 0 12px, #E8E8EA 12px 24px); color: var(--wp--preset--color--muted); font-weight: 600; font-size: 0.875rem; display: flex; align-items: center; justify-content: center; text-align: center; padding: 1rem; min-height: 200px; }
+
+.wp-block-details summary { font-weight: 700; font-size: 1.0625rem; cursor: pointer; min-height: 28px; }
+.wp-block-details > :not(summary) { color: var(--wp--preset--color--muted); }
+
+/* The builder sits full width inside the content area. */
+.pbb-builder-wrap { margin-top: 1.5rem; }
+
+/* WooCommerce: buttons and inputs in the brand. */
+.wc-block-components-button:not(.is-link), .wp-element-button.wc-block-components-checkout-place-order-button { background: var(--wp--preset--color--accent) !important; color: var(--wp--preset--color--accent-ink) !important; border-radius: 999px !important; font-weight: 700; }
+.wc-block-components-text-input input, .wc-block-components-combobox .components-combobox-control input, .wc-blocks-components-select select { border-radius: 12px !important; }
+
+.pbb-foot { background: var(--wp--preset--color--dark); color: #C9CCD0; font-size: 0.9375rem; }
+.pbb-foot a, .pbb-foot .wp-block-navigation-item__content { color: #C9CCD0 !important; }
+.pbb-foot a:hover, .pbb-foot .wp-block-navigation-item__content:hover { color: #FFFFFF !important; }
+
+@media (max-width: 781px) {
+	.pbb-hide-phone { display: none !important; }
+}

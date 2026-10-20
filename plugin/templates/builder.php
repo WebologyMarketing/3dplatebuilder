@@ -121,6 +121,7 @@ defined( 'ABSPATH' ) || exit;
 					<div class="pbb-options" role="radiogroup" aria-labelledby="pbb-size-label-<?php echo esc_attr( $instance_id ); ?>" data-pbb-sizes></div>
 				</div>
 			</div>
+			<?php if ( pbb_offer_has( 'badges' ) ) : // Steps the shop has switched off entirely are left out. ?>
 			<div class="pbb-step" data-pbb-step="<?php esc_attr_e( 'Badge', '3d-plate-builder' ); ?>">
 				<div class="pbb-section">
 					<span class="pbb-label" id="pbb-badge-label-<?php echo esc_attr( $instance_id ); ?>"><?php esc_html_e( 'Badge', '3d-plate-builder' ); ?></span>
@@ -128,12 +129,15 @@ defined( 'ABSPATH' ) || exit;
 					<p class="pbb-style-desc" data-pbb-output="badge-note" aria-live="polite"></p>
 				</div>
 			</div>
+			<?php endif; ?>
+			<?php if ( pbb_offer_has( 'borders' ) ) : ?>
 			<div class="pbb-step" data-pbb-step="<?php esc_attr_e( 'Border', '3d-plate-builder' ); ?>">
 				<div class="pbb-section">
 					<span class="pbb-label" id="pbb-border-label-<?php echo esc_attr( $instance_id ); ?>"><?php esc_html_e( 'Border', '3d-plate-builder' ); ?></span>
 					<div class="pbb-chips" role="radiogroup" aria-labelledby="pbb-border-label-<?php echo esc_attr( $instance_id ); ?>" data-pbb-borders></div>
 				</div>
 			</div>
+			<?php endif; ?>
 			<div class="pbb-step" data-pbb-step="<?php esc_attr_e( 'Add-ons', '3d-plate-builder' ); ?>">
 				<div class="pbb-section pbb-basket">
 					<span class="pbb-label"><?php esc_html_e( 'Add-ons', '3d-plate-builder' ); ?></span>

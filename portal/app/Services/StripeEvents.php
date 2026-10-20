@@ -7,13 +7,17 @@ use App\Models\Payment;
 use App\Models\Shop;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 /**
  * Keeps shops and payments in step with Stripe. Each event is handled once (stripe_events).
  */
 class StripeEvents
 {
+    public function __construct(private Billing $billing) {}
+
     public function handle(array $event): void
     {
         $id = $event['id'] ?? null;
@@ -35,7 +39,8 @@ class StripeEvents
         DB::table('stripe_events')->insert(['id' => $id, 'type' => $event['type'] ?? '', 'created_at' => now(), 'updated_at' => now()]);
     }
 
-    private function checkoutCompleted(array $s): void
+    /** Also called when the customer lands back on the portal, so a slow webhook can't leave them waiting. */
+    public function checkoutCompleted(array $s): void
     {
         $shop = Shop::find($s['metadata']['shop_id'] ?? $s['client_reference_id'] ?? 0);
         if (! $shop) {
@@ -43,11 +48,18 @@ class StripeEvents
         }
 
         $shop->stripe_customer_id = $s['customer'] ?? $shop->stripe_customer_id;
-        $shop->stripe_subscription_id = $s['subscription'] ?? $shop->stripe_subscription_id;
 
         if (($s['payment_status'] ?? '') === 'paid' && ! $shop->setup_paid_at) {
             $shop->setup_paid_at = now();
-            $shop->subscription_status = 'active';
+            $shop->subscription_status = 'awaiting_go_live';
+            // Keep the card they paid with for the monthly payments that start at go-live.
+            if (! empty($s['payment_intent']) && $shop->stripe_customer_id) {
+                try {
+                    $shop->stripe_payment_method_id = $this->billing->saveCardFromPayment($shop->stripe_customer_id, $s['payment_intent']);
+                } catch (Throwable $e) {
+                    Log::warning('Could not save the card for shop '.$shop->id.': '.$e->getMessage());
+                }
+            }
             if ($shop->stage === 'not_paid') {
                 $shop->stage = 'onboarding';
             }
@@ -63,7 +75,7 @@ class StripeEvents
             foreach ($shop->users as $user) {
                 Mail::to($user->email)->send(new PortalNotice(
                     'Thanks, your payment went through',
-                    ["You're on the {$shop->planName()} plan. Your next step is to add your details, logo and products, so we can build your shop."],
+                    ["You're on the {$shop->planName()} plan. We've taken your set-up fee and your first month.", 'Your monthly payments start when your shop goes live: the first is taken a month after that day, from the card you just used.', 'Your next step is to add your details and logo, then set your prices and publish, so we can build your shop.'],
                     route('dashboard'),
                     'Carry on with set-up',
                 ));

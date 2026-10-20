@@ -21,7 +21,7 @@
       @endforeach
     </div>
     @error('plan')<p class="err">{{ $message }}</p>@enderror
-    <p class="small muted" style="margin-top:8px">12-month minimum, then 30 days' notice by email to cancel. We're not VAT registered, so there's no VAT to add. <a href="https://3dplatebuilder.com/pricing.html" target="_blank" rel="noopener">Compare plans</a></p>
+    <p class="small muted" style="margin-top:8px">Today you pay the set-up fee and your first month. Monthly payments then start when your shop goes live. 12-month minimum, then 30 days' notice by email to cancel. We're not VAT registered, so there's no VAT to add. <a href="https://3dplatebuilder.com/pricing.html" target="_blank" rel="noopener">Compare plans</a></p>
   </fieldset>
 
   <div class="grid-2">

@@ -13,11 +13,37 @@ class FakeBilling implements Billing
 
     public array $items = [];
 
+    public array $subscriptions = [];
+
+    public bool $failSubscription = false;
+
     public function checkoutUrl(Shop $shop, User $user, string $successUrl, string $cancelUrl): string
     {
         $this->checkouts[] = $shop->id;
 
         return 'https://checkout.stripe.test/c/'.$shop->id;
+    }
+
+    public array $sessions = [];
+
+    public function checkoutSession(string $id): array
+    {
+        return $this->sessions[$id] ?? throw new RuntimeException('no such session');
+    }
+
+    public function saveCardFromPayment(string $customerId, string $paymentIntentId): ?string
+    {
+        return 'pm_from_'.$paymentIntentId;
+    }
+
+    public function startSubscription(Shop $shop, \Illuminate\Support\Carbon $firstCharge): array
+    {
+        if ($this->failSubscription) {
+            throw new RuntimeException('card declined');
+        }
+        $this->subscriptions[] = [$shop->id, $firstCharge->toDateString(), $shop->stripe_payment_method_id];
+
+        return ['id' => 'sub_test_'.$shop->id, 'status' => 'active', 'current_period_end' => $firstCharge->timestamp];
     }
 
     public function portalUrl(Shop $shop, string $returnUrl): string
@@ -39,10 +65,5 @@ class FakeBilling implements Billing
         }
 
         return json_decode($payload, true);
-    }
-
-    public function subscription(string $id): array
-    {
-        return ['id' => $id, 'status' => 'active'];
     }
 }

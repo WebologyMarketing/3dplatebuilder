@@ -48,6 +48,35 @@ wp option update pbb_shop "$(cat shop.json)" --format=json
 
 The older filters (`pbb_supplier_details`, `pbb_product_presets`, `pbb_landing_pages`, `pbb_featured_pages`, `pbb_category_presets`, `pbb_menu_slugs`) still run on top of the config. `pbb_documents_email_notice` (default true) turns off the documents box in order emails, for shops that add their own. `pbb_shop_editable` (default true) locks the Shop details form, for hosted shops awaiting verification.
 
+## Managed from the 3dPlateBuilder portal
+
+Plate makers run their own builder from their account at app.3dplatebuilder.com: which styles, sizes,
+badges, borders and extras are on sale, every price, their own add-ons (ids `c_xxxxxx`), and (Pro and up)
+products with images. They click **Publish**; this plugin pulls the published copy (`includes/portal-sync.php`):
+
+- `GET /api/v1/site` with the `X-Licence-Key` header, when the portal nudges `POST /wp-json/pbb/v1/sync`
+  (HMAC-SHA256 of `time.version`, keyed with the licence key), every hour, and on **Save and sync now**.
+- Writes `pbb_pricing_v2`, `pbb_offer` (what's on sale), `pbb_custom_accessories` (add-on names, kept for
+  past orders), the supplier, postcode, colours and logo in `pbb_shop`, and WooCommerce products. Plate
+  products become builder presets; products taken off are set to draft, never deleted.
+- Printed, Standard and "None" are always offered. A badge or border step with nothing on sale is left out.
+
+Enter the licence key under WooCommerce → Plate Builder. Without one, everything works as before.
+
+## Customer emails
+
+Every shop sends WooCommerce's own order emails, coloured from the shop config on each sync
+(header colour, PNG logo, supplier footer). On Pro and Complete the portal also sends `emails`
+(`includes/emails.php`):
+
+- **Order email:** the "processing" and "on hold" emails use `templates/emails/customer-order.php`
+  with the shop's heading, message, "What we need from you" and "What happens next", then the order
+  table and the documents box as usual.
+- **Review request:** scheduled with Action Scheduler when an order is completed, sent once after
+  `days` (3) if the order is still complete. Marked with `_pbb_review_sent`.
+
+`{first_name}`, `{order_number}` and `{shop_name}` are filled in per order.
+
 ## File map
 
 | File | Purpose |

@@ -17,7 +17,8 @@ defined( 'ABSPATH' ) || exit;
 function pbb_catalog() {
 	static $catalog = null;
 	if ( null !== $catalog ) {
-		return $catalog;
+		// The shop's own add-ons can change mid-request (a sync), so they're added fresh each time.
+		return pbb_with_custom_accessories( $catalog );
 	}
 
 	$uk_sizes = array( 'standard', 'short', 'oversized', 'motorbike', 'trailer' );
@@ -92,7 +93,72 @@ function pbb_catalog() {
 			'holders' => array( 'frame_holders', 'frameless_holders' ),
 		),
 	);
+	return pbb_with_custom_accessories( $catalog );
+}
+
+/** The shop's own add-ons, from the 3dPlateBuilder portal. Old ones stay listed so past orders still read right. */
+function pbb_with_custom_accessories( array $catalog ) {
+	$catalog['accessories'] += pbb_custom_accessory_labels();
 	return $catalog;
+}
+
+/** Names of the shop's own add-ons (id => name), kept by portal-sync.php. */
+function pbb_custom_accessory_labels() {
+	$labels = get_option( 'pbb_custom_accessories', array() );
+	return is_array( $labels ) ? array_map( 'strval', $labels ) : array();
+}
+
+/**
+ * What this shop offers, as published from the 3dPlateBuilder portal: id lists for
+ * styles, sizes, badges, borders and accessories. Null (or a missing group) means everything.
+ *
+ * @param string|null $group Group to return, or null for all of it.
+ * @return array|null
+ */
+function pbb_offer( $group = null ) {
+	$offer = get_option( 'pbb_offer', null );
+	if ( ! is_array( $offer ) ) {
+		return null;
+	}
+	if ( null === $group ) {
+		return $offer;
+	}
+	return isset( $offer[ $group ] ) && is_array( $offer[ $group ] ) ? array_values( $offer[ $group ] ) : null;
+}
+
+/** Is this option on sale in this shop? Printed, Standard and "None" always are: the builder falls back to them. */
+function pbb_offered( $group, $id ) {
+	if ( in_array( $id, array( 'printed', 'standard', 'none' ), true ) ) {
+		return true;
+	}
+	$list = pbb_offer( $group );
+	return null === $list || in_array( $id, $list, true );
+}
+
+/** The options in a catalogue group (styles, sizes, badges, borders) that this shop offers. */
+function pbb_offered_options( $group ) {
+	return array_filter(
+		pbb_catalog()[ $group ],
+		function ( $id ) use ( $group ) {
+			return pbb_offered( $group, $id );
+		},
+		ARRAY_FILTER_USE_KEY
+	);
+}
+
+/** True if a badge or border group has anything to choose besides "None". */
+function pbb_offer_has( $group ) {
+	return count( pbb_offered_options( $group ) ) > 1;
+}
+
+/** Extras offered in the basket step (id => label). */
+function pbb_active_accessories() {
+	$all  = pbb_catalog()['accessories'];
+	$list = pbb_offer( 'accessories' );
+	if ( null === $list ) {
+		return array_diff_key( $all, pbb_custom_accessory_labels() );
+	}
+	return array_intersect_key( $all, array_flip( $list ) );
 }
 
 /**
@@ -246,6 +312,10 @@ function pbb_get_pricing() {
 			}
 		}
 	}
+	// The shop's own add-ons have no default; their prices come from the portal.
+	foreach ( array_keys( pbb_custom_accessory_labels() ) as $id ) {
+		$out['accessories'][ $id ] = isset( $saved['accessories'][ $id ] ) && is_numeric( $saved['accessories'][ $id ] ) ? (float) $saved['accessories'][ $id ] : 0.0;
+	}
 	return $out;
 }
 
@@ -305,11 +375,12 @@ function pbb_sanitize_config( $raw ) {
 		return new WP_Error( 'pbb_registration', __( 'Please enter your registration.', '3d-plate-builder' ) );
 	}
 
-	$size      = $pick( 'size', $c['sizes'], 'standard' );
-	$rear_size = $pick( 'rearSize', $c['sizes'], $size );
-	$style     = $pick( 'style', $c['styles'], 'printed' );
-	$badge  = $pick( 'badge', $c['badges'], 'none' );
-	$border = $pick( 'border', $c['borders'], 'none' );
+	// Only what this shop offers (pbb_offer()); anything else falls back to the default.
+	$size      = $pick( 'size', pbb_offered_options( 'sizes' ), 'standard' );
+	$rear_size = $pick( 'rearSize', pbb_offered_options( 'sizes' ), $size );
+	$style     = $pick( 'style', pbb_offered_options( 'styles' ), 'printed' );
+	$badge  = $pick( 'badge', pbb_offered_options( 'badges' ), 'none' );
+	$border = $pick( 'border', pbb_offered_options( 'borders' ), 'none' );
 	$plates = $pick( 'plates', $c['plates'], 'pair' );
 	$accent = $c['styles'][ $style ]['accent'] ? $pick( 'accent', $c['accents'], 'grey' ) : null;
 
@@ -334,9 +405,10 @@ function pbb_sanitize_config( $raw ) {
 
 	$accessories = array();
 	if ( isset( $raw['accessories'] ) && is_array( $raw['accessories'] ) ) {
+		$on_sale = pbb_active_accessories();
 		foreach ( $raw['accessories'] as $a ) {
 			$a = sanitize_key( $a );
-			if ( isset( $c['accessories'][ $a ] ) ) {
+			if ( isset( $on_sale[ $a ] ) ) {
 				// Only one per group (pads, holders): a later pick replaces an earlier one.
 				foreach ( $c['accessory_groups'] as $group ) {
 					if ( in_array( $a, $group, true ) ) {

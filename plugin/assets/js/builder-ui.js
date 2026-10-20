@@ -24,6 +24,13 @@ const PROFILE_ICONS = {
 const icon = (id) => `<svg class="pbb-style-icon" viewBox="0 0 40 20" aria-hidden="true">${PLATE}${PROFILE_ICONS[id] ?? ''}</svg>`;
 
 /** Radio-group keyboard support: arrows move and select, like native radios. */
+// What this shop sells (config.offer from the server: id lists per group). Null = everything.
+// Printed, Standard and "None" are always offered: the builder falls back to them.
+let offer = null;
+export function setOffer(o) { offer = o && typeof o === 'object' ? o : null; }
+const ALWAYS = ['printed', 'standard', 'none'];
+const offered = (group) => (item) => ALWAYS.includes(item.id) || !Array.isArray(offer?.[group]) || offer[group].includes(item.id);
+
 function arrowNavigation(group, onPick) {
 	group.addEventListener('keydown', (e) => {
 		const dir = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
@@ -53,7 +60,7 @@ export function mountStylePicker(root, viewport) {
 	const desc = root.querySelector('[data-pbb-output="style-desc"]');
 	if (!styleGroup) return;
 
-	styleGroup.innerHTML = STYLES.map((s) => `
+	styleGroup.innerHTML = STYLES.filter(offered('styles')).map((s) => `
 		<button type="button" role="radio" class="pbb-style" data-style="${s.id}" aria-checked="false"
 			aria-label="${s.label}${s.roadLegal ? '' : ' (show plate)'}">
 			${icon(s.id)}
@@ -212,7 +219,7 @@ export function mountPlateOptions(root, viewport) {
 	const borders = root.querySelector('[data-pbb-borders]');
 
 	if (sizes) {
-		sizes.innerHTML = PLATE_SIZES.map((s) => `
+		sizes.innerHTML = PLATE_SIZES.filter(offered('sizes')).map((s) => `
 			<button type="button" role="radio" class="pbb-option${s.single ? ' is-vehicle' : ''}" data-size="${s.id}" aria-checked="false"
 				aria-label="${s.label}, ${sizeNote(s)}${s.rearOnly ? ', rear plate only' : ''}${s.styles ? ', printed characters only' : ''}">
 				${sizeIcon(s)}
@@ -247,9 +254,14 @@ export function mountPlateOptions(root, viewport) {
 		});
 	}
 	let sizeNoteText = '';
+	// "Oversized, 4x4, motorbike and trailer plates are under Rear plate", from the rear-only sizes this shop offers.
+	const rearOnly = PLATE_SIZES.filter(offered('sizes')).filter((s) => s.rearOnly).map((s) => (s.label === '4x4' ? s.label : s.label.toLowerCase()));
+	const rearOnlyNote = rearOnly.length
+		? `${(rearOnly.length > 1 ? `${rearOnly.slice(0, -1).join(', ')} and ${rearOnly.at(-1)}` : rearOnly[0]).replace(/^./, (c) => c.toUpperCase())} plates are`
+		: '';
 
 	if (badges) {
-		badges.innerHTML = BADGES.map((b) => `
+		badges.innerHTML = BADGES.filter(offered('badges')).map((b) => `
 			<button type="button" role="radio" class="pbb-option pbb-badge" data-badge="${b.id}" aria-checked="false">
 				${badgeIcon(b)}
 				<span class="pbb-option-name">${b.label}</span>
@@ -266,7 +278,7 @@ export function mountPlateOptions(root, viewport) {
 	}
 
 	if (borders) {
-		borders.innerHTML = BORDERS.map((b) => `
+		borders.innerHTML = BORDERS.filter(offered('borders')).map((b) => `
 			<button type="button" role="radio" class="pbb-chip" data-border="${b.id}" aria-checked="false"
 				aria-label="${b.width ? `Black border, ${b.label} thick` : b.label}">${b.label}</button>`).join('');
 		const pick = (el) => viewport.setBorder(el.dataset.border);
@@ -304,7 +316,7 @@ export function mountPlateOptions(root, viewport) {
 					: `Front: ${front.label} · Rear: ${rear.label}${rear.rearOnly ? ` (${rear.label} is rear only)` : ''}.`)
 				// The front list leaves out rear-only sizes, so say where they are (pairs only: one front plate can't be those).
 				+ (viewport.side === 'front' && !size.single && (root.dataset.plates ?? 'pair') === 'pair'
-					? (root.classList.contains('is-steps') ? ' More sizes under Rear plate.' : ' Oversized, 4x4, motorbike and trailer plates are under Rear plate.')
+					? (rearOnlyNote ? (root.classList.contains('is-steps') ? ' More sizes under Rear plate.' : ` ${rearOnlyNote} under Rear plate.`) : '')
 					: '');
 			sizeNoteText = '';
 		}
@@ -323,8 +335,9 @@ export function mountPlateOptions(root, viewport) {
 			});
 			syncRadios(badges, 'badge', o.badge);
 			if (badgeNote) {
-				badgeNote.textContent = unavailable === BADGES.length - 1
-					? `Badges aren't available on ${[viewport.sizeFor('front'), viewport.sizeFor('rear')].find((s) => !BADGES.slice(1).some((b) => badgeAvailable(b, s.id)))?.label.toLowerCase() ?? size.label.toLowerCase()} plates.`
+				const shown = BADGES.filter(offered('badges'));
+				badgeNote.textContent = unavailable === shown.length - 1
+					? `Badges aren't available on ${[viewport.sizeFor('front'), viewport.sizeFor('rear')].find((s) => !shown.slice(1).some((b) => badgeAvailable(b, s.id)))?.label.toLowerCase() ?? size.label.toLowerCase()} plates.`
 					: o.badge.startsWith('ev') ? 'EV strips are for zero-emission vehicles only.' : '';
 			}
 		}

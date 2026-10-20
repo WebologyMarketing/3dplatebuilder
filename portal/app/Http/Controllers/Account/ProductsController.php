@@ -8,51 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 
+/** Extra work from us (one-off add-ons we bill to their card). */
 class ProductsController extends Controller
 {
-    public function edit(Request $request)
-    {
-        $shop = $request->user()->shop;
-
-        return view('account.products', [
-            'shop' => $shop,
-            'catalogue' => config('portal.catalogue'),
-            'products' => $shop->products ?? [],
-            'features' => config('portal.features'),
-            'addons' => config('portal.addons'),
-            'requested' => $shop->addonRequests()->whereIn('status', ['requested', 'invoiced'])->pluck('addon')->all(),
-        ]);
-    }
-
-    public function update(Request $request)
-    {
-        $c = config('portal.catalogue');
-        $data = $request->validate([
-            'styles' => ['array'],
-            'styles.*' => [Rule::in(array_keys($c['styles']))],
-            'price' => ['array'],
-            'price.*' => ['nullable', 'numeric', 'min:0', 'max:9999'],
-            'sizes' => ['array'],
-            'sizes.*' => [Rule::in(array_keys($c['sizes']))],
-            'extras' => ['array'],
-            'extras.*' => [Rule::in(array_keys($c['extras']))],
-        ], ['price.*.numeric' => 'Prices need to be numbers, like 34.99.']);
-
-        $styles = [];
-        foreach ($data['styles'] ?? [] as $id) {
-            $price = $data['price'][$id] ?? null;
-            $styles[$id] = $price === null || $price === '' ? null : number_format((float) $price, 2, '.', '');
-        }
-
-        $request->user()->shop->update(['products' => [
-            'styles' => $styles,
-            'sizes' => array_values($data['sizes'] ?? []),
-            'extras' => array_values($data['extras'] ?? []),
-        ]]);
-
-        return back()->with('status', 'Products saved.');
-    }
-
     public function addons(Request $request)
     {
         $data = $request->validate([
@@ -74,10 +32,10 @@ class ProductsController extends Controller
                 "Add-ons requested: {$shop->name}",
                 ["{$shop->name} has asked for: {$names}."],
                 route('admin.payments'),
-                'Add them to their invoice',
+                'Bill them',
             ));
         }
 
-        return back()->with('status', $new ? 'Thanks. We\'ll confirm and add that to your next invoice.' : 'You\'ve already asked for those.');
+        return redirect()->to(route('builder').'#extra-work')->with('status', $new ? 'Thanks. We\'ll confirm it, then bill it to your card.' : 'You\'ve already asked for those.');
     }
 }

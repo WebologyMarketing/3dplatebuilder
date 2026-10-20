@@ -3,7 +3,8 @@
 
 @php
   $stagePill = ['not_paid' => 'grey', 'onboarding' => 'warn', 'in_build' => 'info', 'review' => 'purple', 'live' => 'good', 'cancelled' => 'grey'];
-  $p = $shop->products ?? [];
+  $bs = \App\Support\BuilderSettings::forShop($shop);
+  $items = $shop->shopProducts()->get();
   $docPill = ['approved' => 'good', 'pending' => 'warn', 'rejected' => 'bad'];
 @endphp
 
@@ -26,7 +27,7 @@
       @csrf
       <h2>Stage and links</h2>
       <div class="grid-2">
-        <label class="field">Stage <small>Moving to "Their review" or "Live" emails them</small>
+        <label class="field">Stage <small>"Their review" or "Live" emails them. "Live" also starts their monthly billing.</small>
           <select name="stage">@foreach (\App\Models\Shop::STAGES as $k => $label)<option value="{{ $k }}" @selected($shop->stage === $k)>{{ $label }}</option>@endforeach</select>
         </label>
         <label class="field">Preview link<input type="url" name="preview_url" value="{{ old('preview_url', $shop->preview_url) }}" placeholder="https://"></label>
@@ -74,19 +75,22 @@
     </section>
 
     <section class="card">
-      <h2 style="margin-bottom:12px">Products</h2>
-      @if (empty($p))
-        <p class="empty">Not chosen yet.</p>
-      @else
-        <div class="table-wrap" style="margin-bottom:14px"><table>
-          <thead><tr><th>Style</th><th class="num">Pair price</th></tr></thead>
-          <tbody>@foreach ($p['styles'] ?? [] as $id => $price)<tr><td>{{ $catalogue['styles'][$id] ?? $id }}</td><td class="num">{{ $price !== null ? '£'.$price : 'Not set' }}</td></tr>@endforeach</tbody>
-        </table></div>
-        <dl class="facts">
-          <dt>Sizes</dt><dd style="font-weight:500">{{ collect($p['sizes'] ?? [])->map(fn ($s) => $catalogue['sizes'][$s] ?? $s)->implode(', ') ?: '—' }}</dd>
-          <dt>Extras</dt><dd style="font-weight:500">{{ collect($p['extras'] ?? [])->map(fn ($s) => $catalogue['extras'][$s] ?? $s)->implode(', ') ?: '—' }}</dd>
-        </dl>
-      @endif
+      <h2 style="margin-bottom:12px">Builder and products</h2>
+      <dl class="facts" style="margin-bottom:14px">
+        <dt>Published</dt><dd>{{ $shop->published_version ? 'Version '.$shop->published_version.', '.$shop->published_at->timezone('Europe/London')->format('j M Y, H:i') : 'Not yet' }}{{ $shop->published_version && $shop->hasUnpublishedChanges() ? ' (unpublished changes)' : '' }}</dd>
+        <dt>Website has</dt><dd>{{ $shop->site_version ? 'Version '.$shop->site_version : '—' }}{{ $shop->site_checked_at ? ', checked in '.$shop->site_checked_at->diffForHumans() : '' }}</dd>
+      </dl>
+      <div class="table-wrap" style="margin-bottom:14px"><table>
+        <thead><tr><th>Style</th><th class="num">Pair</th><th class="num">One</th></tr></thead>
+        <tbody>@foreach ($bs['styles'] as $id => $st)@if ($st['on'])<tr><td>{{ $catalogue['styles'][$id]['label'] ?? $id }}</td><td class="num">£{{ $st['pair'] }}</td><td class="num">£{{ $st['single'] }}</td></tr>@endif @endforeach</tbody>
+      </table></div>
+      <dl class="facts">
+        @foreach (['sizes' => 'Sizes', 'badges' => 'Badges', 'borders' => 'Borders', 'extras' => 'Extras'] as $g => $label)
+          <dt>{{ $label }}</dt><dd style="font-weight:500">{{ collect($bs[$g])->filter(fn ($o) => $o['on'])->map(fn ($o, $id) => ($catalogue[$g][$id]['label'] ?? $id).' £'.$o['price'])->implode(', ') ?: '—' }}</dd>
+        @endforeach
+        <dt>Own add-ons</dt><dd style="font-weight:500">{{ collect($bs['custom'])->filter(fn ($a) => $a['on'])->map(fn ($a) => $a['name'].' £'.$a['price'])->implode(', ') ?: '—' }}</dd>
+        <dt>Products</dt><dd style="font-weight:500">{{ $items->map(fn ($i) => $i->name.' ('.$i->priceLabel($bs).')'.($i->active ? '' : ', hidden'))->implode('; ') ?: '—' }}</dd>
+      </dl>
     </section>
 
     <section class="card flush">
@@ -117,7 +121,7 @@
         <dt>Monthly</dt><dd>{{ money($shop->monthlyPence()) }}</dd>
         <dt>Set-up paid</dt><dd>{{ $shop->setup_paid_at?->format('j M Y') ?? 'Not yet' }}</dd>
         <dt>Subscription</dt><dd>{{ $shop->subscription_status ?? '—' }}</dd>
-        @if ($shop->current_period_end)<dt>Next payment</dt><dd>{{ $shop->current_period_end->format('j M Y') }}</dd>@endif
+        <dt>Monthly billing</dt><dd>@if ($shop->billingStarted())Started {{ $shop->live_at?->format('j M Y') }}{{ $shop->current_period_end ? ', next '.$shop->current_period_end->format('j M Y') : '' }}@else Starts when you set them to Live @endif</dd>
         @if ($shop->setup_paid_at)<dt>Minimum term ends</dt><dd>{{ $shop->setup_paid_at->copy()->addMonths(config('portal.minimum_term_months'))->format('j M Y') }}</dd>@endif
       </dl>
     </section>

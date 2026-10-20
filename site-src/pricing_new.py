@@ -26,12 +26,13 @@ TIERS = {
         builder=['Real-time 3D builder: turn, zoom, front and rear', 'Legal spacing and Charles Wright characters as they type',
                  'All seven character styles', 'Every plate size, including motorbike and trailer',
                  'Different front and rear sizes', 'UK, EV and 4D badges, printed or gel', 'Black borders, 1, 2 or 3 mm',
-                 'Your supplier name, postcode and BS AU 145e footer', 'Price editor, live prices and extras',
+                 'Your supplier name, postcode and BS AU 145e footer', 'Your own prices and extras, set in your account',
                  'The builder on your shop page, with ?reg= links', 'In-page builder on phones'],
         website=['A one-page plate shop in your logo and colours, with the 3D builder on the page',
                  'Every product chosen inside the builder: styles, sizes, badges, borders and extras',
                  'Hosting, SSL, backups and your domain connected',
                  'Google Analytics and Search Console set up',
+                 'Order confirmation and receipt emails in your colours',
                  'Privacy, terms, delivery and returns page templates for you to check'],
     ),
     'pro': dict(
@@ -45,7 +46,8 @@ TIERS = {
                  'Your product photos edited and laid out',
                  'Search basics on every page: titles, descriptions and product details for Google',
                  'Your Google reviews shown on the site, from your Google Business Profile',
-                 'Email addresses on your own domain set up'],
+                 'Email addresses on your own domain set up',
+                 'Your own order email, in your words, and a review request 3 days after each order'],
     ),
     'complete': dict(
         name='Complete',
@@ -98,7 +100,7 @@ def pricing():
         row('UK, EV and 4D badges; 1, 2 and 3 mm borders', Y, Y, Y),
         row('"On a car" view with six paint colours', N, Y, Y),
         row('Phone app layout (full screen, step cards, buy bar)', 'In-page', Y, Y),
-        row('Price editor, live prices and extras', Y, Y, Y),
+        row('Your own prices and extras, set in your account', Y, Y, Y),
         row('The builder on your shop page, with ?reg= links', Y, Y, Y),
         row('Builder on every plate product page, with Classic switch', N, Y, Y),
         row('Orders added as your matching products', N, Y, Y),
@@ -111,6 +113,9 @@ def pricing():
         row('Awaiting documents status and staff check panel', N, N, Y),
         row('Collect in store and in-store fitting add-on', N, N, Y),
         row('Delivery choice cards at checkout', S, S, S),
+        row('Order confirmation and receipt emails, in your colours', Y, Y, Y),
+        row('Your own order email, in your words', N, Y, Y),
+        row('Review request 3 days after an order is complete', N, Y, Y),
         group('Your website', 'web-row'),
         row('Design', 'Ready-made, in your colours', 'Custom home page', 'Fully custom', 'Fully custom', 'web-row'),
         row('Pages', 'One page', 'Up to [PRO PAGES]', 'Up to [COMPLETE PAGES]', 'Up to [COMPLETE PAGES]', 'web-row'),
@@ -164,7 +169,7 @@ def pricing():
 		<div class="pricing-head">
 			<h2 id="monthly-title">Monthly plans</h2>
 		</div>
-		<p class="pricing-note muted">A new plate shop with the builder built in. We design it, build it, host it and keep it up to date. Pick a plan, sign up online and we start building.</p>
+		<p class="pricing-note muted">A new plate shop with the builder built in. We design it, build it, host it and keep it up to date. Pick a plan, sign up online and we start building. You pay the set-up fee and your first month when you sign up; your monthly payments then start when your shop goes live.</p>
 		<div class="plans">
 			{cards}
 		</div>
@@ -213,7 +218,7 @@ def pricing():
 			<p>The short version. The full terms are in our <a href="terms.html">terms of service</a>.</p>
 		</div>
 		<ul class="feature-list">
-			<li><b>Set-up fee</b><span>Paid once, when you sign up. It covers designing and building your site, copying your products and prices, adding your supplier details and logo, connecting Stripe and testing orders with you.</span></li>
+			<li><b>Set-up fee</b><span>Paid once, when you sign up. It covers designing and building your site, adding your supplier details and logo, connecting Stripe and testing orders with you. You set your own prices and products in your account.</span></li>
 			<li><b>Monthly plans</b><span>Billed monthly in advance. Minimum term [MINIMUM TERM], then [NOTICE PERIOD] notice by email to cancel.</span></li>
 			<li><b>Hosting</b><span>Your shop runs on [HOSTING PROVIDER], with an SSL certificate and backups [BACKUP FREQUENCY].</span></li>
 			<li><b>Updates and support</b><span>We keep WordPress, WooCommerce and the builder up to date on every plan. Support by email, [SUPPORT HOURS]. No phone lines: everything is in writing. Support tickets from your shop's admin are coming soon.</span></li>

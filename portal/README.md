@@ -22,12 +22,25 @@ Homee Ltd isn't VAT registered yet, so nothing adds VAT.
 
 ## How payment works
 
-1. Signing up makes the account, then sends them to Stripe Checkout. Checkout charges the plan's monthly price plus the one-off set-up price.
-2. Stripe calls `/stripe/webhook`. When `checkout.session.completed` arrives:
+1. **At sign-up:** they make an account and go to one Stripe Checkout payment that charges:
+   - the set-up fee;
+   - the first month of their plan.
+
+   The card is saved for the monthly payments.
+2. **When the payment goes through:** Stripe calls `/stripe/webhook` with `checkout.session.completed`. Then:
    - the shop is marked paid and moves to Onboarding;
+   - the card is made their default;
    - a licence key is made;
    - you and they get an email.
-3. Invoice events keep a copy of every invoice, so the dashboard can show what's paid and what's overdue. Subscription events keep the next payment date. A cancelled subscription marks the shop Cancelled.
+3. **When you set the shop to Live:** this happens on the customer page in the admin. It:
+   - starts the monthly subscription on the saved card;
+   - takes the first monthly charge **one month after go-live**, because the first month was paid at sign-up, then charges on that date every month;
+   - emails them the date of the first charge.
+
+   If Stripe refuses, the shop stays at its old stage and you see why.
+4. **Keeping track:** invoice events keep a copy of every invoice for the dashboard (paid, overdue). Subscription events keep the next payment date. A cancelled subscription marks the shop Cancelled.
+5. **Monthly income on the dashboard:** this counts live shops only. Shops that have paid but aren't live yet show as "+£… when N shops go live".
+6. **Add-ons:** "Bill now" in Payments charges the saved card straight away, on its own invoice.
 
 ## Plugin updates
 
@@ -66,10 +79,11 @@ Use the **3DPlateBuilder.com** account only.
 1. **Restricted key.** Under Developers › API keys, create a restricted key with:
    - Checkout Sessions: Write
    - Customer portal: Write
-   - Invoice items: Write
    - Customers: Write
-   - Subscriptions: Read
-   - Invoices: Read
+   - Subscriptions: Write
+   - Invoices: Write
+   - Invoice items: Write
+   - PaymentIntents: Read
 
    Put it in `.env` as `STRIPE_SECRET`.
 2. **Webhook endpoint.** Under Developers › Webhooks, add `https://app.3dplatebuilder.com/stripe/webhook` with these events:
@@ -96,3 +110,14 @@ php artisan test
 ```
 
 `DemoSeeder` refuses to run in production.
+
+## Builder prices and products (self-serve)
+
+Plate makers manage their own builder in **Your builder** (every plan: options on or off, every price, their
+own add-ons) and **Products** (Pro and up: plate products that open the builder on a style, and simple
+fixed-price products, with images). Nothing reaches their website until they click **Publish**, which freezes a
+copy on `shops.published_config` and nudges the site (`POST {site}/wp-json/pbb/v1/sync`, signed with the licence key).
+
+The plugin pulls `GET /api/v1/site` with the `X-Licence-Key` header (and hourly as a fallback), downloads
+images from short-lived signed links, then reports back on `POST /api/v1/site/applied`. See
+`app/Support/SiteConfig.php` for the payload and `plugin/includes/portal-sync.php` for the other end.

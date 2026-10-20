@@ -6,7 +6,7 @@ USPS = [
     ('Photo-real 3D, rendered live',
      'Real reflections, true 3 mm and 6 mm depth, glossy gel domes and pressed retro edges, in Charles Wright characters. It renders as customers type, on a phone or a computer, with nothing to install.'),
     ('A complete plate shop, built for you',
-     'We design the website, copy in your products and prices, and set up every page. You never need to touch WordPress.'),
+     'We design the website in your brand and set up every page. You set your prices and products in your account, then publish. You never need to touch WordPress.'),
     ('Legal layout on every plate',
      'BS AU 145e spacing as they type, your supplier name and postcode in the footer, and road-legal or show-plate status on every order. Document checks at checkout on Complete.'),
     ('Built to sell on phones',
@@ -55,9 +55,9 @@ def render_showcase(heading_id='render-title', compact=False):
 
 
 PROCESS = [
-    ('Sign up online', 'Pick a plan and tell us about your shop. About five minutes.', 'Today'),
-    ('Pay and verify', 'Pay the set-up fee and upload your RNPS registration and ID by secure link.', 'Within [RESPONSE TIME]'),
-    ('We build, you review', 'Your products, prices and colours go in. You review a private preview and ask for changes.', '[TIMELINE BUILD]'),
+    ('Sign up and pay', 'Pick a plan and pay the set-up fee and your first month online. About five minutes.', 'Today'),
+    ('Add your details and prices', 'In your account: logo, colours and RNPS registration. Tick what you sell, set your prices and publish.', 'In your own time'),
+    ('We build, you check', 'We build your shop in your brand with the prices you published. You try a private preview.', '[TIMELINE BUILD]'),
     ('Go live', 'We connect your Stripe, test real orders and point your domain at your new shop.', '[TIMELINE TOTAL] in all'),
 ]
 

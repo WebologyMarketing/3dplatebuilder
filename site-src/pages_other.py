@@ -20,15 +20,13 @@ from pricing_new import pricing  # noqa: E402
 
 def setup():
     steps = [
-        ('Sign up online', 'Choose your plan and tell us about your shop. It takes about five minutes.', 'Day 1'),
-        ('Pay and verify', "We email your secure link to pay the set-up fee and upload your RNPS registration and ID. We check them before we build.", 'Within [RESPONSE TIME]'),
-        ('We copy your products and prices', 'From your current site or your price list. We set up the price editor and your extras, and match each design to your products.', '[TIMELINE BUILD]'),
-        ('We design your website', "Your supplier name and postcode go in the plate footer, exactly as registered. Your site is designed to your plan: a one-page shop in your colours on Starter, a custom home page and a page for each character style on Pro, a fully custom site on Complete. You review a private preview and ask for changes by email.", '[TIMELINE BRANDING]'),
-        ('Connect Stripe', "You open (or already have) your own Stripe account. We connect it and switch on Apple Pay and Google Pay.", '[TIMELINE PAYMENTS]'),
-        ('Test orders', 'On your private preview we run real test orders: a road-legal order with documents, a show plate, a failed then successful card payment.', '[TIMELINE TESTING]'),
-        ('Go live', "We point your domain at the new shop, switch Stripe to live and watch the first orders come in with you.", '[TIMELINE GO LIVE]'),
+        ('Sign up and pay', "Choose your plan and pay the set-up fee and your first month by card. Your monthly payments then start when your shop goes live. It takes about five minutes.", 'Day 1'),
+        ('Add your details and prices', "Your account shows what to do next: company and contact details, logo and colours, and your RNPS registration and ID for us to check. Tick the styles, sizes, badges, borders and extras you sell, set your prices, add your own extras (and products on Pro and Complete), then publish.", 'In your own time'),
+        ('We build your website', "Your supplier name and postcode go in the plate footer, exactly as registered. Your site is designed to your plan: a one-page shop in your colours on Starter, a custom home page and a page for each character style on Pro, a fully custom site on Complete. You check a private preview and ask for changes by email.", 'Usually [TIMELINE BUILD]'),
+        ('Connect Stripe and test', "You open (or already have) your own Stripe account. We connect it, switch on Apple Pay and Google Pay, and run real test orders on your preview.", 'Usually [TIMELINE TESTING]'),
+        ('Go live', "We point your domain at the new shop, switch Stripe to live and watch the first orders come in with you.", 'Usually [TIMELINE GO LIVE]'),
     ]
-    lis = '\n'.join(f'<li><h3>{t}</h3><div class="stack"><p>{d}</p><p class="when">Usually {w}</p></div></li>' for t, d, w in steps)
+    lis = '\n'.join(f'<li><h3>{t}</h3><div class="stack"><p>{d}</p><p class="when">{w}</p></div></li>' for t, d, w in steps)
     return f'''
 <section class="page-head page-head-art" aria-labelledby="s-title">
 	<div class="wrap">
@@ -54,10 +52,10 @@ def setup():
 	<div class="wrap spec-split">
 		<div class="intro">
 			<h2 id="need-title">What we need from you</h2>
-			<p>Get these together and set-up goes quickly. We'll email you a checklist when you sign up.</p>
+			<p>Get these together and set-up goes quickly. Your account shows a checklist as soon as you sign up.</p>
 		</div>
 		<ul class="feature-list">
-			<li><b>Your products and prices</b><span>A link to your current shop, or your price list.</span></li>
+			<li><b>Your prices</b><span>You set them yourself in your account, with sensible starting prices already filled in.</span></li>
 			<li><b>Your RNPS registration and ID</b><span>We verify them before we build. Your supplier name and postcode go in the plate footer exactly as registered.</span></li>
 			<li><b>Your logo</b><span>SVG or a large PNG, if you have one.</span></li>
 			<li><b>A Stripe account</b><span>In your business's name. We'll help you set it up if you don't have one.</span></li>
@@ -75,7 +73,7 @@ def setup():
 			<p>We keep looking after it, so you can get on with making plates.</p>
 		</div>
 		<ul class="feature-list">
-			<li><b>Prices are yours to change</b><span>One screen in WooCommerce. The builder's totals follow straight away.</span></li>
+			<li><b>Prices and products are yours to change</b><span>In your account, any time. Publish and your shop updates within minutes.</span></li>
 			<li><b>Updates</b><span>We update WordPress, WooCommerce and the builder for you, and test them first.</span></li>
 			<li><b>Support</b><span>By email, [SUPPORT HOURS]. Support tickets from your shop's admin are coming soon.</span></li>
 			<li><b>Room to grow</b><span>Move up a plan, or add a custom style when you start making a new finish.</span></li>
@@ -101,7 +99,7 @@ def legal_page(title, intro, body):
 	<div class="wrap legal">
 		<div class="intro">
 			<h1 id="l-title">{title}</h1>
-			<p>{intro} Last updated: 19 October 2026.</p>
+			<p>{intro} Last updated: 20 October 2026.</p>
 		</div>
 		<div style="margin-top:28px">{BANNER}</div>
 	</div>
@@ -120,7 +118,8 @@ def privacy():
 
 <h2>What we collect</h2>
 <ul>
-	<li><strong>Sign-ups:</strong> your name, email, business name, the supplier name and postcode on your RNPS registration, your current website and domain, your brand colour, the plan you chose and your message.</li>
+	<li><strong>Your account:</strong> your name, email, password (stored scrambled, never readable), business name and the plan you chose. Then what you add in your account: company and contact details, supplier name and postcode, RNPS registration and ID documents, logo, colours, fonts, prices, products and images, and your support tickets.</li>
+	<li><strong>Payments:</strong> handled by Stripe. We see your billing name and address, the card type and its last four digits, and your payments. We never see or store your full card number.</li>
 	<li><strong>Questions:</strong> your name, email, business name and question.</li>
 	<li><strong>Technical data:</strong> your IP address and browser details, which reach the services that deliver this site (see "Who we share it with").</li>
 </ul>
@@ -128,14 +127,15 @@ def privacy():
 
 <h2>Why we use it</h2>
 <ul>
-	<li>To reply to your sign-up or question and, if you go ahead, to set up and provide your plan. This is a step you've asked us to take before entering a contract.</li>
+	<li>To set up and provide your plan, take your payments, and reply to your questions. This is needed for our contract with you.</li>
 	<li>To keep the business records the law requires.</li>
 </ul>
 <p>We don't sell your information and we don't send marketing emails.</p>
 
 <h2>Who we share it with</h2>
 <ul>
-	<li>Our web host and email provider, who store and deliver the site and our email for us.</li>
+	<li>Our web host and email provider, who store and deliver the site, your account and our email for us.</li>
+	<li>Stripe, which takes your payments and keeps your card details.</li>
 	<li>Google Fonts (Google LLC), which receives your IP address when this site loads its typefaces.</li>
 	<li>jsDelivr, which delivers the Three.js files for the live demo and receives your IP address.</li>
 </ul>
@@ -153,15 +153,15 @@ def privacy():
 
 def terms():
     return legal_page('Terms of service', 'How [BRAND NAME] plans work while our full terms are finalised. For business customers only.', '''
-<h2>Before you pay, you'll get the full terms</h2>
-<p>Signing up on this site costs nothing and doesn't commit you to anything. When we email your secure link to pay the set-up fee, it comes with our full terms of service. You'll read and agree to them before you pay anything.</p>
+<h2>When you sign up</h2>
+<p>You sign up and pay online. You agree to these terms before you pay. At sign-up you pay the set-up fee and your first month, by card through Stripe. Your monthly payments then start when your shop goes live: the first is taken a month after that day, from the same card. When our full terms of service are ready, we'll email them to you before they apply.</p>
 
 <h2>The main points</h2>
 <ul>
 	<li>Plans are for businesses only, not consumers. You must be a Registered Number Plate Supplier with the DVLA and keep that registration current.</li>
 	<li>Each plan includes what's listed for it on our <a href="pricing.html">pricing page</a> when you sign up. Anything marked "coming soon" isn't part of a plan until we tell you in writing that it is.</li>
 	<li>The builder helps with BS AU 145e character layout and legal spacing. It is not approved or certified by the DVLA. You're responsible for checking every plate you make and sell is legal, and for checking customers' proof of ID and entitlement.</li>
-	<li>Monthly plans have a minimum term of [MINIMUM TERM]. After that you can cancel any time with [NOTICE PERIOD] notice by email to <a href="mailto:[EMAIL]">[EMAIL]</a>. The set-up fee is paid once, at the start.</li>
+	<li>Monthly plans have a minimum term of [MINIMUM TERM]. After that you can cancel any time with [NOTICE PERIOD] notice by email to <a href="mailto:[EMAIL]">[EMAIL]</a>. The set-up fee is paid once, when you sign up.</li>
 	<li>We're not VAT registered, so no VAT is added to our prices.</li>
 	<li>Your customers pay you through your own Stripe account, under Stripe's terms. We never hold your customers' money.</li>
 	<li>Your content, logo, products, customers and orders are yours. We own the builder software and our site designs.</li>

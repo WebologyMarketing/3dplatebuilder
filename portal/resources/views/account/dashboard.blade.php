@@ -26,7 +26,7 @@
 @if (! $shop->setup_paid_at)
   <section class="card dark" aria-labelledby="pay">
     <h2 id="pay" style="font-size:22px">Pay your set-up fee to begin</h2>
-    <p class="muted" style="margin:6px 0 18px">{{ $shop->planName() }} plan: {{ money($shop->planConfig()['setup']) }} set-up, then {{ money($shop->planConfig()['monthly']) }} a month. No VAT to add. Once it's paid, you can add your details and products.</p>
+    <p class="muted" style="margin:6px 0 18px">{{ $shop->planName() }} plan: today you pay the {{ money($shop->planConfig()['setup']) }} set-up fee and your first month, {{ money($shop->planConfig()['monthly']) }}. Your monthly payments then start when your shop goes live. No VAT to add.</p>
     <a class="btn yellow" href="{{ route('pay') }}">Go to secure payment →</a>
   </section>
 @elseif ($shop->stage === 'onboarding')
@@ -67,8 +67,8 @@
     <div class="card">
       <h3 style="margin-bottom:14px">Then we take it from here</h3>
       <ol class="then">
-        <li><b>1. We build</b>Your shop, builder and prices, set up for you.</li>
-        <li><b>2. You check</b>A preview link to try, and send us any changes.</li>
+        <li><b>1. We build</b>Your shop with your brand, using the prices{{ $shop->canAddProducts() ? ' and products' : '' }} you published.</li>
+        <li><b>2. You check</b>A preview link to try. Change prices{{ $shop->canAddProducts() ? ' or products' : '' }} yourself any time.</li>
         <li><b>3. You go live</b>On your own domain, taking orders.</li>
       </ol>
     </div>
@@ -82,6 +82,8 @@
         <dt>Domain</dt><dd>{{ $shop->domain ?: 'Not set yet' }}</dd>
         <dt>Preview</dt><dd>@if ($shop->preview_url)<a href="{{ $shop->preview_url }}" target="_blank" rel="noopener">Open preview</a>@else Not ready yet @endif</dd>
         @if ($shop->live_url)<dt>Live</dt><dd><a href="{{ $shop->live_url }}" target="_blank" rel="noopener">Visit your shop</a></dd>@endif
+        <dt>Prices</dt><dd>@if ($shop->published_version)<a href="{{ route('builder') }}">Published {{ $shop->published_at->timezone('Europe/London')->format('j M') }}</a>{{ $shop->hasUnpublishedChanges() ? ', changes waiting' : '' }}@else<a href="{{ route('builder') }}">Not published yet</a>@endif</dd>
+        @if ($shop->licence_key)<dt>Licence key</dt><dd><code style="font-size:13px">{{ $shop->licence_key }}</code></dd>@endif
       </dl>
     </section>
     <section class="card" aria-labelledby="h-bill">
@@ -89,7 +91,7 @@
       <dl class="facts" style="margin-bottom:16px">
         <dt>Plan</dt><dd>{{ $shop->planName() }}, {{ money($shop->planConfig()['monthly']) }} a month</dd>
         <dt>Set-up fee</dt><dd>{{ money($shop->planConfig()['setup']) }}, {{ $shop->setup_paid_at ? 'paid' : 'not paid yet' }}</dd>
-        @if ($nextPayment)<dt>Next payment</dt><dd>{{ $nextPayment->format('j F Y') }}</dd>@endif
+        <dt>Monthly payments</dt><dd>@if ($shop->billingStarted()){{ $nextPayment ? 'Next on '.$nextPayment->format('j F Y') : 'Started' }}@else Start when your shop goes live @endif</dd>
       </dl>
       <a class="btn ghost block" href="{{ route('billing') }}">Invoices and card</a>
     </section>
