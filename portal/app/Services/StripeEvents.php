@@ -75,7 +75,7 @@ class StripeEvents
             foreach ($shop->users as $user) {
                 Mail::to($user->email)->send(new PortalNotice(
                     'Thanks, your payment went through',
-                    ["You're on the {$shop->planName()} plan. We've taken your set-up fee and your first month.", 'Your monthly payments start when your shop goes live: the first is taken a month after that day, from the card you just used.', 'Your next step is to add your details, logo and products, so we can build your shop.'],
+                    ["You're on the {$shop->planName()} plan. We've taken your set-up fee and your first month.", 'Your monthly payments start when your shop goes live: the first is taken a month after that day, from the card you just used.', 'Your next step is to add your details and logo, then set your prices and publish, so we can build your shop.'],
                     route('dashboard'),
                     'Carry on with set-up',
                 ));

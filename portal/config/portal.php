@@ -62,24 +62,59 @@ return [
         ['label' => 'Blog', 'from' => 'complete'],
     ],
 
-    // Kept in step with plugin/includes/catalog.php option ids.
+    // What a plate maker can switch on and price in their builder. Kept in step with
+    // plugin/includes/catalog.php (option ids) and pbb_default_pricing() (starting prices, in pounds).
+    // `always` options can't be switched off: the builder falls back to them.
     'catalogue' => [
         'styles' => [
-            'printed' => 'Printed', 'gel-3d' => '3D Gel', 'acrylic-4d-3' => '4D 3mm', 'acrylic-4d-6' => '4D 6mm',
-            'gel-4d-3' => '4D Gel 3mm', 'gel-4d-6' => '4D Gel 6mm', 'retro' => 'Retro',
+            'printed' => ['label' => 'Printed', 'pair' => '29.99', 'single' => '19.99', 'always' => true],
+            'gel-3d' => ['label' => '3D Gel', 'pair' => '49.99', 'single' => '29.99'],
+            'acrylic-4d-3' => ['label' => '4D 3mm', 'pair' => '49.99', 'single' => '29.99'],
+            'acrylic-4d-6' => ['label' => '4D 6mm', 'pair' => '64.99', 'single' => '39.99'],
+            'gel-4d-3' => ['label' => '4D Gel 3mm', 'pair' => '64.99', 'single' => '39.99'],
+            'gel-4d-6' => ['label' => '4D Gel 6mm', 'pair' => '79.99', 'single' => '44.99'],
+            'retro' => ['label' => 'Retro', 'pair' => '69.99', 'single' => '39.99'],
         ],
+        // surcharge: added per plate on top of the style price. flat: one printed plate at this price.
         'sizes' => [
-            'standard' => 'Standard', 'short' => 'Short', 'hex' => 'Hex', 'square' => '4x4', 'oversized' => 'Oversized',
-            'motorbike' => 'Motorbike', 'trailer' => 'Trailer', 'trailer-commercial' => 'Commercial trailer',
-            'japanese-import' => 'Japanese import', 'us-import' => 'US import',
+            'standard' => ['label' => 'Standard', 'mm' => '520 × 111', 'price' => '0.00', 'type' => 'surcharge', 'always' => true],
+            'short' => ['label' => 'Short', 'mm' => 'cut to fit', 'price' => '10.00', 'type' => 'surcharge'],
+            'hex' => ['label' => 'Hex', 'mm' => 'cut to fit', 'price' => '10.00', 'type' => 'surcharge'],
+            'square' => ['label' => '4x4', 'mm' => '279 × 203, rear', 'price' => '10.00', 'type' => 'surcharge'],
+            'oversized' => ['label' => 'Oversized', 'mm' => '533 × 152, rear', 'price' => '10.00', 'type' => 'surcharge'],
+            'japanese-import' => ['label' => 'Japanese import', 'mm' => '330 × 165', 'price' => '10.00', 'type' => 'surcharge'],
+            'us-import' => ['label' => 'US import', 'mm' => '305 × 152', 'price' => '10.00', 'type' => 'surcharge'],
+            'motorbike' => ['label' => 'Motorbike', 'mm' => '229 × 178', 'price' => '19.99', 'type' => 'flat'],
+            'trailer' => ['label' => 'Trailer', 'mm' => '520 × 111', 'price' => '19.99', 'type' => 'flat'],
+            'trailer-commercial' => ['label' => 'Commercial trailer', 'mm' => '229 × 178, white', 'price' => '19.99', 'type' => 'flat'],
+        ],
+        'badges' => [
+            'uk' => ['label' => 'UK badge (printed)', 'price' => '5.00'],
+            'uk-gel' => ['label' => 'UK gel badge, white', 'price' => '10.00'],
+            'uk-gel-blue' => ['label' => 'UK gel badge, blue', 'price' => '10.00'],
+            'uk-4d' => ['label' => 'UK 4D badge (raised)', 'price' => '15.00'],
+            'ev' => ['label' => 'EV strip (printed)', 'price' => '5.00'],
+            'ev-gel' => ['label' => 'EV gel badge', 'price' => '10.00'],
+            'ev-uk-gel' => ['label' => 'EV gel badge with UK', 'price' => '10.00'],
+        ],
+        'borders' => [
+            'black-1mm' => ['label' => 'Black border, 1 mm', 'price' => '10.00'],
+            'black-2mm' => ['label' => 'Black border, 2 mm', 'price' => '10.00'],
+            'black-3mm' => ['label' => 'Black border, 3 mm', 'price' => '10.00'],
         ],
         'extras' => [
-            'uk' => 'UK badge', 'uk-gel' => 'UK gel badge, white', 'uk-gel-blue' => 'UK gel badge, blue', 'uk-4d' => 'UK 4D badge',
-            'ev' => 'EV strip', 'ev-gel' => 'EV gel badge', 'ev-uk-gel' => 'EV gel badge with UK',
-            'black-1mm' => 'Border 1 mm', 'black-2mm' => 'Border 2 mm', 'black-3mm' => 'Border 3 mm',
-            'sticky_pads' => 'Adhesive pads', 'xl_pads' => 'XL pad set', 'screw_kit' => 'Screw kit', 'frameless_holders' => 'Frameless holders',
+            'sticky_pads' => ['label' => '8 adhesive pads (1 mm)', 'price' => '2.50'],
+            'xl_pads' => ['label' => 'XL pad set (8 × 1 mm + 3 × 5 mm)', 'price' => '6.99'],
+            'screw_kit' => ['label' => 'Screws + caps (4 screws, 2 yellow & 2 white caps)', 'price' => '2.50'],
+            'frameless_holders' => ['label' => 'Frameless holders (set)', 'price' => '20.00'],
         ],
+        'fitting' => '30.00',
     ],
+
+    // Your own add-ons and products (Pro and Complete).
+    'max_custom_addons' => 20,
+    'max_products' => 60,
+    'max_product_images' => 6,
 
     'fonts' => ['Archivo', 'Barlow Condensed', 'Montserrat', 'Poppins', 'Geist'],
 

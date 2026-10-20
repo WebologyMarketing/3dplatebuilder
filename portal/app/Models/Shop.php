@@ -23,6 +23,10 @@ class Shop extends Model
     {
         return [
             'products' => 'array',
+            'builder' => 'array',
+            'published_config' => 'array',
+            'published_at' => 'datetime',
+            'site_checked_at' => 'datetime',
             'font_files' => 'array',
             'current_period_end' => 'datetime',
             'setup_paid_at' => 'datetime',
@@ -54,6 +58,30 @@ class Shop extends Model
     public function addonRequests(): HasMany
     {
         return $this->hasMany(AddonRequest::class);
+    }
+
+    /** Products they sell (Pro and Complete). Named so it doesn't clash with the old `products` column. */
+    public function shopProducts(): HasMany
+    {
+        return $this->hasMany(ShopProduct::class)->orderBy('sort')->orderBy('id');
+    }
+
+    /** Starter is one page with the builder as its one product; Pro and up can add products. */
+    public function canAddProducts(): bool
+    {
+        return $this->hasFeature('pro');
+    }
+
+    /** Where their shop is: the live domain once live, else the preview. */
+    public function siteUrl(): ?string
+    {
+        return $this->live_url ?: $this->preview_url;
+    }
+
+    /** True when something has changed since the last Publish. */
+    public function hasUnpublishedChanges(): bool
+    {
+        return \App\Support\SiteConfig::build($this) != ($this->published_config ?? []);
     }
 
     public function planConfig(): array
@@ -124,15 +152,13 @@ class Shop extends Model
     /** The plate maker's to-do list, in order. */
     public function onboardingSteps(): array
     {
-        $p = $this->products ?? [];
-
         return [
             ['key' => 'pay', 'title' => 'Pay your set-up fee', 'note' => $this->setup_paid_at ? 'Paid. Thank you.' : 'Your shop build starts once this is paid.', 'done' => (bool) $this->setup_paid_at, 'route' => 'billing'],
             ['key' => 'company', 'title' => 'Company details', 'note' => 'Company name, number and registered address.', 'done' => filled($this->legal_name) && filled($this->company_number) && filled($this->registered_address), 'route' => 'details'],
             ['key' => 'logo', 'title' => 'Upload your logo', 'note' => 'SVG or PNG, for your shop header and emails.', 'done' => filled($this->logo_path), 'route' => 'details', 'anchor' => 'logo'],
             ['key' => 'brand', 'title' => 'Brand colours and fonts', 'note' => 'We use these across your shop and builder.', 'done' => filled($this->accent_colour) && filled($this->dark_colour) && filled($this->heading_font), 'route' => 'details', 'anchor' => 'brand'],
             ['key' => 'contact', 'title' => 'Contact and supplier details', 'note' => 'Shown on your shop, and the supplier name and postcode on each plate.', 'done' => filled($this->contact_email) && filled($this->supplier_name) && filled($this->supplier_postcode) && filled($this->rnps_number), 'route' => 'details', 'anchor' => 'contact'],
-            ['key' => 'products', 'title' => 'Choose products and set prices', 'note' => 'Tick what you sell and set your prices.', 'done' => ! empty($p['styles']) && ! empty($p['sizes']), 'started' => ! empty($p), 'route' => 'products'],
+            ['key' => 'products', 'title' => $this->canAddProducts() ? 'Set your prices and products' : 'Set your prices', 'note' => 'Switch on what you sell, set your prices, then publish.', 'done' => $this->published_version > 0, 'started' => ! empty($this->builder), 'route' => 'builder'],
             ['key' => 'rnps', 'title' => 'RNPS documents', 'note' => match ($this->rnpsStatus()) {
                 'approved' => 'Checked and approved.',
                 'pending' => 'Uploaded. We\'ll check it shortly.',

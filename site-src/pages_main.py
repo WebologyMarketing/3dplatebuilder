@@ -359,7 +359,7 @@ def features():
 				<h2>Prices and basket that match your shop</h2>
 				<ul class="feature-list">
 					<li><b>Live total</b><span>Updates as they choose, from your own price list.</span></li>
-					<li><b>Price editor</b><span>Set pair and single prices per style, size surcharges, badges, borders, extras and fitting on one screen in WooCommerce.</span></li>
+					<li><b>Your prices, your call</b><span>In your account, tick the styles, sizes, badges, borders and extras you sell, set every price, add your own extras, then publish. Your shop updates within minutes.</span></li>
 					<li><b>Extras</b><span>Adhesive pads, screws and caps, and frameless holders, one of each kind per order.</span></li>
 					<li><b>Checked on the server</b><span>The basket price is always worked out again from the saved design, so nobody can change it in the browser.</span></li>
 					<li><b>Clear basket lines</b><span>Registration, plates, size, style, badge, border, extras and road legal or show plate, in the basket, at checkout and in emails.</span></li>

@@ -1,6 +1,6 @@
 import { PlateViewport } from './plate-viewport.js';
 import { sanitiseInput, MAX_CHARACTERS } from './plate-layout.js';
-import { mountCarControls, mountLegalBadge, mountPlateOptions, mountStylePicker } from './builder-ui.js';
+import { mountCarControls, mountLegalBadge, mountPlateOptions, mountStylePicker, setOffer } from './builder-ui.js';
 import { mountBasket } from './basket.js';
 import { mountSteps } from './steps.js';
 import { mountProductMode } from './product-mode.js';
@@ -94,6 +94,7 @@ function init(root) {
 		viewport.setRegistration(input.value);
 	}
 
+	setOffer(config.offer);
 	mountStylePicker(root, viewport);
 	mountPlateOptions(root, viewport);
 	mountLegalBadge(root, viewport);

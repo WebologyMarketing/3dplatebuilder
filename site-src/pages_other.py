@@ -20,15 +20,13 @@ from pricing_new import pricing  # noqa: E402
 
 def setup():
     steps = [
-        ('Sign up online', 'Choose your plan and tell us about your shop. It takes about five minutes.', 'Day 1'),
-        ('Pay and verify', "We email your secure link to pay the set-up fee and upload your RNPS registration and ID. We check them before we build.", 'Within [RESPONSE TIME]'),
-        ('We copy your products and prices', 'From your current site or your price list. We set up the price editor and your extras, and match each design to your products.', '[TIMELINE BUILD]'),
-        ('We design your website', "Your supplier name and postcode go in the plate footer, exactly as registered. Your site is designed to your plan: a one-page shop in your colours on Starter, a custom home page and a page for each character style on Pro, a fully custom site on Complete. You review a private preview and ask for changes by email.", '[TIMELINE BRANDING]'),
-        ('Connect Stripe', "You open (or already have) your own Stripe account. We connect it and switch on Apple Pay and Google Pay.", '[TIMELINE PAYMENTS]'),
-        ('Test orders', 'On your private preview we run real test orders: a road-legal order with documents, a show plate, a failed then successful card payment.', '[TIMELINE TESTING]'),
-        ('Go live', "We point your domain at the new shop, switch Stripe to live and watch the first orders come in with you.", '[TIMELINE GO LIVE]'),
+        ('Sign up and pay', "Choose your plan and pay the set-up fee and your first month by card. Your monthly payments then start when your shop goes live. It takes about five minutes.", 'Day 1'),
+        ('Add your details and prices', "Your account shows what to do next: company and contact details, logo and colours, and your RNPS registration and ID for us to check. Tick the styles, sizes, badges, borders and extras you sell, set your prices, add your own extras (and products on Pro and Complete), then publish.", 'In your own time'),
+        ('We build your website', "Your supplier name and postcode go in the plate footer, exactly as registered. Your site is designed to your plan: a one-page shop in your colours on Starter, a custom home page and a page for each character style on Pro, a fully custom site on Complete. You check a private preview and ask for changes by email.", 'Usually [TIMELINE BUILD]'),
+        ('Connect Stripe and test', "You open (or already have) your own Stripe account. We connect it, switch on Apple Pay and Google Pay, and run real test orders on your preview.", 'Usually [TIMELINE TESTING]'),
+        ('Go live', "We point your domain at the new shop, switch Stripe to live and watch the first orders come in with you.", 'Usually [TIMELINE GO LIVE]'),
     ]
-    lis = '\n'.join(f'<li><h3>{t}</h3><div class="stack"><p>{d}</p><p class="when">Usually {w}</p></div></li>' for t, d, w in steps)
+    lis = '\n'.join(f'<li><h3>{t}</h3><div class="stack"><p>{d}</p><p class="when">{w}</p></div></li>' for t, d, w in steps)
     return f'''
 <section class="page-head page-head-art" aria-labelledby="s-title">
 	<div class="wrap">
@@ -54,10 +52,10 @@ def setup():
 	<div class="wrap spec-split">
 		<div class="intro">
 			<h2 id="need-title">What we need from you</h2>
-			<p>Get these together and set-up goes quickly. We'll email you a checklist when you sign up.</p>
+			<p>Get these together and set-up goes quickly. Your account shows a checklist as soon as you sign up.</p>
 		</div>
 		<ul class="feature-list">
-			<li><b>Your products and prices</b><span>A link to your current shop, or your price list.</span></li>
+			<li><b>Your prices</b><span>You set them yourself in your account, with sensible starting prices already filled in.</span></li>
 			<li><b>Your RNPS registration and ID</b><span>We verify them before we build. Your supplier name and postcode go in the plate footer exactly as registered.</span></li>
 			<li><b>Your logo</b><span>SVG or a large PNG, if you have one.</span></li>
 			<li><b>A Stripe account</b><span>In your business's name. We'll help you set it up if you don't have one.</span></li>
@@ -75,7 +73,7 @@ def setup():
 			<p>We keep looking after it, so you can get on with making plates.</p>
 		</div>
 		<ul class="feature-list">
-			<li><b>Prices are yours to change</b><span>One screen in WooCommerce. The builder's totals follow straight away.</span></li>
+			<li><b>Prices and products are yours to change</b><span>In your account, any time. Publish and your shop updates within minutes.</span></li>
 			<li><b>Updates</b><span>We update WordPress, WooCommerce and the builder for you, and test them first.</span></li>
 			<li><b>Support</b><span>By email, [SUPPORT HOURS]. Support tickets from your shop's admin are coming soon.</span></li>
 			<li><b>Room to grow</b><span>Move up a plan, or add a custom style when you start making a new finish.</span></li>

@@ -127,21 +127,14 @@ class ShopController extends Controller
         return DetailsController::safeFile($path, str_starts_with($kind, 'font-') || request()->boolean('download'));
     }
 
-    /** Everything needed to build the shop, as JSON, ready for the shop template. */
+    /** Everything needed to build the shop, as JSON: company details plus what the website gets on publish. */
     public function export(Shop $shop)
     {
-        $c = config('portal.catalogue');
-        $p = $shop->products ?? [];
-
         return response()->json([
             'shop' => $shop->only(['name', 'plan', 'legal_name', 'trading_name', 'company_number', 'vat_number', 'registered_address',
                 'contact_email', 'domain', 'supplier_name', 'supplier_postcode', 'rnps_number', 'collection_address',
                 'accent_colour', 'dark_colour', 'heading_font', 'licence_key']),
-            'products' => [
-                'styles' => collect($p['styles'] ?? [])->map(fn ($price, $id) => ['id' => $id, 'label' => $c['styles'][$id] ?? $id, 'pair_price' => $price])->values(),
-                'sizes' => $p['sizes'] ?? [],
-                'extras' => $p['extras'] ?? [],
-            ],
+            'site' => \App\Support\SiteConfig::build($shop),
         ], 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
             ->header('Content-Disposition', 'attachment; filename="shop-'.$shop->id.'.json"');
     }

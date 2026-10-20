@@ -112,8 +112,9 @@ class AdminAndSupportTest extends TestCase
 
     public function test_every_page_renders(): void
     {
-        $user = $this->customer(['products' => ['styles' => ['printed' => '30.00'], 'sizes' => ['standard'], 'extras' => []]]);
-        foreach (['dashboard', 'details', 'products', 'billing', 'support'] as $r) {
+        $user = $this->customer(['builder' => ['styles' => ['printed' => ['on' => true, 'pair' => '30.00']]]]);
+        $user->shop->shopProducts()->create(['type' => 'simple', 'name' => 'Keyring', 'price_pence' => 799]);
+        foreach (['dashboard', 'details', 'builder', 'products', 'products.create', 'billing', 'support'] as $r) {
             $this->actingAs($user)->get(route($r))->assertOk();
         }
         $admin = $this->admin();
@@ -121,6 +122,7 @@ class AdminAndSupportTest extends TestCase
             $this->actingAs($admin)->get(route($r))->assertOk();
         }
         $this->actingAs($admin)->get(route('admin.shops.show', Shop::first()))->assertOk();
+        $this->actingAs($admin)->get(route('admin.shops.export', Shop::first()))->assertOk()->assertJsonPath('site.products.0.name', 'Keyring');
         $this->post('/logout');
         foreach (['/login', '/signup', '/forgot-password'] as $u) {
             $this->get($u)->assertOk();
