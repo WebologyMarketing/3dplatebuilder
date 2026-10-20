@@ -83,21 +83,10 @@ class OnboardingTest extends TestCase
         $this->assertSame('approved', $user->shop->fresh()->rnpsStatus());
     }
 
-    public function test_products_and_addons(): void
+    public function test_extra_work_requests(): void
     {
         Mail::fake();
         $user = $this->customer();
-
-        $this->actingAs($user)->post(route('products'), [
-            'styles' => ['printed', 'gel-3d'], 'price' => ['printed' => '24.5', 'gel-3d' => '', 'retro' => '99'],
-            'sizes' => ['standard', 'square'], 'extras' => ['uk', 'black-1mm'],
-        ])->assertSessionHasNoErrors();
-
-        $p = $user->shop->fresh()->products;
-        $this->assertSame(['printed' => '24.50', 'gel-3d' => null], $p['styles']); // unticked retro's price is ignored
-        $this->assertSame(['standard', 'square'], $p['sizes']);
-
-        $this->actingAs($user)->post(route('products'), ['styles' => ['made-up']])->assertSessionHasErrors('styles.0');
 
         $this->actingAs($user)->post(route('products.addons'), ['addons' => ['addon_plate_logo', 'addon_migration']])->assertRedirect();
         $this->actingAs($user)->post(route('products.addons'), ['addons' => ['addon_plate_logo']]); // asked twice

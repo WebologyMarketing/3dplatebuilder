@@ -20,12 +20,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'customer' => EnsureCustomer::class,
             'paid' => EnsurePaid::class,
         ]);
-        $middleware->validateCsrfTokens(except: ['stripe/webhook']);
+        $middleware->validateCsrfTokens(except: ['stripe/webhook', 'api/v1/*']);
         $middleware->redirectUsersTo(fn (Request $r) => $r->user()?->is_admin ? route('admin.dashboard') : route('dashboard'));
         $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('updates/*') || $request->expectsJson(),
+            fn (Request $request) => $request->is('updates/*') || $request->is('api/*') || $request->expectsJson(),
         );
     })->create();

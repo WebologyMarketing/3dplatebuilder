@@ -67,8 +67,8 @@
     <div class="card">
       <h3 style="margin-bottom:14px">Then we take it from here</h3>
       <ol class="then">
-        <li><b>1. We build</b>Your shop, builder and prices, set up for you.</li>
-        <li><b>2. You check</b>A preview link to try, and send us any changes.</li>
+        <li><b>1. We build</b>Your shop with your brand, using the prices{{ $shop->canAddProducts() ? ' and products' : '' }} you published.</li>
+        <li><b>2. You check</b>A preview link to try. Change prices{{ $shop->canAddProducts() ? ' or products' : '' }} yourself any time.</li>
         <li><b>3. You go live</b>On your own domain, taking orders.</li>
       </ol>
     </div>
@@ -82,6 +82,8 @@
         <dt>Domain</dt><dd>{{ $shop->domain ?: 'Not set yet' }}</dd>
         <dt>Preview</dt><dd>@if ($shop->preview_url)<a href="{{ $shop->preview_url }}" target="_blank" rel="noopener">Open preview</a>@else Not ready yet @endif</dd>
         @if ($shop->live_url)<dt>Live</dt><dd><a href="{{ $shop->live_url }}" target="_blank" rel="noopener">Visit your shop</a></dd>@endif
+        <dt>Prices</dt><dd>@if ($shop->published_version)<a href="{{ route('builder') }}">Published {{ $shop->published_at->timezone('Europe/London')->format('j M') }}</a>{{ $shop->hasUnpublishedChanges() ? ', changes waiting' : '' }}@else<a href="{{ route('builder') }}">Not published yet</a>@endif</dd>
+        @if ($shop->licence_key)<dt>Licence key</dt><dd><code style="font-size:13px">{{ $shop->licence_key }}</code></dd>@endif
       </dl>
     </section>
     <section class="card" aria-labelledby="h-bill">

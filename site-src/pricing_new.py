@@ -213,7 +213,7 @@ def pricing():
 			<p>The short version. The full terms are in our <a href="terms.html">terms of service</a>.</p>
 		</div>
 		<ul class="feature-list">
-			<li><b>Set-up fee</b><span>Paid once, when you sign up. It covers designing and building your site, copying your products and prices, adding your supplier details and logo, connecting Stripe and testing orders with you.</span></li>
+			<li><b>Set-up fee</b><span>Paid once, when you sign up. It covers designing and building your site, adding your supplier details and logo, connecting Stripe and testing orders with you. You set your own prices and products in your account.</span></li>
 			<li><b>Monthly plans</b><span>Billed monthly in advance. Minimum term [MINIMUM TERM], then [NOTICE PERIOD] notice by email to cancel.</span></li>
 			<li><b>Hosting</b><span>Your shop runs on [HOSTING PROVIDER], with an SSL certificate and backups [BACKUP FREQUENCY].</span></li>
 			<li><b>Updates and support</b><span>We keep WordPress, WooCommerce and the builder up to date on every plan. Support by email, [SUPPORT HOURS]. No phone lines: everything is in writing. Support tickets from your shop's admin are coming soon.</span></li>

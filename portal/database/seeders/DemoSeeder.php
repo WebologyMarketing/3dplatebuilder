@@ -61,7 +61,7 @@ class DemoSeeder extends Seeder
             ]);
             if ($name === 'Your Plates Ltd') {
                 $shop->update(['legal_name' => 'Your Plates Ltd', 'company_number' => '01234567', 'registered_address' => "1 High Street\nAnytown\nAB1 2CD",
-                    'products' => ['styles' => ['printed' => '24.99', 'gel-3d' => '39.99'], 'sizes' => ['standard'], 'extras' => []]]);
+                    'builder' => ['styles' => ['printed' => ['on' => true, 'pair' => '24.99'], 'gel-3d' => ['on' => true, 'pair' => '39.99'], 'retro' => ['on' => false]]]]);
             }
             User::create(['name' => 'Owner '.($i + 1), 'email' => 'owner'.($i + 1).'@demo.test', 'password' => 'demo-password-123', 'shop_id' => $shop->id]);
 

@@ -110,3 +110,14 @@ php artisan test
 ```
 
 `DemoSeeder` refuses to run in production.
+
+## Builder prices and products (self-serve)
+
+Plate makers manage their own builder in **Your builder** (every plan: options on or off, every price, their
+own add-ons) and **Products** (Pro and up: plate products that open the builder on a style, and simple
+fixed-price products, with images). Nothing reaches their website until they click **Publish**, which freezes a
+copy on `shops.published_config` and nudges the site (`POST {site}/wp-json/pbb/v1/sync`, signed with the licence key).
+
+The plugin pulls `GET /api/v1/site` with the `X-Licence-Key` header (and hourly as a fallback), downloads
+images from short-lived signed links, then reports back on `POST /api/v1/site/applied`. See
+`app/Support/SiteConfig.php` for the payload and `plugin/includes/portal-sync.php` for the other end.

@@ -108,6 +108,9 @@ function pbb_save_pricing() {
 
 	$input   = isset( $_POST['pbb_pricing'] ) && is_array( $_POST['pbb_pricing'] ) ? wp_unslash( $_POST['pbb_pricing'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- each value is cast below.
 	$pricing = pbb_default_pricing();
+	foreach ( array_keys( pbb_custom_accessory_labels() ) as $id ) {
+		$pricing['accessories'][ $id ] = 0; // the shop's own add-ons, from the portal
+	}
 
 	foreach ( $pricing as $group => $value ) {
 		foreach ( $value as $key => $default ) {
@@ -153,15 +156,25 @@ function pbb_render_settings() {
 		if ( 'shop-json' === $updated ) :
 			?>
 			<div class="notice notice-error is-dismissible"><p><?php esc_html_e( 'Shop details saved, but the advanced JSON could not be read, so it was left as it was.', '3d-plate-builder' ); ?></p></div>
+		<?php elseif ( 'synced' === $updated ) : ?>
+			<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Saved. Your shop is up to date with your account.', '3d-plate-builder' ); ?></p></div>
+		<?php elseif ( 'sync-failed' === $updated ) : ?>
+			<div class="notice notice-error is-dismissible"><p><?php echo esc_html( sprintf( /* translators: %s: error */ __( 'Saved, but the update from your account didn\'t work: %s', '3d-plate-builder' ), pbb_sync_state()['error'] ) ); ?></p></div>
 		<?php elseif ( 'shop' === $updated ) : ?>
 			<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Shop details saved.', '3d-plate-builder' ); ?></p></div>
 		<?php elseif ( $updated ) : ?>
 			<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Prices saved.', '3d-plate-builder' ); ?></p></div>
 		<?php endif; ?>
 
+		<?php pbb_render_portal_box(); ?>
+
 		<?php pbb_render_shop_form(); ?>
 
 		<h2 class="title" id="pbb-prices"><?php esc_html_e( 'Prices', '3d-plate-builder' ); ?></h2>
+
+		<?php if ( pbb_portal_managed() ) : ?>
+			<div class="notice notice-info inline"><p><?php esc_html_e( 'These prices come from your 3dPlateBuilder account. Change them there and publish: anything changed here is replaced the next time you publish.', '3d-plate-builder' ); ?></p></div>
+		<?php endif; ?>
 
 		<p>
 			<?php esc_html_e( 'A plate is priced from its character style (front & rear, or a single plate), plus a surcharge per plate for non-standard sizes. Badge, border and extras are charged once per basket line. Motorbike and trailer plates have one fixed price.', '3d-plate-builder' ); ?>

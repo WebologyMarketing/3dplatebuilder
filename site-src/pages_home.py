@@ -70,7 +70,7 @@ def bento():
 	<article class="bento-card reveal" style="--d:.08s">
 		<p class="bento-num">02</p>
 		<h3>{u[1][0]}</h3>
-		<p>We design it, load your products and prices and set up every page. You never need to touch WordPress.</p>
+		<p>We design it in your brand and set up every page. You set your prices and products in your account and publish. You never need to touch WordPress.</p>
 		<div class="bento-shot"><img src="assets/img/shop-home.webp" width="1200" height="2172" alt="A demo plate shop home page, scrolling" loading="lazy" decoding="async"></div>
 	</article>
 	<article class="bento-card reveal">

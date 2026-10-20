@@ -3,7 +3,7 @@
  * Plugin Name:       3D Plate Builder
  * Description:       Real-time 3D/4D number plate customiser for WooCommerce. Use the [plate_builder] shortcode.
  * Requires Plugins:  woocommerce
- * Version:           1.10.3
+ * Version:           1.11.0
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Author:            3D Plate Builder
@@ -13,7 +13,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PBB_VERSION', '1.10.3' );
+define( 'PBB_VERSION', '1.11.0' );
 define( 'PBB_URL', plugin_dir_url( __FILE__ ) );
 define( 'PBB_PATH', plugin_dir_path( __FILE__ ) );
 
@@ -28,6 +28,7 @@ require_once PBB_PATH . 'includes/catalog.php';
 require_once PBB_PATH . 'includes/placement.php';
 require_once PBB_PATH . 'includes/rocket.php';
 require_once PBB_PATH . 'includes/checkout-embed.php';
+require_once PBB_PATH . 'includes/portal-sync.php';
 
 // Basket, checkout and the pricing screen need WooCommerce.
 add_action(
@@ -170,6 +171,14 @@ function pbb_shortcode( $atts ) {
 		}
 	}
 
+	// A preset the shop has switched off (in the portal) falls back to the default.
+	foreach ( array( 'style' => 'styles', 'size' => 'sizes', 'badge' => 'badges', 'border' => 'borders' ) as $key => $group ) {
+		$atts[ $key ] = sanitize_key( $atts[ $key ] );
+		if ( ! pbb_offered( $group, $atts[ $key ] ) || ! isset( pbb_catalog()[ $group ][ $atts[ $key ] ] ) ) {
+			$atts[ $key ] = array( 'style' => 'printed', 'size' => 'standard', 'badge' => 'none', 'border' => 'none' )[ $key ];
+		}
+	}
+
 	$config = array_merge(
 		pbb_supplier_details(),
 		array(
@@ -187,7 +196,9 @@ function pbb_shortcode( $atts ) {
 			// Motorbike, import and commercial trailer plates.
 			'fonts'        => array( 'motorcycle' => PBB_URL . 'assets/fonts/charles-wright-singapore.json?ver=' . PBB_VERSION ),
 			'pricing'      => pbb_get_pricing(),
-			'accessories'  => pbb_catalog()['accessories'],
+			'accessories'  => pbb_active_accessories(),
+			// What this shop sells (id lists per group); null = everything.
+			'offer'        => pbb_offer(),
 			'accessoryGroups' => array_values( pbb_catalog()['accessory_groups'] ),
 			// Catalogue names, so the live price lines read exactly like the basket.
 			'labels'       => pbb_catalog_labels(),
