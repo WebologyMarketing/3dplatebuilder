@@ -39,7 +39,8 @@ class StripeEvents
         DB::table('stripe_events')->insert(['id' => $id, 'type' => $event['type'] ?? '', 'created_at' => now(), 'updated_at' => now()]);
     }
 
-    private function checkoutCompleted(array $s): void
+    /** Also called when the customer lands back on the portal, so a slow webhook can't leave them waiting. */
+    public function checkoutCompleted(array $s): void
     {
         $shop = Shop::find($s['metadata']['shop_id'] ?? $s['client_reference_id'] ?? 0);
         if (! $shop) {

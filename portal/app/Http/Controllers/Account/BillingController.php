@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
 use App\Services\Billing;
+use App\Services\StripeEvents;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -26,9 +27,24 @@ class BillingController extends Controller
         }
     }
 
-    public function paid(Request $request)
+    public function paid(Request $request, Billing $billing, StripeEvents $events)
     {
         $shop = $request->user()->shop->fresh();
+
+        // Backup for a slow webhook: read the Checkout Session ourselves when they come back.
+        $sessionId = (string) $request->query('session_id');
+        if (! $shop->setup_paid_at && str_starts_with($sessionId, 'cs_')) {
+            try {
+                $s = $billing->checkoutSession($sessionId);
+                if ((string) ($s['metadata']['shop_id'] ?? '') === (string) $shop->id && ($s['payment_status'] ?? '') === 'paid') {
+                    $events->checkoutCompleted($s);
+                    $shop->refresh();
+                }
+            } catch (Throwable $e) {
+                Log::warning('Could not confirm Checkout Session on return: '.$e->getMessage());
+            }
+        }
+
         if ($shop->setup_paid_at) {
             return redirect()->route('dashboard')->with('status', 'Payment received. Thank you! Here\'s what to do next.');
         }
