@@ -148,6 +148,29 @@ add_action(
 );
 
 /*
+ * The design's JSON is for production, not for reading: keep it out of the order screen, emails,
+ * the REST API and the WooCommerce app, where it would show as a "pbb_config" line.
+ */
+add_filter(
+	'woocommerce_hidden_order_itemmeta',
+	function ( $keys ) {
+		$keys[] = '_pbb_config';
+		return $keys;
+	}
+);
+add_filter(
+	'woocommerce_order_item_get_formatted_meta_data',
+	function ( $meta ) {
+		foreach ( $meta as $id => $m ) {
+			if ( isset( $m->key ) && '_pbb_config' === $m->key ) {
+				unset( $meta[ $id ] );
+			}
+		}
+		return $meta;
+	}
+);
+
+/*
  * In-store fitting chosen in the builder: send the customer to checkout with Collect selected and
  * the checkout's own "Fit my plates while I wait" option (which charges the £30) ticked. If they
  * switch to delivery, fitting drops off and a note says why.
