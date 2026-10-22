@@ -1,0 +1,450 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"settings": {
+		"appearanceTools": true,
+		"useRootPaddingAwareAlignments": true,
+		"color": {
+			"defaultPalette": false,
+			"defaultGradients": false,
+			"defaultDuotone": false,
+			"gradients": [],
+			"duotone": [],
+			"palette": [
+				{
+					"slug": "base",
+					"name": "White",
+					"color": "#FFFFFF"
+				},
+				{
+					"slug": "surface",
+					"name": "Light grey",
+					"color": "#F4F4F5"
+				},
+				{
+					"slug": "line",
+					"name": "Lines",
+					"color": "#E3E3E6"
+				},
+				{
+					"slug": "muted",
+					"name": "Muted text",
+					"color": "#4E5359"
+				},
+				{
+					"slug": "contrast",
+					"name": "Text",
+					"color": "#16191C"
+				},
+				{
+					"slug": "accent",
+					"name": "Main colour",
+					"color": "#F7D333"
+				},
+				{
+					"slug": "accent-ink",
+					"name": "Text on main colour",
+					"color": "#0D0E10"
+				},
+				{
+					"slug": "dark",
+					"name": "Dark colour",
+					"color": "#16191C"
+				},
+				{
+					"slug": "good",
+					"name": "Road legal green",
+					"color": "#1D6B38"
+				}
+			]
+		},
+		"layout": {
+			"contentSize": "760px",
+			"wideSize": "1180px"
+		},
+		"spacing": {
+			"units": [
+				"px",
+				"rem",
+				"%",
+				"vw"
+			],
+			"spacingScale": {
+				"steps": 0
+			},
+			"spacingSizes": [
+				{
+					"slug": "20",
+					"name": "XS",
+					"size": "0.5rem"
+				},
+				{
+					"slug": "30",
+					"name": "S",
+					"size": "1rem"
+				},
+				{
+					"slug": "40",
+					"name": "M",
+					"size": "1.5rem"
+				},
+				{
+					"slug": "50",
+					"name": "L",
+					"size": "clamp(2rem, 4vw, 3.5rem)"
+				},
+				{
+					"slug": "60",
+					"name": "XL",
+					"size": "clamp(2.5rem, 6vw, 4.5rem)"
+				}
+			]
+		},
+		"typography": {
+			"defaultFontSizes": false,
+			"fluid": true,
+			"fontSizes": [
+				{
+					"slug": "small",
+					"name": "Small",
+					"size": "0.9375rem",
+					"fluid": false
+				},
+				{
+					"slug": "medium",
+					"name": "Body",
+					"size": "1.0625rem",
+					"fluid": false
+				},
+				{
+					"slug": "large",
+					"name": "Large",
+					"size": "1.25rem",
+					"fluid": {
+						"min": "1.125rem",
+						"max": "1.25rem"
+					}
+				},
+				{
+					"slug": "x-large",
+					"name": "Section heading",
+					"size": "2.375rem",
+					"fluid": {
+						"min": "1.75rem",
+						"max": "2.375rem"
+					}
+				},
+				{
+					"slug": "xx-large",
+					"name": "Page heading",
+					"size": "3.75rem",
+					"fluid": {
+						"min": "2.375rem",
+						"max": "3.75rem"
+					}
+				}
+			],
+			"fontFamilies": [
+				{
+					"slug": "body",
+					"name": "Geist (body)",
+					"fontFamily": "Geist, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+					"fontFace": [
+						{
+							"fontFamily": "Geist",
+							"fontWeight": "400",
+							"fontStyle": "normal",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/geist-latin-400-normal.woff2"
+							]
+						},
+						{
+							"fontFamily": "Geist",
+							"fontWeight": "500",
+							"fontStyle": "normal",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/geist-latin-500-normal.woff2"
+							]
+						},
+						{
+							"fontFamily": "Geist",
+							"fontWeight": "600",
+							"fontStyle": "normal",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/geist-latin-600-normal.woff2"
+							]
+						},
+						{
+							"fontFamily": "Geist",
+							"fontWeight": "700",
+							"fontStyle": "normal",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/geist-latin-700-normal.woff2"
+							]
+						},
+						{
+							"fontFamily": "Geist",
+							"fontWeight": "800",
+							"fontStyle": "normal",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/geist-latin-800-normal.woff2"
+							]
+						}
+					]
+				},
+				{
+					"slug": "heading",
+					"name": "Heading (from your account)",
+					"fontFamily": "Archivo, Geist, system-ui, sans-serif"
+				},
+				{
+					"slug": "archivo",
+					"name": "Archivo",
+					"fontFamily": "\"Archivo\", Geist, system-ui, sans-serif",
+					"fontFace": [
+						{
+							"fontFamily": "Archivo",
+							"fontWeight": "800",
+							"fontStyle": "normal",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/archivo-latin-800-normal.woff2"
+							]
+						}
+					]
+				},
+				{
+					"slug": "barlow-condensed",
+					"name": "Barlow Condensed",
+					"fontFamily": "\"Barlow Condensed\", Geist, system-ui, sans-serif",
+					"fontFace": [
+						{
+							"fontFamily": "Barlow Condensed",
+							"fontWeight": "800",
+							"fontStyle": "normal",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/barlow-condensed-latin-800-normal.woff2"
+							]
+						}
+					]
+				},
+				{
+					"slug": "montserrat",
+					"name": "Montserrat",
+					"fontFamily": "\"Montserrat\", Geist, system-ui, sans-serif",
+					"fontFace": [
+						{
+							"fontFamily": "Montserrat",
+							"fontWeight": "800",
+							"fontStyle": "normal",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/montserrat-latin-800-normal.woff2"
+							]
+						}
+					]
+				},
+				{
+					"slug": "poppins",
+					"name": "Poppins",
+					"fontFamily": "\"Poppins\", Geist, system-ui, sans-serif",
+					"fontFace": [
+						{
+							"fontFamily": "Poppins",
+							"fontWeight": "800",
+							"fontStyle": "normal",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/poppins-latin-800-normal.woff2"
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"styles": {
+		"color": {
+			"background": "var:preset|color|base",
+			"text": "var:preset|color|contrast"
+		},
+		"typography": {
+			"fontFamily": "var:preset|font-family|body",
+			"fontSize": "var:preset|font-size|medium",
+			"lineHeight": "1.55"
+		},
+		"spacing": {
+			"blockGap": "1.25rem",
+			"padding": {
+				"left": "clamp(1rem, 3vw, 2rem)",
+				"right": "clamp(1rem, 3vw, 2rem)"
+			}
+		},
+		"elements": {
+			"heading": {
+				"typography": {
+					"fontFamily": "var:preset|font-family|heading",
+					"fontWeight": "800",
+					"lineHeight": "1.05",
+					"letterSpacing": "-0.01em"
+				},
+				"color": {
+					"text": "var:preset|color|contrast"
+				}
+			},
+			"h1": {
+				"typography": {
+					"fontSize": "var:preset|font-size|xx-large"
+				}
+			},
+			"h2": {
+				"typography": {
+					"fontSize": "var:preset|font-size|x-large"
+				}
+			},
+			"h3": {
+				"typography": {
+					"fontFamily": "var:preset|font-family|body",
+					"fontSize": "1.1875rem",
+					"fontWeight": "700",
+					"lineHeight": "1.3",
+					"letterSpacing": "0"
+				}
+			},
+			"h4": {
+				"typography": {
+					"fontFamily": "var:preset|font-family|body",
+					"fontSize": "1.0625rem",
+					"fontWeight": "700",
+					"lineHeight": "1.35",
+					"letterSpacing": "0"
+				}
+			},
+			"link": {
+				"color": {
+					"text": "var:preset|color|contrast"
+				},
+				"typography": {
+					"textDecoration": "underline"
+				},
+				":hover": {
+					"color": {
+						"text": "var:preset|color|muted"
+					}
+				}
+			},
+			"button": {
+				"color": {
+					"background": "var:preset|color|dark",
+					"text": "#FFFFFF"
+				},
+				"typography": {
+					"fontFamily": "var:preset|font-family|body",
+					"fontWeight": "700",
+					"fontSize": "1rem",
+					"lineHeight": "1.2"
+				},
+				"border": {
+					"radius": "999px",
+					"width": "0",
+					"style": "none"
+				},
+				"spacing": {
+					"padding": {
+						"top": "0.95rem",
+						"bottom": "0.95rem",
+						"left": "1.6rem",
+						"right": "1.6rem"
+					}
+				},
+				":hover": {
+					"color": {
+						"background": "var:preset|color|contrast",
+						"text": "#FFFFFF"
+					}
+				},
+				":focus": {
+					"outline": {
+						"color": "var:preset|color|accent",
+						"offset": "3px",
+						"style": "solid",
+						"width": "3px"
+					}
+				}
+			},
+			"caption": {
+				"color": {
+					"text": "var:preset|color|muted"
+				},
+				"typography": {
+					"fontSize": "var:preset|font-size|small"
+				}
+			}
+		},
+		"blocks": {
+			"core/navigation": {
+				"typography": {
+					"fontSize": "0.9375rem",
+					"fontWeight": "500"
+				}
+			},
+			"core/details": {
+				"border": {
+					"bottom": {
+						"color": "var:preset|color|line",
+						"width": "1px",
+						"style": "solid"
+					}
+				},
+				"spacing": {
+					"padding": {
+						"top": "1rem",
+						"bottom": "1rem"
+					}
+				}
+			},
+			"core/separator": {
+				"color": {
+					"text": "var:preset|color|line"
+				}
+			},
+			"core/post-title": {
+				"typography": {
+					"fontSize": "var:preset|font-size|xx-large"
+				}
+			}
+		}
+	},
+	"templateParts": [
+		{
+			"name": "header",
+			"title": "Header",
+			"area": "header"
+		},
+		{
+			"name": "footer",
+			"title": "Footer",
+			"area": "footer"
+		},
+		{
+			"name": "checkout-header",
+			"title": "Checkout header",
+			"area": "header"
+		}
+	],
+	"customTemplates": [
+		{
+			"name": "page-landing",
+			"title": "Shop page (no title)",
+			"postTypes": [
+				"page"
+			]
+		}
+	]
+}
